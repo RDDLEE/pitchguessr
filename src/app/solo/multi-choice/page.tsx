@@ -1,12 +1,17 @@
 import React from "react";
-import SoloMultiChoiceContainer from "../../../../components/solo/solo-multi-choice/SoloMultiChoiceContainer";
+import dynamic from "next/dynamic";
 
-function SoloMultiChoicePage() {
+const SoloMultiChoiceContainer = dynamic(
+  () => {
+    return import("../../../../components/solo/solo-multi-choice/SoloMultiChoiceContainer");
+  },
+  { ssr: false },
+);
+
+export default function SoloMultiChoicePage() {
   return (
     <main>
       <SoloMultiChoiceContainer />
     </main>
   );
 }
-
-export default SoloMultiChoicePage;

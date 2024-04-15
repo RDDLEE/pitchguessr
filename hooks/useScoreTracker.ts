@@ -5,6 +5,7 @@ import { useCallback, useState } from "react";
 export interface ScoreTrackerState {
   numCorrect: number;
   numIncorrect: number;
+  // TODO: Rounds.
 }
 
 export interface UseScoreTracker_Return {

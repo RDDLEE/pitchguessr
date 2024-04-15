@@ -3,7 +3,7 @@
 import { useContext, useEffect, useRef } from "react";
 import * as Tone from "tone/build/esm/index";
 import { GlobalSettingsContext } from "../components/global/GlobalSettingsProvider";
-import { NoteOctave } from "./useNoteSelector";
+import { NoteOctave } from "../utils/NoteUtils";
 
 export interface UseSoundPlayer_Return {
   playNote: (_noteOctave: NoteOctave | null) => void;

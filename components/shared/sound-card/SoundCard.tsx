@@ -4,11 +4,11 @@ import { Card, CardBody, CardFooter, CircularProgress, Divider, Icon, IconButton
 import React from "react";
 import { FaPlay } from "react-icons/fa";
 import useSoundPlayer from "../../../hooks/useSoundPlayer";
-import { NoteOctave } from "../../../hooks/useNoteSelector";
+import { NoteOctave } from "../../../utils/NoteUtils";
 
 export interface SoundCard_Params {
   noteOctave: NoteOctave | null;
-  onClick_PlayButton: () => void;
+  onClick_PlayButton?: () => void;
 }
 
 export default function SoundCard(params: SoundCard_Params): JSX.Element {
@@ -16,7 +16,9 @@ export default function SoundCard(params: SoundCard_Params): JSX.Element {
 
   const onClick_PlayButton = (): void => {
     soundPlayer.playNote(params.noteOctave);
-    params.onClick_PlayButton();
+    if (params.onClick_PlayButton) {
+      params.onClick_PlayButton();
+    }
   };
 
   return (
