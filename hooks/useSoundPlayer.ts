@@ -46,6 +46,7 @@ const useSoundPlayer = (): UseSoundPlayer_Return => {
     if (globalSettings) {
       synthRef.current.volume.value = globalSettings.volume;
     }
+    // TODO: Sound duration.
     synthRef.current.triggerAttackRelease(`${noteOctave.note}${noteOctave.octave}`, "0.5");
   };
 

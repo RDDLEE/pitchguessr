@@ -64,7 +64,11 @@ export default class NoteUtils {
     B: 11,
   };
 
-  public static readonly pitchDirections: PitchDirection[] = [-1, 0, 1];
+  public static readonly OCTAVE_MIN = 0;
+
+  public static readonly OCTAVE_MAX = 8;
+
+  public static readonly PITCH_DIRECTIONS: PitchDirection[] = [-1, 0, 1];
 
   private static readonly chooseNoteGroup = (options: GenerateNoteOptions): MusicalNote[] => {
     // TODO: Handle scales.
@@ -85,8 +89,8 @@ export default class NoteUtils {
 
   private static readonly chooseOctave = (options: GenerateOctaveOptions): MusicalOctave => {
     // FIXME: Need to check min <= max.
-    const min = Math.max(0, options.min);
-    const max = Math.min(8, options.max);
+    const min = Math.max(NoteUtils.OCTAVE_MIN, options.min);
+    const max = Math.min(NoteUtils.OCTAVE_MAX, options.max);
     return Math.floor(Math.random() * (max - min + 1)) + min as MusicalOctave;
   };
 

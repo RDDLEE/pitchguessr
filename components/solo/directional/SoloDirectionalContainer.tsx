@@ -8,7 +8,7 @@ import SoundCard from "../../shared/sound-card/SoundCard";
 import NoteUtils, { NoteOctave, NoteTypes, PitchDirection } from "../../../utils/NoteUtils";
 import AnswerChoiceButton from "../../shared/answer-choice/AnswerChoiceButton";
 import NextRoundButton from "../../shared/next-round-button/NextRoundButton";
-import { BaseSoloGameState } from "../../../utils/SoloGameStateUtils";
+import { BaseSoloGameState } from "../../../utils/GameStateUtils";
 
 export interface NoteOctavePair {
   firstNoteOctave: NoteOctave;
@@ -132,7 +132,7 @@ export default function SoloDirectionalContainer(): JSX.Element {
 
   const renderAnswerChoiceButtons = (): JSX.Element => {
     const buttons: JSX.Element[] = [];
-    const choices = NoteUtils.pitchDirections;
+    const choices = NoteUtils.PITCH_DIRECTIONS;
     for (let i = 0; i < choices.length; i++) {
       const answerChoice = choices[i];
       let isCorrect: boolean = false;
