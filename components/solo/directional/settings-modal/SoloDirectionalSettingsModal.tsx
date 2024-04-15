@@ -38,8 +38,9 @@ export default function SoloDirectionalSettingsModal(props: SoloDirectionalSetti
     return (
       <React.Fragment>
         {settingsModal.renderAppVolumeSlider()}
-        {settingsModal.renderOctaveRange()}
-        {settingsModal.renderNoteType()}
+        {settingsModal.renderNoteDurationSlider()}
+        {settingsModal.renderOctaveRangeSlider()}
+        {settingsModal.renderNoteTypeRadio()}
       </React.Fragment>
     );
   };

@@ -4,7 +4,7 @@ import {
   RangeSliderTrack, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Stack, Text,
 } from "@chakra-ui/react";
 import NoteUtils, { MusicalOctave, NoteTypes } from "../../utils/NoteUtils";
-import { BaseSoloSettings } from "../../utils/GameStateUtils";
+import GameStateUtils, { BaseSoloSettings } from "../../utils/GameStateUtils";
 import { AppSettingsContext } from "../../components/global/AppSettingsProvider";
 import AppSettingUtils from "../../utils/AppSettingUtils";
 
@@ -30,8 +30,9 @@ export interface UseSoloSettingsModal_Params<S extends BaseSoloSettings> {
 export interface UseSoloSettingsModal_Return {
   setFormState: React.Dispatch<React.SetStateAction<SettingsFormState>>;
   renderAppVolumeSlider: () => JSX.Element;
-  renderOctaveRange: () => JSX.Element;
-  renderNoteType: () => JSX.Element;
+  renderNoteDurationSlider: () => JSX.Element;
+  renderOctaveRangeSlider: () => JSX.Element;
+  renderNoteTypeRadio: () => JSX.Element;
   renderModalButtons: () => JSX.Element;
 }
 
@@ -41,6 +42,8 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>(params: UseSoloSetting
   const [formState, setFormState] = useState<SettingsFormState>({ isDirty: false, shouldResetGame: false });
 
   const [appVolume, setAppVolume] = useState<number>(appSettings.volume);
+
+  const [noteDuration, setNoteDuration] = useState<number>(params.settings.noteDuration);
 
   const [octaveMinMax, setOctaveMinMax] = useState<OctaveMinMax>({
     min: params.settings.generateNoteOctaveOptions.octaveOptions.min,
@@ -82,11 +85,46 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>(params: UseSoloSetting
           </SliderTrack>
           <SliderThumb />
         </Slider>
+        <Divider />
       </React.Fragment>
     );
   };
 
-  const onChangeEnd_OctaveMinMax = useCallback((value: number[]): void => {
+  const onChange_NoteDurationSlider = useCallback((value: number): void => {
+    setFormState((prevState) => {
+      return {
+        isDirty: true,
+        shouldResetGame: prevState.shouldResetGame || false,
+      };
+    });
+    setNoteDuration(value);
+  }, []);
+
+  const renderNoteDurationSlider = (): JSX.Element => {
+    return (
+      <React.Fragment>
+        <Text fontSize="md" fontWeight="medium">
+          {`Note Duration: ${noteDuration}s`}
+        </Text>
+        <Slider
+          defaultValue={params.defaultSettings.noteDuration}
+          min={GameStateUtils.NOTE_DURATION_SETTING_MIN}
+          max={GameStateUtils.NOTE_DURATION_SETTING_MAX}
+          step={0.25}
+          onChange={onChange_NoteDurationSlider}
+          value={noteDuration}
+        >
+          <SliderTrack>
+            <SliderFilledTrack />
+          </SliderTrack>
+          <SliderThumb />
+        </Slider>
+        <Divider />
+      </React.Fragment>
+    );
+  };
+
+  const onChangeEnd_OctaveRangeSlider = useCallback((value: number[]): void => {
     setFormState({ isDirty: true, shouldResetGame: true });
     setOctaveMinMax({
       min: value[0] as MusicalOctave,
@@ -94,7 +132,7 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>(params: UseSoloSetting
     });
   }, []);
 
-  const renderOctaveRange = (): JSX.Element => {
+  const renderOctaveRangeSlider = (): JSX.Element => {
     return (
       <React.Fragment>
         <Text fontSize="md" fontWeight="medium">
@@ -103,7 +141,7 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>(params: UseSoloSetting
         <RangeSlider
           // eslint-disable-next-line jsx-a11y/aria-proptypes
           aria-label={["min", "max"]}
-          onChange={onChangeEnd_OctaveMinMax}
+          onChange={onChangeEnd_OctaveRangeSlider}
           defaultValue={[
             params.settings.generateNoteOctaveOptions.octaveOptions.min,
             params.settings.generateNoteOctaveOptions.octaveOptions.max,
@@ -127,22 +165,23 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>(params: UseSoloSetting
     );
   };
 
-  const onChange_NoteType = useCallback((nextValue: NoteTypes): void => {
+  const onChange_NoteTypeRadio = useCallback((nextValue: NoteTypes): void => {
     setFormState({ isDirty: true, shouldResetGame: true });
     setNoteType(nextValue);
   }, []);
 
-  const renderNoteType = (): JSX.Element => {
+  const renderNoteTypeRadio = (): JSX.Element => {
     return (
       <React.Fragment>
         <Text fontSize="md" fontWeight="medium">Notes:</Text>
-        <RadioGroup onChange={onChange_NoteType} value={noteType}>
+        <RadioGroup onChange={onChange_NoteTypeRadio} value={noteType}>
           <Stack direction="column" ml={4}>
             <Radio value={NoteTypes.NATURAL} size="sm">Naturals only</Radio>
             <Radio value={NoteTypes.SHARPS} size="sm">Naturals + Sharps</Radio>
             <Radio value={NoteTypes.FLATS} size="sm">Naturals + Flats</Radio>
           </Stack>
         </RadioGroup>
+        <Divider />
       </React.Fragment>
     );
   };
@@ -151,7 +190,8 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>(params: UseSoloSetting
     if (appSettings.setVolume !== undefined) {
       appSettings.setVolume(appVolume);
     }
-    const newBaseSettings = {
+    const newBaseSettings: BaseSoloSettings = {
+      noteDuration: noteDuration,
       generateNoteOctaveOptions: {
         noteOptions: {
           noteType: noteType,
@@ -169,7 +209,10 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>(params: UseSoloSetting
     setFormState({ isDirty: false, shouldResetGame: false });
     // Could reset form state on close.
     params.closeModal();
-  }, [appSettings, appVolume, formState.shouldResetGame, noteType, octaveMinMax.max, octaveMinMax.min, params]);
+  }, [
+    appSettings, appVolume, formState.shouldResetGame,
+    noteDuration, noteType, octaveMinMax.max, octaveMinMax.min, params,
+  ]);
 
   const onClick_ResetSettingsButton = useCallback((): void => {
     setFormState({ isDirty: true, shouldResetGame: true });
@@ -198,8 +241,9 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>(params: UseSoloSetting
   return {
     setFormState: setFormState,
     renderAppVolumeSlider: renderAppVolumeSlider,
-    renderOctaveRange: renderOctaveRange,
-    renderNoteType: renderNoteType,
+    renderNoteDurationSlider: renderNoteDurationSlider,
+    renderOctaveRangeSlider: renderOctaveRangeSlider,
+    renderNoteTypeRadio: renderNoteTypeRadio,
     renderModalButtons: renderModalButtons,
   };
 };

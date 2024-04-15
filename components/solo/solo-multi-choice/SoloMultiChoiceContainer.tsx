@@ -147,6 +147,7 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
     return (
       <SoundCard
         noteOctave={noteOctave}
+        noteDuration={gameSettings.noteDuration}
         onClick_PlayButton={onClick_PlayButton}
       />
     );

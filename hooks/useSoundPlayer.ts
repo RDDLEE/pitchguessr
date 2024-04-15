@@ -2,12 +2,12 @@
 
 import { useContext, useEffect, useRef } from "react";
 import * as Tone from "tone/build/esm/index";
-import { AppSettingsContext } from "../components/global/AppSettingsProvider";
 import { NoteOctave } from "../utils/NoteUtils";
+import { AppSettingsContext } from "../components/global/AppSettingsProvider";
 import AppSettingUtils from "../utils/AppSettingUtils";
 
 export interface UseSoundPlayer_Return {
-  playNote: (_noteOctave: NoteOctave | null) => void;
+  playNote: (_noteOctave: NoteOctave | null, _noteDuration: number) => void;
 }
 
 // TODO: Instrument as a param.
@@ -36,7 +36,7 @@ const useSoundPlayer = (): UseSoundPlayer_Return => {
   }, []);
 
   // TODO: Note duration
-  const playNote = (noteOctave: NoteOctave | null): void => {
+  const playNote = (noteOctave: NoteOctave | null, noteDuration: number): void => {
     if (noteOctave === null) {
       return;
     }
@@ -48,8 +48,7 @@ const useSoundPlayer = (): UseSoundPlayer_Return => {
       return;
     }
     synthRef.current.volume.value = appSettings.volume;
-    // TODO: Sound duration.
-    synthRef.current.triggerAttackRelease(`${noteOctave.note}${noteOctave.octave}`, "0.5");
+    synthRef.current.triggerAttackRelease(`${noteOctave.note}${noteOctave.octave}`, noteDuration);
   };
 
   return {

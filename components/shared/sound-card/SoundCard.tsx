@@ -8,6 +8,7 @@ import { NoteOctave } from "../../../utils/NoteUtils";
 
 export interface SoundCard_Props {
   noteOctave: NoteOctave | null;
+  noteDuration: number;
   onClick_PlayButton?: () => void;
 }
 
@@ -15,7 +16,7 @@ export default function SoundCard(props: SoundCard_Props): JSX.Element {
   const soundPlayer = useSoundPlayer();
 
   const onClick_PlayButton = (): void => {
-    soundPlayer.playNote(props.noteOctave);
+    soundPlayer.playNote(props.noteOctave, props.noteDuration);
     if (props.onClick_PlayButton) {
       props.onClick_PlayButton();
     }

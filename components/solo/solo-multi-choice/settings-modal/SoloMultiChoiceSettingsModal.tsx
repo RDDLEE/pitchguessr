@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Text, Slider, useDisclosure, SliderFilledTrack, SliderThumb, SliderTrack } from "@chakra-ui/react";
+import { Text, Slider, useDisclosure, SliderFilledTrack, SliderThumb, SliderTrack, Divider } from "@chakra-ui/react";
 import GameStateUtils, { BaseSoloSettings, SoloMultiChoiceSettings } from "../../../../utils/GameStateUtils";
 import useSoloSettingsModal from "../../../../hooks/solo/useSoloSettingsModal";
 import SoloSettingsModal from "../../../shared/solo-settings-modal/SoloSettingsModal";
@@ -40,12 +40,12 @@ export default function SoloMultiChoiceSettingsModal(props: SoloMultiChoiceSetti
     closeModal: modalDisclosure.onClose,
   });
 
-  const onChange_NumAnswerChoices = useCallback((value: number): void => {
+  const onChange_NumAnswerChoicesSlider = useCallback((value: number): void => {
     settingsModal.setFormState({ isDirty: true, shouldResetGame: true });
     setNumAnswerChoices(value);
   }, [settingsModal]);
 
-  const renderNumAnswerChoices = (): JSX.Element => {
+  const renderNumAnswerChoicesSlider = (): JSX.Element => {
     return (
       <React.Fragment>
         <Text fontSize="md" fontWeight="medium">
@@ -56,7 +56,7 @@ export default function SoloMultiChoiceSettingsModal(props: SoloMultiChoiceSetti
           min={NUM_ANSWER_CHOICES_MIN}
           max={NUM_ANSWER_CHOICES_MAX}
           step={1}
-          onChange={onChange_NumAnswerChoices}
+          onChange={onChange_NumAnswerChoicesSlider}
           value={numAnswerChoices}
         >
           <SliderTrack>
@@ -64,6 +64,7 @@ export default function SoloMultiChoiceSettingsModal(props: SoloMultiChoiceSetti
           </SliderTrack>
           <SliderThumb />
         </Slider>
+        <Divider />
       </React.Fragment>
     );
   };
@@ -72,9 +73,10 @@ export default function SoloMultiChoiceSettingsModal(props: SoloMultiChoiceSetti
     return (
       <React.Fragment>
         {settingsModal.renderAppVolumeSlider()}
-        {renderNumAnswerChoices()}
-        {settingsModal.renderOctaveRange()}
-        {settingsModal.renderNoteType()}
+        {settingsModal.renderNoteDurationSlider()}
+        {renderNumAnswerChoicesSlider()}
+        {settingsModal.renderOctaveRangeSlider()}
+        {settingsModal.renderNoteTypeRadio()}
       </React.Fragment>
     );
   };

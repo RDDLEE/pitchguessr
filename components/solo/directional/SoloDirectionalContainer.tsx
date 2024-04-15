@@ -79,6 +79,7 @@ export default function SoloDirectionalContainer(): JSX.Element {
     return (
       <SoundCard
         noteOctave={gameState.noteOctavePair.firstNoteOctave}
+        noteDuration={gameSettings.noteDuration}
         onClick_PlayButton={onClick_PlayButton}
       />
     );
@@ -88,6 +89,7 @@ export default function SoloDirectionalContainer(): JSX.Element {
     return (
       <SoundCard
         noteOctave={gameState.noteOctavePair.secondNoteOctave}
+        noteDuration={gameSettings.noteDuration}
         onClick_PlayButton={onClick_PlayButton}
       />
     );

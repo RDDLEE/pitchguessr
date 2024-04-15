@@ -7,6 +7,7 @@ export interface BaseSoloGameState {
 
 export interface BaseSoloSettings {
   generateNoteOctaveOptions: GenerateNoteOctaveOptions;
+  noteDuration: number;
 }
 
 export interface SoloMultiChoiceSettings extends BaseSoloSettings {
@@ -18,8 +19,15 @@ export interface SoloDirectionSettings extends BaseSoloSettings {
 }
 
 export default class GameStateUtils {
+  public static readonly NOTE_DURATION_SETTING_MIN = 0.25;
+
+  public static readonly NOTE_DURATION_SETTING_MAX = 2.0;
+
+  private static readonly NOTE_DURATION_SETTING_DEFAULT = 0.5;
+
   public static readonly DEFAULT_SOLO_MULTI_CHOICE_SETTINGS: SoloMultiChoiceSettings = {
     numAnswerChoices: 5,
+    noteDuration: GameStateUtils.NOTE_DURATION_SETTING_DEFAULT,
     generateNoteOctaveOptions: {
       octaveOptions: {
         min: 3,
@@ -32,6 +40,7 @@ export default class GameStateUtils {
   };
 
   public static readonly DEFAULT_SOLO_DIRECTIONAL_SETTINGS: SoloDirectionSettings = {
+    noteDuration: GameStateUtils.NOTE_DURATION_SETTING_DEFAULT,
     generateNoteOctaveOptions: {
       octaveOptions: {
         min: 3,
