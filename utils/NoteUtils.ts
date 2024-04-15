@@ -8,7 +8,7 @@ export interface NoteOctave {
   octave: number;
 }
 
-export type PitchDirections = -1 | 0 | 1;
+export type PitchDirection = -1 | 0 | 1;
 
 export default class NoteUtils {
   public static readonly naturalNotes: string[] = ["A", "B", "C", "D", "E", "F", "G"];
@@ -36,6 +36,8 @@ export default class NoteUtils {
     Bb: 10,
     B: 11,
   };
+
+  public static readonly pitchDirections: PitchDirection[] = [-1, 0, 1];
 
   public static readonly chooseNote = (): string => {
     // TODO: Handle accidentals/scales.
@@ -72,7 +74,7 @@ export default class NoteUtils {
    * 0 if the second is equal to the first.
    * 1 if the second is higher than the first.
    */
-  public static readonly compareNoteOctaveValues = (firstNoteOctave: NoteOctave, secondNoteOctave: NoteOctave): PitchDirections => {
+  public static readonly compareNoteOctaveValues = (firstNoteOctave: NoteOctave, secondNoteOctave: NoteOctave): PitchDirection => {
     const firstVal = NoteUtils.calculateNoteOctaveValue(firstNoteOctave);
     const secondVal = NoteUtils.calculateNoteOctaveValue(secondNoteOctave);
     if (secondVal === firstVal) {
@@ -82,5 +84,15 @@ export default class NoteUtils {
       return 1;
     }
     return -1;
+  };
+
+  public static readonly convertPitchDirectionToText = (pitchDirection: PitchDirection): string => {
+    if (pitchDirection === -1) {
+      return "Lower";
+    }
+    if (pitchDirection === 0) {
+      return "Equal";
+    }
+    return "Higher";
   };
 }

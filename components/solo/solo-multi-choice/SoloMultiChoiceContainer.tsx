@@ -3,7 +3,7 @@
 import React, { useCallback, useState } from "react";
 import { Stack } from "@chakra-ui/react";
 import SoundCard from "../../shared/sound-card/SoundCard";
-import AnswerChoiceButton from "../../shared/answer-choice/AnswerChoice";
+import AnswerChoiceButton from "../../shared/answer-choice/AnswerChoiceButton";
 import NextRoundButton from "../../shared/next-round-button/NextRoundButton";
 import useScoreTracker from "../../../hooks/useScoreTracker";
 import ScoreTracker from "../../shared/score-tracker/ScoreTracker";
@@ -20,6 +20,7 @@ export interface SoloMultiChoiceState {
   correctNoteOctave: NoteOctave;
   answerChoices: string[];
   hasPlayed: boolean;
+  // FIXME: Rename to isRoundFinished. Extract to common state.
   isRevealingAnswers: boolean;
 }
 
@@ -42,7 +43,7 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
     return items;
   };
 
-  const generateNewState = (): SoloMultiChoiceState => {
+  const generateNewGameState = (): SoloMultiChoiceState => {
     const newNoteOctave = NoteUtils.generateNoteOctave({});
     const answerChoices = generateAnswerChoices(newNoteOctave.note);
     return {
@@ -52,17 +53,17 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
       hasPlayed: false,
     };
   };
-  const [soloMultiChoiceState, setSoloMultiChoiceState] = useState<SoloMultiChoiceState>(generateNewState());
+  const [gameState, setGameState] = useState<SoloMultiChoiceState>(generateNewGameState());
 
   const scoreTracker = useScoreTracker();
 
   const onNewRound = (): void => {
-    const newState = generateNewState();
-    setSoloMultiChoiceState(newState);
+    const newState = generateNewGameState();
+    setGameState(newState);
   };
 
   const onClick_AnswerChoice = useCallback((answerChoice: string): void => {
-    setSoloMultiChoiceState(
+    setGameState(
       (prevState) => {
         return {
           correctNoteOctave: prevState.correctNoteOctave,
@@ -72,29 +73,30 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
         };
       },
     );
-    if (answerChoice === soloMultiChoiceState.correctNoteOctave.note) {
+    if (answerChoice === gameState.correctNoteOctave.note) {
       scoreTracker.incrementNumCorrect();
     } else {
       scoreTracker.incrementNumIncorrect();
     }
-  }, [soloMultiChoiceState, scoreTracker]);
+  }, [gameState, scoreTracker]);
 
   const renderAnswerChoiceButtons = (): JSX.Element => {
     const buttons: JSX.Element[] = [];
-    for (let i = 0; i < soloMultiChoiceState.answerChoices.length; i++) {
-      const answerChoice = soloMultiChoiceState.answerChoices[i];
+    for (let i = 0; i < gameState.answerChoices.length; i++) {
+      const answerChoice = gameState.answerChoices[i];
       let isCorrect: boolean = false;
-      if (answerChoice === soloMultiChoiceState.correctNoteOctave.note) {
+      if (answerChoice === gameState.correctNoteOctave.note) {
         isCorrect = true;
       }
       buttons.push((
         <AnswerChoiceButton
           key={answerChoice}
+          id={answerChoice}
           text={answerChoice}
           onClick_Button={onClick_AnswerChoice}
           isCorrect={isCorrect}
-          hasPlayed={soloMultiChoiceState.hasPlayed}
-          isRevealing={soloMultiChoiceState.isRevealingAnswers}
+          hasPlayed={gameState.hasPlayed}
+          isRevealing={gameState.isRevealingAnswers}
         />
       ));
     }
@@ -106,8 +108,11 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
   };
 
   const onClick_PlayButton = useCallback((): void => {
-    setSoloMultiChoiceState(
+    setGameState(
       (prevState) => {
+        if (prevState.hasPlayed === true) {
+          return prevState;
+        }
         return {
           correctNoteOctave: prevState.correctNoteOctave,
           answerChoices: [...prevState.answerChoices],
@@ -116,10 +121,10 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
         };
       },
     );
-  }, [setSoloMultiChoiceState]);
+  }, [setGameState]);
 
   const renderSoundCard = (): JSX.Element => {
-    const noteOctave = soloMultiChoiceState.correctNoteOctave;
+    const noteOctave = gameState.correctNoteOctave;
     return (
       <SoundCard
         noteOctave={noteOctave}
@@ -133,7 +138,7 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
   };
 
   const renderNextRoundButton = (): JSX.Element | null => {
-    if (soloMultiChoiceState.isRevealingAnswers === false) {
+    if (gameState.isRevealingAnswers === false) {
       return null;
     }
     return (
