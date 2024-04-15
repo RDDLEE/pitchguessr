@@ -2,7 +2,7 @@
 
 import { useContext, useEffect, useRef } from "react";
 import * as Tone from "tone/build/esm/index";
-import { GlobalSettingsContext } from "../components/global/GlobalSettingsProvider";
+import { AppSettingsContext } from "../components/global/AppSettingsProvider";
 import { NoteOctave } from "../utils/NoteUtils";
 
 export interface UseSoundPlayer_Return {
@@ -11,7 +11,7 @@ export interface UseSoundPlayer_Return {
 
 // TODO: Instrument as a param.
 const useSoundPlayer = (): UseSoundPlayer_Return => {
-  const globalSettings = useContext(GlobalSettingsContext);
+  const appSettings = useContext(AppSettingsContext);
   // TODO: Replace with Instrument of type Tone.Monophonic or Tone.Instrument.
   const synthRef = useRef<Tone.Synth | null>(null);
 
@@ -43,8 +43,8 @@ const useSoundPlayer = (): UseSoundPlayer_Return => {
       return;
     }
     // TODO: Replace Synth with Sampler or other instruments.
-    if (globalSettings) {
-      synthRef.current.volume.value = globalSettings.volume;
+    if (appSettings !== undefined) {
+      synthRef.current.volume.value = appSettings.volume;
     }
     // TODO: Sound duration.
     synthRef.current.triggerAttackRelease(`${noteOctave.note}${noteOctave.octave}`, "0.5");

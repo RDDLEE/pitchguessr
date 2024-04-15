@@ -1,18 +1,16 @@
 "use client";
 
-import React, {
-  createContext, useCallback, useMemo, useState,
-} from "react";
+import React, { createContext, useCallback, useMemo, useState } from "react";
 
-export interface GlobalSettings {
+export interface AppSettings {
   volume: number;
   setVolume: (_decibels: number) => void;
   // TODO: Theme.
 }
 
-export const GlobalSettingsContext = createContext<GlobalSettings | undefined>(undefined);
+export const AppSettingsContext = createContext<AppSettings | undefined>(undefined);
 
-export default function GlobalSettingsProvider(
+export default function AppSettingsProvider(
   { children }: Readonly<{ children: React.ReactNode; }>,
 ) {
   // TODO: Init and save global settings from localStorage.
@@ -31,7 +29,7 @@ export default function GlobalSettingsProvider(
     }
   }, [volume, setVolume]);
 
-  const globalSettings = useMemo<GlobalSettings>(() => {
+  const globalSettings = useMemo<AppSettings>(() => {
     return {
       volume: volume,
       setVolume: setVolumeValidator,
@@ -39,8 +37,8 @@ export default function GlobalSettingsProvider(
   }, [volume, setVolumeValidator]);
 
   return (
-    <GlobalSettingsContext.Provider value={globalSettings}>
+    <AppSettingsContext.Provider value={globalSettings}>
       {children}
-    </GlobalSettingsContext.Provider>
+    </AppSettingsContext.Provider>
   );
 }

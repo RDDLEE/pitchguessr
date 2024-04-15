@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import ChakraProviders from "../../components/global/ChakraProviders";
-import GlobalSettingsProvider from "../../components/global/GlobalSettingsProvider";
+import AppSettingsProvider from "../../components/global/AppSettingsProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,11 +17,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body className={inter.className}>
-        <GlobalSettingsProvider>
+        <AppSettingsProvider>
           <ChakraProviders>
             {children}
           </ChakraProviders>
-        </GlobalSettingsProvider>
+        </AppSettingsProvider>
       </body>
     </html>
   );
