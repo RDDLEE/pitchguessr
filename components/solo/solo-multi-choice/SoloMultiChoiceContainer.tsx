@@ -140,7 +140,7 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
         };
       },
     );
-  }, [setGameState]);
+  }, []);
 
   const renderSoundCard = (): JSX.Element => {
     const noteOctave = gameState.correctNoteOctave;

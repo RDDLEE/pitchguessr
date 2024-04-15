@@ -30,7 +30,7 @@ const useScoreTracker = (): UseScoreTracker_Return => {
         };
       },
     );
-  }, [setScoreTrackerState]);
+  }, []);
 
   const incrementNumIncorrect = useCallback((): void => {
     setScoreTrackerState(
@@ -41,14 +41,14 @@ const useScoreTracker = (): UseScoreTracker_Return => {
         };
       },
     );
-  }, [setScoreTrackerState]);
+  }, []);
 
   const resetScore = useCallback((): void => {
     setScoreTrackerState({
       numCorrect: 0,
       numIncorrect: 0,
     });
-  }, [setScoreTrackerState]);
+  }, []);
 
   return {
     scoreStats: scoreTrackerState,

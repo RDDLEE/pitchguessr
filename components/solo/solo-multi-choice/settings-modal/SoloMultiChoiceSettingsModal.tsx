@@ -40,7 +40,7 @@ export default function SoloMultiChoiceSettingsModal(props: SoloMultiChoiceSetti
     closeModal: modalDisclosure.onClose,
   });
 
-  const onChangeEnd_NumAnswerChoices = useCallback((value: number): void => {
+  const onChange_NumAnswerChoices = useCallback((value: number): void => {
     settingsModal.setFormState({ isDirty: true, shouldResetGame: true });
     setNumAnswerChoices(value);
   }, [settingsModal]);
@@ -56,7 +56,7 @@ export default function SoloMultiChoiceSettingsModal(props: SoloMultiChoiceSetti
           min={NUM_ANSWER_CHOICES_MIN}
           max={NUM_ANSWER_CHOICES_MAX}
           step={1}
-          onChange={onChangeEnd_NumAnswerChoices}
+          onChange={onChange_NumAnswerChoices}
           value={numAnswerChoices}
         >
           <SliderTrack>
@@ -71,6 +71,7 @@ export default function SoloMultiChoiceSettingsModal(props: SoloMultiChoiceSetti
   const renderModalBody = (): JSX.Element => {
     return (
       <React.Fragment>
+        {settingsModal.renderAppVolumeSlider()}
         {renderNumAnswerChoices()}
         {settingsModal.renderOctaveRange()}
         {settingsModal.renderNoteType()}

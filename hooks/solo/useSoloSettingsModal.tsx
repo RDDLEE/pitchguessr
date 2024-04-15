@@ -1,7 +1,12 @@
-import React, { useCallback, useState } from "react";
-import { Button, Divider, Radio, RadioGroup, RangeSlider, RangeSliderFilledTrack, RangeSliderThumb, RangeSliderTrack, Stack, Text } from "@chakra-ui/react";
+import React, { useCallback, useContext, useState } from "react";
+import {
+  Button, Divider, Radio, RadioGroup, RangeSlider, RangeSliderFilledTrack, RangeSliderThumb,
+  RangeSliderTrack, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Stack, Text,
+} from "@chakra-ui/react";
 import NoteUtils, { MusicalOctave, NoteTypes } from "../../utils/NoteUtils";
 import { BaseSoloSettings } from "../../utils/GameStateUtils";
+import { AppSettingsContext } from "../../components/global/AppSettingsProvider";
+import AppSettingUtils from "../../utils/AppSettingUtils";
 
 interface OctaveMinMax {
   min: MusicalOctave;
@@ -23,20 +28,19 @@ export interface UseSoloSettingsModal_Params<S extends BaseSoloSettings> {
 }
 
 export interface UseSoloSettingsModal_Return {
-  formState: SettingsFormState;
   setFormState: React.Dispatch<React.SetStateAction<SettingsFormState>>;
-  octaveMinMax: OctaveMinMax;
-  setOctaveMinMax: React.Dispatch<React.SetStateAction<OctaveMinMax>>;
-  noteType: NoteTypes;
-  setNoteType: React.Dispatch<React.SetStateAction<NoteTypes>>;
+  renderAppVolumeSlider: () => JSX.Element;
   renderOctaveRange: () => JSX.Element;
   renderNoteType: () => JSX.Element;
   renderModalButtons: () => JSX.Element;
 }
 
-const useSoloSettingsModal = <S extends BaseSoloSettings>
-  (params: UseSoloSettingsModal_Params<S>): UseSoloSettingsModal_Return => {
+const useSoloSettingsModal = <S extends BaseSoloSettings>(params: UseSoloSettingsModal_Params<S>): UseSoloSettingsModal_Return => {
+  const appSettings = useContext(AppSettingsContext);
+
   const [formState, setFormState] = useState<SettingsFormState>({ isDirty: false, shouldResetGame: false });
+
+  const [appVolume, setAppVolume] = useState<number>(appSettings.volume);
 
   const [octaveMinMax, setOctaveMinMax] = useState<OctaveMinMax>({
     min: params.settings.generateNoteOctaveOptions.octaveOptions.min,
@@ -45,18 +49,50 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>
 
   const [noteType, setNoteType] = useState<NoteTypes>(params.settings.generateNoteOctaveOptions.noteOptions.noteType);
 
+  const onChange_AppVolumeSlider = useCallback((value: number): void => {
+    setFormState((prevState) => {
+      return {
+        isDirty: true,
+        shouldResetGame: prevState.shouldResetGame || false,
+      };
+    });
+    setAppVolume(value);
+  }, []);
+
+  const renderAppVolumeSlider = (): JSX.Element => {
+    let appVolumeText: string = `${appVolume} dB`;
+    if (appVolume === AppSettingUtils.VOLUME_SETTING_MUTE) {
+      appVolumeText = "None";
+    }
+    return (
+      <React.Fragment>
+        <Text fontSize="md" fontWeight="medium">
+          {`Volume: ${appVolumeText}`}
+        </Text>
+        <Slider
+          defaultValue={appVolume}
+          min={AppSettingUtils.VOLUME_SETTING_MIN}
+          max={AppSettingUtils.VOLUME_SETTING_MAX}
+          step={1}
+          onChange={onChange_AppVolumeSlider}
+          value={appVolume}
+        >
+          <SliderTrack>
+            <SliderFilledTrack />
+          </SliderTrack>
+          <SliderThumb />
+        </Slider>
+      </React.Fragment>
+    );
+  };
+
   const onChangeEnd_OctaveMinMax = useCallback((value: number[]): void => {
     setFormState({ isDirty: true, shouldResetGame: true });
     setOctaveMinMax({
       min: value[0] as MusicalOctave,
       max: value[1] as MusicalOctave,
     });
-  }, [setFormState, setOctaveMinMax]);
-
-  const onChange_NoteType = useCallback((nextValue: NoteTypes): void => {
-    setFormState({ isDirty: true, shouldResetGame: true });
-    setNoteType(nextValue);
-  }, [setFormState, setNoteType]);
+  }, []);
 
   const renderOctaveRange = (): JSX.Element => {
     return (
@@ -91,6 +127,11 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>
     );
   };
 
+  const onChange_NoteType = useCallback((nextValue: NoteTypes): void => {
+    setFormState({ isDirty: true, shouldResetGame: true });
+    setNoteType(nextValue);
+  }, []);
+
   const renderNoteType = (): JSX.Element => {
     return (
       <React.Fragment>
@@ -107,6 +148,9 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>
   };
 
   const onClick_ApplySettingsButton = useCallback((): void => {
+    if (appSettings.setVolume !== undefined) {
+      appSettings.setVolume(appVolume);
+    }
     const newBaseSettings = {
       generateNoteOctaveOptions: {
         noteOptions: {
@@ -125,17 +169,18 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>
     setFormState({ isDirty: false, shouldResetGame: false });
     // Could reset form state on close.
     params.closeModal();
-  }, [formState.shouldResetGame, noteType, octaveMinMax.max, octaveMinMax.min, params]);
+  }, [appSettings, appVolume, formState.shouldResetGame, noteType, octaveMinMax.max, octaveMinMax.min, params]);
 
   const onClick_ResetSettingsButton = useCallback((): void => {
     setFormState({ isDirty: true, shouldResetGame: true });
+    setAppVolume(AppSettingUtils.VOLUME_SETTING_DEFAULT);
     setOctaveMinMax({
       min: params.defaultSettings.generateNoteOctaveOptions.octaveOptions.min,
       max: params.defaultSettings.generateNoteOctaveOptions.octaveOptions.max,
     });
     setNoteType(params.defaultSettings.generateNoteOctaveOptions.noteOptions.noteType);
     params.onClick_ResetSettingsButton();
-  }, [params, setFormState, setOctaveMinMax, setNoteType]);
+  }, [params]);
 
   const renderModalButtons = (): JSX.Element => {
     return (
@@ -151,12 +196,8 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>
   };
 
   return {
-    formState: formState,
     setFormState: setFormState,
-    octaveMinMax: octaveMinMax,
-    setOctaveMinMax: setOctaveMinMax,
-    noteType: noteType,
-    setNoteType: setNoteType,
+    renderAppVolumeSlider: renderAppVolumeSlider,
     renderOctaveRange: renderOctaveRange,
     renderNoteType: renderNoteType,
     renderModalButtons: renderModalButtons,

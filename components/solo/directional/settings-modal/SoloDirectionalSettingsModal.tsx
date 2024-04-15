@@ -37,6 +37,7 @@ export default function SoloDirectionalSettingsModal(props: SoloDirectionalSetti
   const renderModalBody = (): JSX.Element => {
     return (
       <React.Fragment>
+        {settingsModal.renderAppVolumeSlider()}
         {settingsModal.renderOctaveRange()}
         {settingsModal.renderNoteType()}
       </React.Fragment>

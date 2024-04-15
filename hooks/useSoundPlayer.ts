@@ -4,6 +4,7 @@ import { useContext, useEffect, useRef } from "react";
 import * as Tone from "tone/build/esm/index";
 import { AppSettingsContext } from "../components/global/AppSettingsProvider";
 import { NoteOctave } from "../utils/NoteUtils";
+import AppSettingUtils from "../utils/AppSettingUtils";
 
 export interface UseSoundPlayer_Return {
   playNote: (_noteOctave: NoteOctave | null) => void;
@@ -39,13 +40,14 @@ const useSoundPlayer = (): UseSoundPlayer_Return => {
     if (noteOctave === null) {
       return;
     }
+    // TODO: Replace Synth with Sampler or other instruments.
     if (synthRef.current === null) {
       return;
     }
-    // TODO: Replace Synth with Sampler or other instruments.
-    if (appSettings !== undefined) {
-      synthRef.current.volume.value = appSettings.volume;
+    if (appSettings.volume === AppSettingUtils.VOLUME_SETTING_MUTE) {
+      return;
     }
+    synthRef.current.volume.value = appSettings.volume;
     // TODO: Sound duration.
     synthRef.current.triggerAttackRelease(`${noteOctave.note}${noteOctave.octave}`, "0.5");
   };

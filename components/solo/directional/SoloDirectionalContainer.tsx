@@ -73,7 +73,7 @@ export default function SoloDirectionalContainer(): JSX.Element {
         };
       },
     );
-  }, [setGameState]);
+  }, []);
 
   const renderFirstSoundCard = (): JSX.Element => {
     return (
