@@ -84,6 +84,7 @@
       {
         "code": 160
       }
-    ]
+    ],
+    "object-curly-newline": "off"
   }
 }

@@ -1,8 +1,6 @@
 "use client";
 
-import {
-  Card, CardBody, CardFooter, CircularProgress, Divider, Icon, IconButton,
-} from "@chakra-ui/react";
+import { Card, CardBody, CardFooter, CircularProgress, Divider, Icon, IconButton } from "@chakra-ui/react";
 import React from "react";
 import { FaPlay } from "react-icons/fa";
 import useSoundPlayer from "../../../hooks/useSoundPlayer";

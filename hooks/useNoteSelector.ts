@@ -10,19 +10,18 @@ export interface ProduceNoteOptions {
   // scale: unknown;
 }
 
+export interface NoteOctave {
+  note: string;
+  octave: string;
+}
+
 export interface UseNoteSelector_Return {
   naturalNotes: string[];
   accidentalNotes: string[];
   generateNoteOctave: (_options: ProduceNoteOptions) => NoteOctave;
 }
 
-export interface NoteOctave {
-  note: string;
-  octave: string;
-}
-
 const useNoteSelector = (params: UseNoteSelector_Params): UseNoteSelector_Return => {
-
   const naturalNotes: string[] = ["A", "B", "C", "D", "E", "F", "G"];
   const accidentalNotes: string[] = ["A#", "Bb", "C#", "Db", "D#", "Eb", "F#", "Gb", "G#", "Ab"];
 
@@ -45,7 +44,7 @@ const useNoteSelector = (params: UseNoteSelector_Params): UseNoteSelector_Return
     const octave: string = chooseOctave();
     return {
       note: note,
-      octave: octave
+      octave: octave,
     };
   };
 
