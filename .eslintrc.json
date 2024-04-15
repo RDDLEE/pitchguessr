@@ -1,4 +1,7 @@
 {
+  "globals": {
+    "JSX": "readonly"
+  },
   "extends": [
     "next/core-web-vitals",
     "eslint:recommended",
@@ -30,7 +33,57 @@
         ]
       }
     ],
-    "object-shorthand": [1, "never"],
-    "react/jsx-boolean-value": [1, "always"]
+    "object-shorthand": [
+      1,
+      "never"
+    ],
+    "react/jsx-boolean-value": [
+      1,
+      "always"
+    ],
+    "linebreak-style": "off",
+    "no-unused-vars": [
+      1,
+      {
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "arrow-body-style": [
+      1,
+      "always"
+    ],
+    "camelcase": [
+      1,
+      {
+        "allow": [
+          "^[a-zA-Z0-9]+_[a-zA-Z0-9]+$"
+        ]
+      }
+    ],
+    "react/destructuring-assignment": "off",
+    "no-use-before-define": [
+      1,
+      {
+        "functions": false,
+        "classes": false,
+        "variables": false
+      }
+    ],
+    "react/jsx-fragments": [
+      1,
+      "element"
+    ],
+    "no-plusplus": [
+      1,
+      {
+        "allowForLoopAfterthoughts": true
+      }
+    ],
+    "max-len": [
+      1,
+      {
+        "code": 160
+      }
+    ]
   }
 }

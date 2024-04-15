@@ -5,14 +5,20 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { FaPlay } from "react-icons/fa";
-import useSoundManager from "../../../hooks/useSoundManager";
+import useSoundPlayer from "../../../hooks/useSoundPlayer";
+import { NoteOctave } from "../../../hooks/useNoteSelector";
 
-function SoundCard() {
-  const soundManager = useSoundManager({});
+export interface SoundCard_Params {
+  noteOctave: NoteOctave | null;
+  onClick_PlayButton: () => void;
+}
 
-  const onClickPlayButton = (): void => {
-    // TODO: Implement produceSound options.
-    soundManager.produceSound({});
+export default function SoundCard(params: SoundCard_Params): JSX.Element {
+  const soundPlayer = useSoundPlayer();
+
+  const onClick_PlayButton = (): void => {
+    soundPlayer.playNote(params.noteOctave);
+    params.onClick_PlayButton();
   };
 
   return (
@@ -30,11 +36,9 @@ function SoundCard() {
           aria-label="Play"
           fontSize="20px"
           icon={<Icon as={FaPlay} />}
-          onClick={onClickPlayButton}
+          onClick={onClick_PlayButton}
         />
       </CardFooter>
     </Card>
   );
 }
-
-export default SoundCard;

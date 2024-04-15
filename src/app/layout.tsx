@@ -1,9 +1,9 @@
 import React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-// TODO: Remove Tailwind.
 import "./globals.css";
-import Providers from "./providers";
+import ChakraProviders from "../../components/global/ChakraProviders";
+import GlobalSettingsProvider from "../../components/global/GlobalSettingsProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,15 +13,15 @@ export const metadata: Metadata = {
   description: "Pitch practice.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Providers>{children}</Providers>
+        <GlobalSettingsProvider>
+          <ChakraProviders>
+            {children}
+          </ChakraProviders>
+        </GlobalSettingsProvider>
       </body>
     </html>
   );
