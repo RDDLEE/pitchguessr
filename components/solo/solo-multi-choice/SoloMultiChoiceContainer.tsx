@@ -7,8 +7,9 @@ import AnswerChoiceButton from "../../shared/answer-choice/AnswerChoiceButton";
 import NextRoundButton from "../../shared/next-round-button/NextRoundButton";
 import useScoreTracker from "../../../hooks/useScoreTracker";
 import ScoreTracker from "../../shared/score-tracker/ScoreTracker";
-import NoteUtils, { MusicalNote, NoteOctave } from "../../../utils/NoteUtils";
+import NoteUtils, { GenerateNoteOctaveOptions, MusicalNote, NoteOctave } from "../../../utils/NoteUtils";
 import { BaseSoloGameState } from "../../../utils/SoloGameStateUtils";
+import MathUtils from "../../../utils/MathUtils";
 
 export interface SoloMultiChoiceOptions {
   noteDuration: number;
@@ -22,7 +23,22 @@ export interface SoloMultiChoiceState extends BaseSoloGameState {
   answerChoices: MusicalNote[];
 }
 
+export interface SoloMultiChoiceSettings {
+  numAnswerChoices: number;
+  noteOctaveOptions: GenerateNoteOctaveOptions;
+}
+
 export default function SoloMultiChoiceContainer(): JSX.Element {
+  const [gameSettings, setGameSettings] = useState<SoloMultiChoiceSettings>({
+    numAnswerChoices: 5,
+    noteOctaveOptions: {
+      octaveOptions: {
+        min: 3,
+        max: 5,
+      },
+    },
+  });
+
   const generateAnswerChoices = (correctNote: MusicalNote): MusicalNote[] => {
     // TODO: Answers choices depend on settings per mode.
     // TODO: Handle accidentals.
@@ -35,8 +51,8 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
       },
     );
     filteredNotes.sort(() => { return Math.random() - 0.5; });
-    const n = 4;
-    const items = [correctNote].concat(filteredNotes.slice(0, n));
+    const range = MathUtils.clamp(gameSettings.numAnswerChoices - 1, 2, filteredNotes.length);
+    const items = [correctNote].concat(filteredNotes.slice(0, range));
     items.sort(() => { return Math.random() - 0.5; });
     return items;
   };
@@ -64,7 +80,10 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
     setGameState(
       (prevState) => {
         return {
-          correctNoteOctave: prevState.correctNoteOctave,
+          correctNoteOctave: {
+            note: prevState.correctNoteOctave.note,
+            octave: prevState.correctNoteOctave.octave,
+          },
           answerChoices: [...prevState.answerChoices],
           hasPlayed: prevState.hasPlayed,
           isRoundOver: true,
@@ -112,7 +131,10 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
           return prevState;
         }
         return {
-          correctNoteOctave: prevState.correctNoteOctave,
+          correctNoteOctave: {
+            note: prevState.correctNoteOctave.note,
+            octave: prevState.correctNoteOctave.octave,
+          },
           answerChoices: [...prevState.answerChoices],
           hasPlayed: true,
           isRoundOver: prevState.isRoundOver,

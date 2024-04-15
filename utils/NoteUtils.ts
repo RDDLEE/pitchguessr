@@ -1,4 +1,10 @@
+export interface GenerateOctaveOptions {
+  min: number;
+  max: number;
+}
+
 export interface GenerateNoteOctaveOptions {
+  octaveOptions?: GenerateOctaveOptions;
   // noteRange: unknown;
   // scale: unknown;
 }
@@ -51,15 +57,18 @@ export default class NoteUtils {
     return randNote;
   };
 
-  public static readonly chooseOctave = (): MusicalOctave => {
-    // TODO: Handle octave range.
-    // const randOctave = Math.floor(Math.random() * 9);
-    return 4;
+  public static readonly chooseOctave = (options?: GenerateOctaveOptions): MusicalOctave => {
+    if (options === undefined) {
+      return 4;
+    }
+    const min = Math.max(0, options.min);
+    const max = Math.min(8, options.max);
+    return Math.floor(Math.random() * (max - min + 1)) + min as MusicalOctave;
   };
 
   public static readonly generateNoteOctave = (options: GenerateNoteOctaveOptions): NoteOctave => {
     const note = NoteUtils.chooseNote();
-    const octave = NoteUtils.chooseOctave();
+    const octave = NoteUtils.chooseOctave(options.octaveOptions);
     return {
       note: note,
       octave: octave,

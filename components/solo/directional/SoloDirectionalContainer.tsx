@@ -51,7 +51,16 @@ export default function SoloDirectionalContainer(): JSX.Element {
           return prevState;
         }
         return {
-          noteOctavePair: prevState.noteOctavePair,
+          noteOctavePair: {
+            firstNoteOctave: {
+              note: prevState.noteOctavePair.firstNoteOctave.note,
+              octave: prevState.noteOctavePair.firstNoteOctave.octave,
+            },
+            secondNoteOctave: {
+              note: prevState.noteOctavePair.secondNoteOctave.note,
+              octave: prevState.noteOctavePair.secondNoteOctave.octave,
+            },
+          },
           correctDirection: prevState.correctDirection,
           hasPlayed: true,
           isRoundOver: prevState.isRoundOver,
@@ -82,7 +91,16 @@ export default function SoloDirectionalContainer(): JSX.Element {
     setGameState(
       (prevState) => {
         return {
-          noteOctavePair: prevState.noteOctavePair,
+          noteOctavePair: {
+            firstNoteOctave: {
+              note: prevState.noteOctavePair.firstNoteOctave.note,
+              octave: prevState.noteOctavePair.firstNoteOctave.octave,
+            },
+            secondNoteOctave: {
+              note: prevState.noteOctavePair.secondNoteOctave.note,
+              octave: prevState.noteOctavePair.secondNoteOctave.octave,
+            },
+          },
           correctDirection: prevState.correctDirection,
           hasPlayed: prevState.hasPlayed,
           isRoundOver: true,
