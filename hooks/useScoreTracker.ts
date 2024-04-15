@@ -12,6 +12,7 @@ export interface UseScoreTracker_Return {
   scoreStats: ScoreTrackerState;
   incrementNumCorrect: () => void;
   incrementNumIncorrect: () => void;
+  resetScore: () => void;
 }
 
 const useScoreTracker = (): UseScoreTracker_Return => {
@@ -42,10 +43,18 @@ const useScoreTracker = (): UseScoreTracker_Return => {
     );
   }, [setScoreTrackerState]);
 
+  const resetScore = useCallback((): void => {
+    setScoreTrackerState({
+      numCorrect: 0,
+      numIncorrect: 0,
+    });
+  }, [setScoreTrackerState]);
+
   return {
     scoreStats: scoreTrackerState,
     incrementNumCorrect: incrementNumCorrect,
     incrementNumIncorrect: incrementNumIncorrect,
+    resetScore: resetScore,
   };
 };
 

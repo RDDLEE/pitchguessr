@@ -2,13 +2,14 @@ export type MusicalNote = "C" | "C#" | "Db" | "D" | "D#" | "Eb" | "E" | "F" | "F
 
 export type MusicalOctave = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 
+// FIXME: PitchDirection should be an enum.
 export type PitchDirection = -1 | 0 | 1;
 
 export type PitchDirectionText = "Lower" | "Equal" | "Higher";
 
 export interface GenerateOctaveOptions {
-  min: number;
-  max: number;
+  min: MusicalOctave;
+  max: MusicalOctave;
 }
 
 export enum NoteTypes {
@@ -83,6 +84,7 @@ export default class NoteUtils {
   };
 
   private static readonly chooseOctave = (options: GenerateOctaveOptions): MusicalOctave => {
+    // FIXME: Need to check min <= max.
     const min = Math.max(0, options.min);
     const max = Math.min(8, options.max);
     return Math.floor(Math.random() * (max - min + 1)) + min as MusicalOctave;

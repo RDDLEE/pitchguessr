@@ -3,7 +3,7 @@
 import { Button } from "@chakra-ui/react";
 import React from "react";
 
-export interface AnswerChoiceButton_Params {
+export interface AnswerChoiceButton_Props {
   id: string;
   text: string;
   onClick_Button: (_answerChoice: string) => void;
@@ -12,23 +12,23 @@ export interface AnswerChoiceButton_Params {
   isRoundOver: boolean;
 }
 
-export default function AnswerChoiceButton(params: AnswerChoiceButton_Params): JSX.Element {
+export default function AnswerChoiceButton(props: AnswerChoiceButton_Props): JSX.Element {
   const onClick_Button = (): void => {
-    params.onClick_Button(params.id);
+    props.onClick_Button(props.id);
   };
 
   const determineColorScheme = (): string => {
-    if (params.isRoundOver === false) {
+    if (props.isRoundOver === false) {
       return "teal";
     }
-    if (params.isCorrect === true) {
+    if (props.isCorrect === true) {
       return "green";
     }
     return "red";
   };
 
   const determineVariant = (): string => {
-    if (params.isRoundOver === true && params.isCorrect === true) {
+    if (props.isRoundOver === true && props.isCorrect === true) {
       return "solid";
     }
     return "outline";
@@ -39,9 +39,9 @@ export default function AnswerChoiceButton(params: AnswerChoiceButton_Params): J
       colorScheme={determineColorScheme()}
       variant={determineVariant()}
       onClick={onClick_Button}
-      isDisabled={params.isRoundOver === true || params.hasPlayed === false}
+      isDisabled={props.isRoundOver === true || props.hasPlayed === false}
     >
-      {params.text}
+      {props.text}
     </Button>
   );
 }

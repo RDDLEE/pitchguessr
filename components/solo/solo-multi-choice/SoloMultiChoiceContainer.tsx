@@ -1,15 +1,20 @@
 "use client";
 
 import React, { useCallback, useState } from "react";
-import { Stack } from "@chakra-ui/react";
+import {
+  IconButton, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Stack, useDisclosure,
+} from "@chakra-ui/react";
+import { SettingsIcon } from "@chakra-ui/icons";
 import SoundCard from "../../shared/sound-card/SoundCard";
 import AnswerChoiceButton from "../../shared/answer-choice/AnswerChoiceButton";
 import NextRoundButton from "../../shared/next-round-button/NextRoundButton";
 import useScoreTracker from "../../../hooks/useScoreTracker";
 import ScoreTracker from "../../shared/score-tracker/ScoreTracker";
-import NoteUtils, { GenerateNoteOctaveOptions, MusicalNote, NoteOctave, NoteTypes } from "../../../utils/NoteUtils";
+import NoteUtils, { MusicalNote, NoteOctave, NoteTypes } from "../../../utils/NoteUtils";
 import { BaseSoloGameState } from "../../../utils/SoloGameStateUtils";
 import MathUtils from "../../../utils/MathUtils";
+import SoloMultiChoiceSettingsForm from "./settings-form/SoloMultiChoiceSettingsForm";
+import { SoloMultiChoiceSettings } from "./SoloMultiChoiceTypes";
 
 export interface SoloMultiChoiceOptions {
   noteDuration: number;
@@ -22,11 +27,6 @@ export interface SoloMultiChoiceState extends BaseSoloGameState {
   correctNoteOctave: NoteOctave;
   noteGroup: MusicalNote[];
   answerChoices: MusicalNote[];
-}
-
-export interface SoloMultiChoiceSettings {
-  numAnswerChoices: number;
-  generateNoteOctaveOptions: GenerateNoteOctaveOptions;
 }
 
 export default function SoloMultiChoiceContainer(): JSX.Element {
@@ -43,7 +43,7 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
     },
   });
 
-  const generateAnswerChoices = (correctNote: MusicalNote, noteGroup: MusicalNote[]): MusicalNote[] => {
+  const generateAnswerChoices = (numAnswerChoices: number, correctNote: MusicalNote, noteGroup: MusicalNote[]): MusicalNote[] => {
     const filteredNotes = noteGroup.filter(
       (note: string) => {
         if (note !== correctNote) {
@@ -53,17 +53,18 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
       },
     );
     filteredNotes.sort(() => { return Math.random() - 0.5; });
-    const range = MathUtils.clamp(gameSettings.numAnswerChoices - 1, 1, filteredNotes.length);
+    const range = MathUtils.clamp(numAnswerChoices - 1, 1, filteredNotes.length);
     const items = [correctNote].concat(filteredNotes.slice(0, range));
+    // FIXME: Sort items from Ab to G#.
     items.sort(() => { return Math.random() - 0.5; });
     return items;
   };
 
-  const generateNewGameState = (): SoloMultiChoiceState => {
-    const generateResult = NoteUtils.generateNoteOctave(gameSettings.generateNoteOctaveOptions);
+  const generateNewGameState = (settings: SoloMultiChoiceSettings): SoloMultiChoiceState => {
+    const generateResult = NoteUtils.generateNoteOctave(settings.generateNoteOctaveOptions);
     const noteOctave = generateResult.noteOctave;
     const noteGroup = generateResult.noteGroup;
-    const answerChoices = generateAnswerChoices(noteOctave.note, noteGroup);
+    const answerChoices = generateAnswerChoices(settings.numAnswerChoices, noteOctave.note, noteGroup);
     return {
       correctNoteOctave: noteOctave,
       noteGroup: noteGroup,
@@ -72,12 +73,15 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
       hasPlayed: false,
     };
   };
-  const [gameState, setGameState] = useState<SoloMultiChoiceState>(generateNewGameState());
+  const [gameState, setGameState] = useState<SoloMultiChoiceState>(generateNewGameState(gameSettings));
 
   const scoreTracker = useScoreTracker();
 
-  const onNewRound = (): void => {
-    const newState = generateNewGameState();
+  const onNewRound = (settings: SoloMultiChoiceSettings, shouldResetScore: boolean): void => {
+    if (shouldResetScore === true) {
+      scoreTracker.resetScore();
+    }
+    const newState = generateNewGameState(settings);
     setGameState(newState);
   };
 
@@ -164,7 +168,7 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
   };
 
   const onClick_NextRoundButton = (): void => {
-    onNewRound();
+    onNewRound(gameSettings, false);
   };
 
   const renderNextRoundButton = (): JSX.Element | null => {
@@ -176,8 +180,52 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
     );
   };
 
+  const settingsModal = useDisclosure();
+
+  const renderSettingsModal = (): JSX.Element => {
+    return (
+      <React.Fragment>
+        <IconButton
+          aria-label="Settings"
+          icon={<SettingsIcon />}
+          variant="ghost"
+          onClick={settingsModal.onOpen}
+        />
+        <Modal
+          closeOnOverlayClick={false}
+          isOpen={settingsModal.isOpen}
+          onClose={settingsModal.onClose}
+          size="xs"
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Settings</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody pb={2}>
+              <SoloMultiChoiceSettingsForm
+                settings={gameSettings}
+                setGameSettings={setGameSettings}
+                closeModal={settingsModal.onClose}
+                onNewRound={onNewRound}
+              />
+            </ModalBody>
+            {/* <ModalFooter>
+              <Button colorScheme="blue" mr={2}>
+                Save
+              </Button>
+              <Button onClick={settingsModal.onClose}>
+                Close
+              </Button>
+            </ModalFooter> */}
+          </ModalContent>
+        </Modal>
+      </React.Fragment>
+    );
+  };
+
   return (
     <React.Fragment>
+      {renderSettingsModal()}
       <ScoreTracker scoreStats={scoreTracker.scoreStats} />
       {renderSoundCard()}
       {renderAnswerChoiceButtons()}

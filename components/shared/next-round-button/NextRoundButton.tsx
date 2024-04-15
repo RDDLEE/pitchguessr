@@ -1,16 +1,16 @@
 import React from "react";
 import { Button } from "@chakra-ui/react";
 
-export interface NextRoundButton_Params {
+export interface NextRoundButton_Props {
   onClick_NextRoundButton: () => void;
 }
 
-export default function NextRoundButton(params: NextRoundButton_Params): JSX.Element {
+export default function NextRoundButton(props: NextRoundButton_Props): JSX.Element {
   return (
     <Button
       colorScheme="teal"
       variant="solid"
-      onClick={params.onClick_NextRoundButton}
+      onClick={props.onClick_NextRoundButton}
     >
       Next Round
     </Button>

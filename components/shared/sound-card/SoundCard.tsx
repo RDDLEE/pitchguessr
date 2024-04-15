@@ -6,18 +6,18 @@ import { FaPlay } from "react-icons/fa";
 import useSoundPlayer from "../../../hooks/useSoundPlayer";
 import { NoteOctave } from "../../../utils/NoteUtils";
 
-export interface SoundCard_Params {
+export interface SoundCard_Props {
   noteOctave: NoteOctave | null;
   onClick_PlayButton?: () => void;
 }
 
-export default function SoundCard(params: SoundCard_Params): JSX.Element {
+export default function SoundCard(props: SoundCard_Props): JSX.Element {
   const soundPlayer = useSoundPlayer();
 
   const onClick_PlayButton = (): void => {
-    soundPlayer.playNote(params.noteOctave);
-    if (params.onClick_PlayButton) {
-      params.onClick_PlayButton();
+    soundPlayer.playNote(props.noteOctave);
+    if (props.onClick_PlayButton) {
+      props.onClick_PlayButton();
     }
   };
 
