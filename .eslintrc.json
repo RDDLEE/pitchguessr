@@ -85,6 +85,7 @@
         "code": 160
       }
     ],
-    "object-curly-newline": "off"
+    "object-curly-newline": "off",
+    "prefer-destructuring": "off"
   }
 }

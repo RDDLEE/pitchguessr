@@ -5,7 +5,7 @@ import { HStack, Stack } from "@chakra-ui/react";
 import useScoreTracker from "../../../hooks/useScoreTracker";
 import ScoreTracker from "../../shared/score-tracker/ScoreTracker";
 import SoundCard from "../../shared/sound-card/SoundCard";
-import NoteUtils, { NoteOctave, PitchDirection } from "../../../utils/NoteUtils";
+import NoteUtils, { NoteOctave, NoteTypes, PitchDirection } from "../../../utils/NoteUtils";
 import AnswerChoiceButton from "../../shared/answer-choice/AnswerChoiceButton";
 import NextRoundButton from "../../shared/next-round-button/NextRoundButton";
 import { BaseSoloGameState } from "../../../utils/SoloGameStateUtils";
@@ -24,8 +24,24 @@ export default function SoloDirectionalContainer(): JSX.Element {
   const scoreTracker = useScoreTracker();
 
   const generateNewState = (): SoloDirectionalState => {
-    const newFirstNoteOctave = NoteUtils.generateNoteOctave({});
-    const newSecondNoteOctave = NoteUtils.generateNoteOctave({});
+    const newFirstNoteOctave = NoteUtils.generateNoteOctave({
+      noteOptions: {
+        noteType: NoteTypes.NATURAL,
+      },
+      octaveOptions: {
+        min: 4,
+        max: 4,
+      },
+    }).noteOctave;
+    const newSecondNoteOctave = NoteUtils.generateNoteOctave({
+      noteOptions: {
+        noteType: NoteTypes.NATURAL,
+      },
+      octaveOptions: {
+        min: 4,
+        max: 4,
+      },
+    }).noteOctave;
     const correctPitchDirection = NoteUtils.compareNoteOctaveValues(newFirstNoteOctave, newSecondNoteOctave);
     return {
       noteOctavePair: {

@@ -7,7 +7,7 @@ import AnswerChoiceButton from "../../shared/answer-choice/AnswerChoiceButton";
 import NextRoundButton from "../../shared/next-round-button/NextRoundButton";
 import useScoreTracker from "../../../hooks/useScoreTracker";
 import ScoreTracker from "../../shared/score-tracker/ScoreTracker";
-import NoteUtils, { GenerateNoteOctaveOptions, MusicalNote, NoteOctave } from "../../../utils/NoteUtils";
+import NoteUtils, { GenerateNoteOctaveOptions, MusicalNote, NoteOctave, NoteTypes } from "../../../utils/NoteUtils";
 import { BaseSoloGameState } from "../../../utils/SoloGameStateUtils";
 import MathUtils from "../../../utils/MathUtils";
 
@@ -20,29 +20,31 @@ export interface SoloMultiChoiceOptions {
 
 export interface SoloMultiChoiceState extends BaseSoloGameState {
   correctNoteOctave: NoteOctave;
+  noteGroup: MusicalNote[];
   answerChoices: MusicalNote[];
 }
 
 export interface SoloMultiChoiceSettings {
   numAnswerChoices: number;
-  noteOctaveOptions: GenerateNoteOctaveOptions;
+  generateNoteOctaveOptions: GenerateNoteOctaveOptions;
 }
 
 export default function SoloMultiChoiceContainer(): JSX.Element {
   const [gameSettings, setGameSettings] = useState<SoloMultiChoiceSettings>({
     numAnswerChoices: 5,
-    noteOctaveOptions: {
+    generateNoteOctaveOptions: {
       octaveOptions: {
         min: 3,
         max: 5,
       },
+      noteOptions: {
+        noteType: NoteTypes.NATURAL,
+      },
     },
   });
 
-  const generateAnswerChoices = (correctNote: MusicalNote): MusicalNote[] => {
-    // TODO: Answers choices depend on settings per mode.
-    // TODO: Handle accidentals.
-    const filteredNotes = NoteUtils.naturalNotes.filter(
+  const generateAnswerChoices = (correctNote: MusicalNote, noteGroup: MusicalNote[]): MusicalNote[] => {
+    const filteredNotes = noteGroup.filter(
       (note: string) => {
         if (note !== correctNote) {
           return true;
@@ -51,17 +53,20 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
       },
     );
     filteredNotes.sort(() => { return Math.random() - 0.5; });
-    const range = MathUtils.clamp(gameSettings.numAnswerChoices - 1, 2, filteredNotes.length);
+    const range = MathUtils.clamp(gameSettings.numAnswerChoices - 1, 1, filteredNotes.length);
     const items = [correctNote].concat(filteredNotes.slice(0, range));
     items.sort(() => { return Math.random() - 0.5; });
     return items;
   };
 
   const generateNewGameState = (): SoloMultiChoiceState => {
-    const newNoteOctave = NoteUtils.generateNoteOctave({});
-    const answerChoices = generateAnswerChoices(newNoteOctave.note);
+    const generateResult = NoteUtils.generateNoteOctave(gameSettings.generateNoteOctaveOptions);
+    const noteOctave = generateResult.noteOctave;
+    const noteGroup = generateResult.noteGroup;
+    const answerChoices = generateAnswerChoices(noteOctave.note, noteGroup);
     return {
-      correctNoteOctave: newNoteOctave,
+      correctNoteOctave: noteOctave,
+      noteGroup: noteGroup,
       answerChoices: answerChoices,
       isRoundOver: false,
       hasPlayed: false,
@@ -79,11 +84,15 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
   const onClick_AnswerChoice = useCallback((answerChoice: string): void => {
     setGameState(
       (prevState) => {
+        if (prevState.isRoundOver === true) {
+          return prevState;
+        }
         return {
           correctNoteOctave: {
             note: prevState.correctNoteOctave.note,
             octave: prevState.correctNoteOctave.octave,
           },
+          noteGroup: [...prevState.noteGroup],
           answerChoices: [...prevState.answerChoices],
           hasPlayed: prevState.hasPlayed,
           isRoundOver: true,
@@ -135,6 +144,7 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
             note: prevState.correctNoteOctave.note,
             octave: prevState.correctNoteOctave.octave,
           },
+          noteGroup: [...prevState.noteGroup],
           answerChoices: [...prevState.answerChoices],
           hasPlayed: true,
           isRoundOver: prevState.isRoundOver,
