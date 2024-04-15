@@ -3,21 +3,26 @@ export interface GenerateNoteOctaveOptions {
   // scale: unknown;
 }
 
+export type MusicalNote = "C" | "C#" | "Db" | "D" | "D#" | "Eb" | "E" | "F" | "F#" | "Gb" | "G" | "G#" | "Ab" | "A" | "A#" | "Bb" | "B";
+
+export type MusicalOctave = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+
 export interface NoteOctave {
-  note: string;
-  octave: number;
+  note: MusicalNote;
+  octave: MusicalOctave;
 }
 
 export type PitchDirection = -1 | 0 | 1;
+export type PitchDirectionText = "Lower" | "Equal" | "Higher";
 
 export default class NoteUtils {
-  public static readonly naturalNotes: string[] = ["A", "B", "C", "D", "E", "F", "G"];
+  public static readonly naturalNotes: MusicalNote[] = ["A", "B", "C", "D", "E", "F", "G"];
 
-  // FIXME: Separate into flats and sharps.
-  public static readonly accidentalNotes: string[] = ["A#", "Bb", "C#", "Db", "D#", "Eb", "F#", "Gb", "G#", "Ab"];
+  public static readonly sharpNotes: MusicalNote[] = ["A#", "C#", "D#", "F#", "G#"];
 
-  // FIXME: Replace with MusicalNoteType.
-  public static readonly noteValues: Record<string, number> = {
+  public static readonly flatNotes: MusicalNote[] = ["Bb", "Db", "Eb", "Gb", "Ab"];
+
+  public static readonly noteValues: Record<MusicalNote, number> = {
     C: 0,
     "C#": 1,
     Db: 1,
@@ -39,22 +44,22 @@ export default class NoteUtils {
 
   public static readonly pitchDirections: PitchDirection[] = [-1, 0, 1];
 
-  public static readonly chooseNote = (): string => {
+  public static readonly chooseNote = (): MusicalNote => {
     // TODO: Handle accidentals/scales.
     const randIdx = Math.floor(Math.random() * NoteUtils.naturalNotes.length);
     const randNote = NoteUtils.naturalNotes[randIdx];
     return randNote;
   };
 
-  public static readonly chooseOctave = (): number => {
+  public static readonly chooseOctave = (): MusicalOctave => {
     // TODO: Handle octave range.
     // const randOctave = Math.floor(Math.random() * 9);
     return 4;
   };
 
   public static readonly generateNoteOctave = (options: GenerateNoteOctaveOptions): NoteOctave => {
-    const note: string = NoteUtils.chooseNote();
-    const octave: number = NoteUtils.chooseOctave();
+    const note = NoteUtils.chooseNote();
+    const octave = NoteUtils.chooseOctave();
     return {
       note: note,
       octave: octave,
@@ -86,7 +91,7 @@ export default class NoteUtils {
     return -1;
   };
 
-  public static readonly convertPitchDirectionToText = (pitchDirection: PitchDirection): string => {
+  public static readonly convertPitchDirectionToText = (pitchDirection: PitchDirection): PitchDirectionText => {
     if (pitchDirection === -1) {
       return "Lower";
     }

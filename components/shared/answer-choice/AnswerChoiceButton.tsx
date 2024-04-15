@@ -9,7 +9,7 @@ export interface AnswerChoiceButton_Params {
   onClick_Button: (_answerChoice: string) => void;
   isCorrect: boolean;
   hasPlayed: boolean;
-  isRevealing: boolean;
+  isRoundOver: boolean;
 }
 
 export default function AnswerChoiceButton(params: AnswerChoiceButton_Params): JSX.Element {
@@ -18,7 +18,7 @@ export default function AnswerChoiceButton(params: AnswerChoiceButton_Params): J
   };
 
   const determineColorScheme = (): string => {
-    if (params.isRevealing === false) {
+    if (params.isRoundOver === false) {
       return "teal";
     }
     if (params.isCorrect === true) {
@@ -28,7 +28,7 @@ export default function AnswerChoiceButton(params: AnswerChoiceButton_Params): J
   };
 
   const determineVariant = (): string => {
-    if (params.isRevealing === true && params.isCorrect === true) {
+    if (params.isRoundOver === true && params.isCorrect === true) {
       return "solid";
     }
     return "outline";
@@ -39,7 +39,7 @@ export default function AnswerChoiceButton(params: AnswerChoiceButton_Params): J
       colorScheme={determineColorScheme()}
       variant={determineVariant()}
       onClick={onClick_Button}
-      isDisabled={params.isRevealing === true || params.hasPlayed === false}
+      isDisabled={params.isRoundOver === true || params.hasPlayed === false}
     >
       {params.text}
     </Button>

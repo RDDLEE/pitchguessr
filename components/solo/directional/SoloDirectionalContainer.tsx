@@ -8,18 +8,16 @@ import SoundCard from "../../shared/sound-card/SoundCard";
 import NoteUtils, { NoteOctave, PitchDirection } from "../../../utils/NoteUtils";
 import AnswerChoiceButton from "../../shared/answer-choice/AnswerChoiceButton";
 import NextRoundButton from "../../shared/next-round-button/NextRoundButton";
+import { BaseSoloGameState } from "../../../utils/SoloGameStateUtils";
 
 export interface NoteOctavePair {
   firstNoteOctave: NoteOctave;
   secondNoteOctave: NoteOctave;
 }
 
-export interface SoloDirectionalState {
+export interface SoloDirectionalState extends BaseSoloGameState {
   noteOctavePair: NoteOctavePair;
   correctDirection: PitchDirection;
-  hasPlayed: boolean;
-  // FIXME: Rename to isRoundFinished. Extract to common state.
-  isRevealingAnswers: boolean;
 }
 
 export default function SoloDirectionalContainer(): JSX.Element {
@@ -35,7 +33,7 @@ export default function SoloDirectionalContainer(): JSX.Element {
         secondNoteOctave: newSecondNoteOctave,
       },
       correctDirection: correctPitchDirection,
-      isRevealingAnswers: false,
+      isRoundOver: false,
       hasPlayed: false,
     };
   };
@@ -56,7 +54,7 @@ export default function SoloDirectionalContainer(): JSX.Element {
           noteOctavePair: prevState.noteOctavePair,
           correctDirection: prevState.correctDirection,
           hasPlayed: true,
-          isRevealingAnswers: prevState.isRevealingAnswers,
+          isRoundOver: prevState.isRoundOver,
         };
       },
     );
@@ -87,7 +85,7 @@ export default function SoloDirectionalContainer(): JSX.Element {
           noteOctavePair: prevState.noteOctavePair,
           correctDirection: prevState.correctDirection,
           hasPlayed: prevState.hasPlayed,
-          isRevealingAnswers: true,
+          isRoundOver: true,
         };
       },
     );
@@ -115,7 +113,7 @@ export default function SoloDirectionalContainer(): JSX.Element {
           onClick_Button={onClick_AnswerChoice}
           isCorrect={isCorrect}
           hasPlayed={gameState.hasPlayed}
-          isRevealing={gameState.isRevealingAnswers}
+          isRoundOver={gameState.isRoundOver}
         />
       ));
     }
@@ -131,7 +129,7 @@ export default function SoloDirectionalContainer(): JSX.Element {
   };
 
   const renderNextRoundButton = (): JSX.Element | null => {
-    if (gameState.isRevealingAnswers === false) {
+    if (gameState.isRoundOver === false) {
       return null;
     }
     return (

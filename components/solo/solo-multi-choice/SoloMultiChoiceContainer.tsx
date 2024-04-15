@@ -7,7 +7,8 @@ import AnswerChoiceButton from "../../shared/answer-choice/AnswerChoiceButton";
 import NextRoundButton from "../../shared/next-round-button/NextRoundButton";
 import useScoreTracker from "../../../hooks/useScoreTracker";
 import ScoreTracker from "../../shared/score-tracker/ScoreTracker";
-import NoteUtils, { NoteOctave } from "../../../utils/NoteUtils";
+import NoteUtils, { MusicalNote, NoteOctave } from "../../../utils/NoteUtils";
+import { BaseSoloGameState } from "../../../utils/SoloGameStateUtils";
 
 export interface SoloMultiChoiceOptions {
   noteDuration: number;
@@ -16,16 +17,13 @@ export interface SoloMultiChoiceOptions {
   noteRangeMax: number;
 }
 
-export interface SoloMultiChoiceState {
+export interface SoloMultiChoiceState extends BaseSoloGameState {
   correctNoteOctave: NoteOctave;
-  answerChoices: string[];
-  hasPlayed: boolean;
-  // FIXME: Rename to isRoundFinished. Extract to common state.
-  isRevealingAnswers: boolean;
+  answerChoices: MusicalNote[];
 }
 
 export default function SoloMultiChoiceContainer(): JSX.Element {
-  const generateAnswerChoices = (correctNote: string): string[] => {
+  const generateAnswerChoices = (correctNote: MusicalNote): MusicalNote[] => {
     // TODO: Answers choices depend on settings per mode.
     // TODO: Handle accidentals.
     const filteredNotes = NoteUtils.naturalNotes.filter(
@@ -38,7 +36,7 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
     );
     filteredNotes.sort(() => { return Math.random() - 0.5; });
     const n = 4;
-    const items: string[] = [correctNote].concat(filteredNotes.slice(0, n));
+    const items = [correctNote].concat(filteredNotes.slice(0, n));
     items.sort(() => { return Math.random() - 0.5; });
     return items;
   };
@@ -49,7 +47,7 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
     return {
       correctNoteOctave: newNoteOctave,
       answerChoices: answerChoices,
-      isRevealingAnswers: false,
+      isRoundOver: false,
       hasPlayed: false,
     };
   };
@@ -69,7 +67,7 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
           correctNoteOctave: prevState.correctNoteOctave,
           answerChoices: [...prevState.answerChoices],
           hasPlayed: prevState.hasPlayed,
-          isRevealingAnswers: true,
+          isRoundOver: true,
         };
       },
     );
@@ -96,7 +94,7 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
           onClick_Button={onClick_AnswerChoice}
           isCorrect={isCorrect}
           hasPlayed={gameState.hasPlayed}
-          isRevealing={gameState.isRevealingAnswers}
+          isRoundOver={gameState.isRoundOver}
         />
       ));
     }
@@ -117,7 +115,7 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
           correctNoteOctave: prevState.correctNoteOctave,
           answerChoices: [...prevState.answerChoices],
           hasPlayed: true,
-          isRevealingAnswers: prevState.isRevealingAnswers,
+          isRoundOver: prevState.isRoundOver,
         };
       },
     );
@@ -138,7 +136,7 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
   };
 
   const renderNextRoundButton = (): JSX.Element | null => {
-    if (gameState.isRevealingAnswers === false) {
+    if (gameState.isRoundOver === false) {
       return null;
     }
     return (
