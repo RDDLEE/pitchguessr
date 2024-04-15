@@ -26,7 +26,7 @@ export interface SoloMultiChoiceState extends BaseSoloGameState {
 }
 
 export default function SoloMultiChoiceContainer(): JSX.Element {
-  const [gameSettings, setGameSettings] = useState<SoloMultiChoiceSettings>(GameStateUtils.INITIAL_SOLO_MULTI_CHOICE_SETTINGS);
+  const [gameSettings, setGameSettings] = useState<SoloMultiChoiceSettings>(GameStateUtils.DEFAULT_SOLO_MULTI_CHOICE_SETTINGS);
 
   const generateAnswerChoices = (numAnswerChoices: number, correctNote: MusicalNote, noteGroup: MusicalNote[]): MusicalNote[] => {
     const filteredNotes = noteGroup.filter(

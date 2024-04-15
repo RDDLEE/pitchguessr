@@ -123,6 +123,7 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>
       params.onNewRound(newSettings, true);
     }
     setFormState({ isDirty: false, shouldResetGame: false });
+    // Could reset form state on close.
     params.closeModal();
   }, [formState.shouldResetGame, noteType, octaveMinMax.max, octaveMinMax.min, params]);
 

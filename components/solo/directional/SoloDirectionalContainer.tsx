@@ -5,10 +5,11 @@ import { HStack, Stack } from "@chakra-ui/react";
 import useScoreTracker from "../../../hooks/useScoreTracker";
 import ScoreTracker from "../../shared/score-tracker/ScoreTracker";
 import SoundCard from "../../shared/sound-card/SoundCard";
-import NoteUtils, { NoteOctave, NoteTypes, PitchDirection } from "../../../utils/NoteUtils";
+import NoteUtils, { NoteOctave, PitchDirection } from "../../../utils/NoteUtils";
 import AnswerChoiceButton from "../../shared/answer-choice/AnswerChoiceButton";
 import NextRoundButton from "../../shared/next-round-button/NextRoundButton";
-import { BaseSoloGameState } from "../../../utils/GameStateUtils";
+import GameStateUtils, { BaseSoloGameState, SoloDirectionSettings } from "../../../utils/GameStateUtils";
+import SoloDirectionalSettingsModal from "./settings-modal/SoloDirectionalSettingsModal";
 
 export interface NoteOctavePair {
   firstNoteOctave: NoteOctave;
@@ -21,27 +22,13 @@ export interface SoloDirectionalState extends BaseSoloGameState {
 }
 
 export default function SoloDirectionalContainer(): JSX.Element {
+  const [gameSettings, setGameSettings] = useState<SoloDirectionSettings>(GameStateUtils.DEFAULT_SOLO_DIRECTIONAL_SETTINGS);
+
   const scoreTracker = useScoreTracker();
 
-  const generateNewState = (): SoloDirectionalState => {
-    const newFirstNoteOctave = NoteUtils.generateNoteOctave({
-      noteOptions: {
-        noteType: NoteTypes.NATURAL,
-      },
-      octaveOptions: {
-        min: 4,
-        max: 4,
-      },
-    }).noteOctave;
-    const newSecondNoteOctave = NoteUtils.generateNoteOctave({
-      noteOptions: {
-        noteType: NoteTypes.NATURAL,
-      },
-      octaveOptions: {
-        min: 4,
-        max: 4,
-      },
-    }).noteOctave;
+  const generateNewState = (settings: SoloDirectionSettings): SoloDirectionalState => {
+    const newFirstNoteOctave = NoteUtils.generateNoteOctave(settings.generateNoteOctaveOptions).noteOctave;
+    const newSecondNoteOctave = NoteUtils.generateNoteOctave(settings.generateNoteOctaveOptions).noteOctave;
     const correctPitchDirection = NoteUtils.compareNoteOctaveValues(newFirstNoteOctave, newSecondNoteOctave);
     return {
       noteOctavePair: {
@@ -53,10 +40,13 @@ export default function SoloDirectionalContainer(): JSX.Element {
       hasPlayed: false,
     };
   };
-  const [gameState, setGameState] = useState<SoloDirectionalState>(generateNewState());
+  const [gameState, setGameState] = useState<SoloDirectionalState>(generateNewState(gameSettings));
 
-  const onNewRound = (): void => {
-    const newState = generateNewState();
+  const onNewRound = (settings: SoloDirectionSettings, shouldResetScore: boolean): void => {
+    if (shouldResetScore === true) {
+      scoreTracker.resetScore();
+    }
+    const newState = generateNewState(settings);
     setGameState(newState);
   };
 
@@ -159,7 +149,7 @@ export default function SoloDirectionalContainer(): JSX.Element {
   };
 
   const onClick_NextRoundButton = (): void => {
-    onNewRound();
+    onNewRound(gameSettings, false);
   };
 
   const renderNextRoundButton = (): JSX.Element | null => {
@@ -173,6 +163,11 @@ export default function SoloDirectionalContainer(): JSX.Element {
 
   return (
     <React.Fragment>
+      <SoloDirectionalSettingsModal
+        settings={gameSettings}
+        setGameSettings={setGameSettings}
+        onNewRound={onNewRound}
+      />
       <ScoreTracker scoreStats={scoreTracker.scoreStats} />
       <HStack>
         {renderFirstSoundCard()}

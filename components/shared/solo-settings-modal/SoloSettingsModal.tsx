@@ -13,7 +13,7 @@ export interface SoloSettingsModal_Props {
   modalDisclosure: UseDisclosureReturn;
 }
 
-export default function SoloSettingsModal(props: SoloSettingsModal_Props): JSX.Element {
+export default function SoloSettingsModal(props: SoloSettingsModal_Props): JSX.Element | null {
   return (
     <React.Fragment>
       <IconButton

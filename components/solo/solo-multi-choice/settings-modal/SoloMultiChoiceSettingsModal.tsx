@@ -28,12 +28,12 @@ export default function SoloMultiChoiceSettingsModal(props: SoloMultiChoiceSetti
   }, [numAnswerChoices, props]);
 
   const onClick_ResetSettingsButton = useCallback((): void => {
-    setNumAnswerChoices(GameStateUtils.INITIAL_SOLO_MULTI_CHOICE_SETTINGS.numAnswerChoices);
+    setNumAnswerChoices(GameStateUtils.DEFAULT_SOLO_MULTI_CHOICE_SETTINGS.numAnswerChoices);
   }, []);
 
   const settingsModal = useSoloSettingsModal<SoloMultiChoiceSettings>({
     settings: props.settings,
-    defaultSettings: GameStateUtils.INITIAL_SOLO_MULTI_CHOICE_SETTINGS,
+    defaultSettings: GameStateUtils.DEFAULT_SOLO_MULTI_CHOICE_SETTINGS,
     onClick_ApplySettingsButton: onClick_ApplySettingsButton,
     onClick_ResetSettingsButton: onClick_ResetSettingsButton,
     onNewRound: props.onNewRound,
