@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback, useState } from "react";
-import { Box, Center, HStack, Stack, VStack } from "@chakra-ui/react";
+import { Center, HStack, Stack, VStack } from "@chakra-ui/react";
 import useScoreTracker from "../../../hooks/useScoreTracker";
 import ScoreTracker from "../../shared/score-tracker/ScoreTracker";
 import SoundCard from "../../shared/sound-card/SoundCard";
@@ -11,7 +11,6 @@ import NextRoundButton from "../../shared/next-round-button/NextRoundButton";
 import GameStateUtils, { BaseSoloGameState, SoloDirectionSettings } from "../../../utils/GameStateUtils";
 import SoloDirectionalSettingsModal from "./settings-modal/SoloDirectionalSettingsModal";
 import StyleUtils from "../../../utils/StyleUtils";
-import theme from "../../../theme/theme";
 
 export interface NoteOctavePair {
   firstNoteOctave: NoteOctave;

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback, useState } from "react";
-import { Box, Center, Stack, VStack } from "@chakra-ui/react";
+import { Center, Stack, VStack } from "@chakra-ui/react";
 import SoundCard from "../../shared/sound-card/SoundCard";
 import AnswerChoiceButton from "../../shared/answer-choice/AnswerChoiceButton";
 import NextRoundButton from "../../shared/next-round-button/NextRoundButton";
