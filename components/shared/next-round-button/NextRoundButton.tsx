@@ -11,6 +11,7 @@ export default function NextRoundButton(props: NextRoundButton_Props): JSX.Eleme
       colorScheme="teal"
       variant="solid"
       onClick={props.onClick_NextRoundButton}
+      mt={2}
     >
       Next Round
     </Button>

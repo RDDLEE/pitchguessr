@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardBody, CardFooter, CircularProgress, Divider, Icon, IconButton } from "@chakra-ui/react";
+import { Box, Card, CardFooter, Icon, IconButton } from "@chakra-ui/react";
 import React from "react";
 import { FaPlay } from "react-icons/fa";
 import useSoundPlayer from "../../../hooks/useSoundPlayer";
@@ -10,6 +10,7 @@ export interface SoundCard_Props {
   noteOctave: NoteOctave | null;
   noteDuration: number;
   onClick_PlayButton?: () => void;
+  width: number;
 }
 
 export default function SoundCard(props: SoundCard_Props): JSX.Element {
@@ -22,24 +23,23 @@ export default function SoundCard(props: SoundCard_Props): JSX.Element {
     }
   };
 
+  // TODO: Placeholder sound graphic.
   return (
-    <Card variant="outline" align="center" maxWidth="350px">
-      <CardBody>
-        {/* TODO: Placeholder sound graphic. */}
-        <CircularProgress isIndeterminate={true} size="150px" />
-      </CardBody>
-      <Divider />
-      <CardFooter>
-        <IconButton
-          isRound={true}
-          variant="solid"
-          colorScheme="teal"
-          aria-label="Play"
-          fontSize="20px"
-          icon={<Icon as={FaPlay} />}
-          onClick={onClick_PlayButton}
-        />
-      </CardFooter>
-    </Card>
+    <Box>
+      <Card variant="outline" align="center" w={props.width} maxWidth="350px">
+        <CardFooter>
+          <IconButton
+            isRound={true}
+            variant="solid"
+            colorScheme="teal"
+            aria-label="Play"
+            fontSize="25px"
+            icon={<Icon as={FaPlay} />}
+            onClick={onClick_PlayButton}
+            size="lg"
+          />
+        </CardFooter>
+      </Card>
+    </Box>
   );
 }

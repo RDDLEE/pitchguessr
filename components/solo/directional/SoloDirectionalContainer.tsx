@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback, useState } from "react";
-import { HStack, Stack } from "@chakra-ui/react";
+import { Box, Center, HStack, Stack, VStack } from "@chakra-ui/react";
 import useScoreTracker from "../../../hooks/useScoreTracker";
 import ScoreTracker from "../../shared/score-tracker/ScoreTracker";
 import SoundCard from "../../shared/sound-card/SoundCard";
@@ -10,6 +10,8 @@ import AnswerChoiceButton from "../../shared/answer-choice/AnswerChoiceButton";
 import NextRoundButton from "../../shared/next-round-button/NextRoundButton";
 import GameStateUtils, { BaseSoloGameState, SoloDirectionSettings } from "../../../utils/GameStateUtils";
 import SoloDirectionalSettingsModal from "./settings-modal/SoloDirectionalSettingsModal";
+import StyleUtils from "../../../utils/StyleUtils";
+import theme from "../../../theme/theme";
 
 export interface NoteOctavePair {
   firstNoteOctave: NoteOctave;
@@ -25,6 +27,10 @@ export default function SoloDirectionalContainer(): JSX.Element {
   const [gameSettings, setGameSettings] = useState<SoloDirectionSettings>(GameStateUtils.DEFAULT_SOLO_DIRECTIONAL_SETTINGS);
 
   const scoreTracker = useScoreTracker();
+
+  const SOUND_CARD_HSTACK_GAP_WIDTH = 2;
+
+  const SOUND_CARD_WIDTH = (StyleUtils.STANDARD_GAMEPLAY_ITEM_WIDTH - (SOUND_CARD_HSTACK_GAP_WIDTH * 4)) / 2;
 
   const generateNewState = (settings: SoloDirectionSettings): SoloDirectionalState => {
     const newFirstNoteOctave = NoteUtils.generateNoteOctave(settings.generateNoteOctaveOptions).noteOctave;
@@ -81,6 +87,7 @@ export default function SoloDirectionalContainer(): JSX.Element {
         noteOctave={gameState.noteOctavePair.firstNoteOctave}
         noteDuration={gameSettings.noteDuration}
         onClick_PlayButton={onClick_PlayButton}
+        width={SOUND_CARD_WIDTH}
       />
     );
   };
@@ -91,6 +98,7 @@ export default function SoloDirectionalContainer(): JSX.Element {
         noteOctave={gameState.noteOctavePair.secondNoteOctave}
         noteDuration={gameSettings.noteDuration}
         onClick_PlayButton={onClick_PlayButton}
+        width={SOUND_CARD_WIDTH}
       />
     );
   };
@@ -164,19 +172,21 @@ export default function SoloDirectionalContainer(): JSX.Element {
   };
 
   return (
-    <React.Fragment>
-      <SoloDirectionalSettingsModal
-        settings={gameSettings}
-        setGameSettings={setGameSettings}
-        onNewRound={onNewRound}
-      />
-      <ScoreTracker scoreStats={scoreTracker.scoreStats} />
-      <HStack>
-        {renderFirstSoundCard()}
-        {renderSecondSoundCard()}
-      </HStack>
-      {renderAnswerChoiceButtons()}
-      {renderNextRoundButton()}
-    </React.Fragment>
+    <Center>
+      <VStack>
+        <SoloDirectionalSettingsModal
+          settings={gameSettings}
+          setGameSettings={setGameSettings}
+          onNewRound={onNewRound}
+        />
+        <ScoreTracker scoreStats={scoreTracker.scoreStats} />
+        <HStack gap={2}>
+          {renderFirstSoundCard()}
+          {renderSecondSoundCard()}
+        </HStack>
+        {renderAnswerChoiceButtons()}
+        {renderNextRoundButton()}
+      </VStack>
+    </Center>
   );
 }

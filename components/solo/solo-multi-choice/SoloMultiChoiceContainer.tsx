@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback, useState } from "react";
-import { Stack } from "@chakra-ui/react";
+import { Box, Center, Stack, VStack } from "@chakra-ui/react";
 import SoundCard from "../../shared/sound-card/SoundCard";
 import AnswerChoiceButton from "../../shared/answer-choice/AnswerChoiceButton";
 import NextRoundButton from "../../shared/next-round-button/NextRoundButton";
@@ -11,6 +11,7 @@ import NoteUtils, { MusicalNote, NoteOctave } from "../../../utils/NoteUtils";
 import GameStateUtils, { BaseSoloGameState, SoloMultiChoiceSettings } from "../../../utils/GameStateUtils";
 import MathUtils from "../../../utils/MathUtils";
 import SoloMultiChoiceSettingsModal from "./settings-modal/SoloMultiChoiceSettingsModal";
+import StyleUtils from "../../../utils/StyleUtils";
 
 export interface SoloMultiChoiceOptions {
   noteDuration: number;
@@ -149,6 +150,7 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
         noteOctave={noteOctave}
         noteDuration={gameSettings.noteDuration}
         onClick_PlayButton={onClick_PlayButton}
+        width={StyleUtils.STANDARD_GAMEPLAY_ITEM_WIDTH}
       />
     );
   };
@@ -167,16 +169,18 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
   };
 
   return (
-    <React.Fragment>
-      <SoloMultiChoiceSettingsModal
-        settings={gameSettings}
-        setGameSettings={setGameSettings}
-        onNewRound={onNewRound}
-      />
-      <ScoreTracker scoreStats={scoreTracker.scoreStats} />
-      {renderSoundCard()}
-      {renderAnswerChoiceButtons()}
-      {renderNextRoundButton()}
-    </React.Fragment>
+    <Center>
+      <VStack>
+        <SoloMultiChoiceSettingsModal
+          settings={gameSettings}
+          setGameSettings={setGameSettings}
+          onNewRound={onNewRound}
+        />
+        <ScoreTracker scoreStats={scoreTracker.scoreStats} />
+        {renderSoundCard()}
+        {renderAnswerChoiceButtons()}
+        {renderNextRoundButton()}
+      </VStack>
+    </Center>
   );
 }

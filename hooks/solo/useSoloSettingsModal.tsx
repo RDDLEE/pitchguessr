@@ -217,6 +217,7 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>(params: UseSoloSetting
   const onClick_ResetSettingsButton = useCallback((): void => {
     setFormState({ isDirty: true, shouldResetGame: true });
     setAppVolume(AppSettingUtils.VOLUME_SETTING_DEFAULT);
+    setNoteDuration(params.defaultSettings.noteDuration);
     setOctaveMinMax({
       min: params.defaultSettings.generateNoteOctaveOptions.octaveOptions.min,
       max: params.defaultSettings.generateNoteOctaveOptions.octaveOptions.max,

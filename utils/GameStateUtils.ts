@@ -44,7 +44,7 @@ export default class GameStateUtils {
     generateNoteOctaveOptions: {
       octaveOptions: {
         min: 3,
-        max: 5,
+        max: 4,
       },
       noteOptions: {
         noteType: NoteTypes.NATURAL,

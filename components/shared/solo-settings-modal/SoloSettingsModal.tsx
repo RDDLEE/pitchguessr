@@ -4,8 +4,11 @@ import {
   ModalOverlay,
   ModalFooter,
   UseDisclosureReturn,
+  Flex,
+  Box,
 } from "@chakra-ui/react";
 import { SettingsIcon } from "@chakra-ui/icons";
+import StyleUtils from "../../../utils/StyleUtils";
 
 export interface SoloSettingsModal_Props {
   modalBody: JSX.Element;
@@ -16,12 +19,18 @@ export interface SoloSettingsModal_Props {
 export default function SoloSettingsModal(props: SoloSettingsModal_Props): JSX.Element | null {
   return (
     <React.Fragment>
-      <IconButton
-        aria-label="Settings"
-        icon={<SettingsIcon />}
-        variant="ghost"
-        onClick={props.modalDisclosure.onOpen}
-      />
+      <Box w={StyleUtils.STANDARD_GAMEPLAY_ITEM_WIDTH}>
+        <Flex>
+          <IconButton
+            aria-label="Settings"
+            icon={<SettingsIcon />}
+            variant="ghost"
+            onClick={props.modalDisclosure.onOpen}
+            ml="auto"
+            mr={0}
+          />
+        </Flex>
+      </Box>
       <Modal
         closeOnOverlayClick={false}
         isOpen={props.modalDisclosure.isOpen}
