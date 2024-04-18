@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Card, CardFooter, Icon, IconButton } from "@chakra-ui/react";
+import { Box, Card, CardBody, Icon, IconButton } from "@chakra-ui/react";
 import React from "react";
 import { FaPlay } from "react-icons/fa";
 import useSoundPlayer from "../../../hooks/useSoundPlayer";
@@ -26,8 +26,8 @@ export default function SoundCard(props: SoundCard_Props): JSX.Element {
   // TODO: Placeholder sound graphic.
   return (
     <Box>
-      <Card variant="outline" align="center" w={props.width} maxWidth="350px">
-        <CardFooter>
+      <Card variant="outline" align="center" w={props.width} maxWidth={props.width}>
+        <CardBody>
           <IconButton
             isRound={true}
             variant="solid"
@@ -38,7 +38,7 @@ export default function SoundCard(props: SoundCard_Props): JSX.Element {
             onClick={onClick_PlayButton}
             size="lg"
           />
-        </CardFooter>
+        </CardBody>
       </Card>
     </Box>
   );

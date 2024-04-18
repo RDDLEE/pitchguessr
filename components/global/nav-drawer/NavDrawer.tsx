@@ -2,29 +2,40 @@
 
 import { HamburgerIcon } from "@chakra-ui/icons";
 import {
-  Button, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader,
-  DrawerBody, DrawerFooter, useDisclosure, IconButton, Link,
-  VStack,
-  Divider,
+  Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader,
+  DrawerBody, DrawerFooter, useDisclosure, IconButton, Link, VStack, Divider, Text,
+  HStack,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
+import { usePathname } from "next/navigation";
 import React from "react";
 
-export default function NavDrawer(): JSX.Element {
+export default function NavDrawer(): JSX.Element | null {
+  const pathName = usePathname();
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const btnRef = React.useRef<HTMLButtonElement>(null);
 
+  if (pathName === "/") {
+    return null;
+  }
+
   return (
     <React.Fragment>
-      <IconButton
-        variant="ghost"
-        colorScheme="teal"
-        aria-label="open menu"
-        icon={<HamburgerIcon />}
-        ref={btnRef}
-        onClick={onOpen}
-      />
+      <HStack>
+        <IconButton
+          variant="ghost"
+          colorScheme="teal"
+          aria-label="open menu"
+          icon={<HamburgerIcon />}
+          ref={btnRef}
+          onClick={onOpen}
+        />
+        <Link as={NextLink} href="/">
+          PitchGuessr
+        </Link>
+      </HStack>
       <Drawer
         isOpen={isOpen}
         placement="left"
@@ -36,18 +47,18 @@ export default function NavDrawer(): JSX.Element {
           <DrawerCloseButton />
           <DrawerHeader>
             <Link as={NextLink} href="/" onClick={onClose}>
-              Pitchguessr
+              PitchGuessr
             </Link>
           </DrawerHeader>
           <DrawerBody>
             <VStack align="flex-start">
-              <Link as={NextLink} href="/home" onClick={onClose}>
+              <Text>
                 Solo
-              </Link>
+              </Text>
               <Divider />
               <Link
                 as={NextLink}
-                href="/home"
+                href="/solo/directional"
                 onClick={onClose}
                 ml={8}
               >
@@ -55,7 +66,7 @@ export default function NavDrawer(): JSX.Element {
               </Link>
               <Link
                 as={NextLink}
-                href="/home"
+                href="/solo/multi-choice"
                 onClick={onClose}
                 ml={8}
               >
@@ -64,9 +75,7 @@ export default function NavDrawer(): JSX.Element {
             </VStack>
           </DrawerBody>
           <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
-              Close
-            </Button>
+            {/* TODO: Links, footer content. */}
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
