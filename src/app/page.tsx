@@ -3,6 +3,7 @@
 import { AbsoluteCenter, Box, Button, Card, CardBody, CardFooter, CardHeader, Center, Divider, Heading, HStack, Text, VStack } from "@chakra-ui/react";
 import React from "react";
 import NextLink from "next/link";
+import Image from "next/image";
 
 export default function HomePage(): JSX.Element {
   const CARD_WIDTH = 250;
@@ -13,8 +14,17 @@ export default function HomePage(): JSX.Element {
 
   return (
     <main>
-      <Heading fontSize="4xl" ml={4}>PitchGuessr</Heading>
-
+      <Center>
+        <HStack gap={1}>
+          <Image
+            src="/logo/logo_sq_white.png"
+            width={50}
+            height={50}
+            alt="PitchGuessr Logo."
+          />
+          <Heading fontSize="4xl">PitchGuessr</Heading>
+        </HStack>
+      </Center>
       <Box position="relative" padding={BOX_DIVIDER_PADDING}>
         <Divider />
         <AbsoluteCenter bg="white" px="4">

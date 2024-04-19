@@ -9,6 +9,7 @@ import {
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
+import Image from "next/image";
 
 export default function NavDrawer(): JSX.Element | null {
   const pathName = usePathname();
@@ -23,7 +24,8 @@ export default function NavDrawer(): JSX.Element | null {
 
   return (
     <React.Fragment>
-      <HStack>
+      <HStack gap={0}>
+
         <IconButton
           variant="ghost"
           colorScheme="teal"
@@ -33,7 +35,15 @@ export default function NavDrawer(): JSX.Element | null {
           onClick={onOpen}
         />
         <Link as={NextLink} href="/">
-          PitchGuessr
+          <HStack gap={1}>
+            <Image
+              src="/logo/logo_sq_white.png"
+              width={30}
+              height={30}
+              alt="PitchGuessr Logo."
+            />
+            <Text>PitchGuessr</Text>
+          </HStack>
         </Link>
       </HStack>
       <Drawer
@@ -47,7 +57,7 @@ export default function NavDrawer(): JSX.Element | null {
           <DrawerCloseButton />
           <DrawerHeader>
             <Link as={NextLink} href="/" onClick={onClose}>
-              PitchGuessr
+              Home
             </Link>
           </DrawerHeader>
           <DrawerBody>
