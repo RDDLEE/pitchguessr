@@ -12,6 +12,7 @@ import GameStateUtils, { BaseSoloGameState, SoloMultiChoiceSettings } from "../.
 import MathUtils from "../../../utils/MathUtils";
 import SoloMultiChoiceSettingsModal from "./settings-modal/SoloMultiChoiceSettingsModal";
 import StyleUtils from "../../../utils/StyleUtils";
+import QuestionPrompt from "../../shared/question-prompt/QuestionPrompt";
 
 export interface SoloMultiChoiceOptions {
   noteDuration: number;
@@ -178,6 +179,9 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
         />
         <ScoreTracker scoreStats={scoreTracker.scoreStats} />
         {renderSoundCard()}
+        <QuestionPrompt
+          text="What note was played?"
+        />
         {renderAnswerChoiceButtons()}
         {renderNextRoundButton()}
       </VStack>

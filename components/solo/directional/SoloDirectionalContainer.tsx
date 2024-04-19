@@ -11,6 +11,7 @@ import NextRoundButton from "../../shared/next-round-button/NextRoundButton";
 import GameStateUtils, { BaseSoloGameState, SoloDirectionSettings } from "../../../utils/GameStateUtils";
 import SoloDirectionalSettingsModal from "./settings-modal/SoloDirectionalSettingsModal";
 import StyleUtils from "../../../utils/StyleUtils";
+import QuestionPrompt from "../../shared/question-prompt/QuestionPrompt";
 
 export interface NoteOctavePair {
   firstNoteOctave: NoteOctave;
@@ -183,6 +184,9 @@ export default function SoloDirectionalContainer(): JSX.Element {
           {renderFirstSoundCard()}
           {renderSecondSoundCard()}
         </HStack>
+        <QuestionPrompt
+          text="Is the second note higher, lower, or equal to the first note?"
+        />
         {renderAnswerChoiceButtons()}
         {renderNextRoundButton()}
       </VStack>

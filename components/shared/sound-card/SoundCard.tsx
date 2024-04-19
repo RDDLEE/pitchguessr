@@ -1,5 +1,3 @@
-"use client";
-
 import { Box, Card, CardBody, Icon, IconButton } from "@chakra-ui/react";
 import React from "react";
 import { FaPlay } from "react-icons/fa";
