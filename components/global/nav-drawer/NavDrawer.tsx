@@ -82,6 +82,14 @@ export default function NavDrawer(): JSX.Element | null {
               >
                 Multi-Choice
               </Link>
+              <Link
+                as={NextLink}
+                href="/solo/slider"
+                onClick={onClose}
+                ml={8}
+              >
+                Slider
+              </Link>
             </VStack>
           </DrawerBody>
           <DrawerFooter>
