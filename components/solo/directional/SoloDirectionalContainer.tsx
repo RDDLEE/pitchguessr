@@ -117,6 +117,7 @@ export default function SoloDirectionalContainer(): JSX.Element {
         noteDuration={gameSettings.noteDuration}
         onClick_PlayButton={onClick_PlayButtonFirst}
         width={SOUND_CARD_WIDTH}
+        hasPlayed={gameState.hasPlayed}
       />
     );
   };
@@ -128,6 +129,7 @@ export default function SoloDirectionalContainer(): JSX.Element {
         noteDuration={gameSettings.noteDuration}
         onClick_PlayButton={onClick_PlayButtonSecond}
         width={SOUND_CARD_WIDTH}
+        hasPlayed={gameState.hasPlayedSecond}
       />
     );
   };

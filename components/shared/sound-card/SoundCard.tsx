@@ -1,4 +1,4 @@
-import { Box, Card, CardBody, Icon, IconButton } from "@chakra-ui/react";
+import { Box, Card, CardBody, Icon, IconButton, Tooltip } from "@chakra-ui/react";
 import React from "react";
 import { FaPlay } from "react-icons/fa";
 import useSoundPlayer from "../../../hooks/useSoundPlayer";
@@ -9,6 +9,7 @@ export interface SoundCard_Props {
   noteDuration: number;
   onClick_PlayButton?: () => void;
   width: number;
+  hasPlayed: boolean;
 }
 
 export default function SoundCard(props: SoundCard_Props): JSX.Element {
@@ -24,18 +25,31 @@ export default function SoundCard(props: SoundCard_Props): JSX.Element {
   // TODO: Placeholder sound graphic.
   return (
     <Box>
-      <Card variant="outline" align="center" w={props.width} maxWidth={props.width}>
+      <Card
+        variant="outline"
+        align="center"
+        w={props.width}
+        maxWidth={props.width}
+      >
         <CardBody>
-          <IconButton
-            isRound={true}
-            variant="solid"
-            colorScheme="teal"
-            aria-label="Play"
-            fontSize="25px"
-            icon={<Icon as={FaPlay} />}
-            onClick={onClick_PlayButton}
-            size="lg"
-          />
+          <Tooltip
+            label="Play Me!"
+            placement="top"
+            defaultIsOpen={true}
+            hasArrow={true}
+            isOpen={props.hasPlayed === false}
+          >
+            <IconButton
+              isRound={true}
+              variant="solid"
+              colorScheme="teal"
+              aria-label="Play"
+              fontSize="25px"
+              icon={<Icon as={FaPlay} />}
+              onClick={onClick_PlayButton}
+              size="lg"
+            />
+          </Tooltip>
         </CardBody>
       </Card>
     </Box>

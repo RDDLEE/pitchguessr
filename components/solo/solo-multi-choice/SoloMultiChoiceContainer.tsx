@@ -152,6 +152,7 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
         noteDuration={gameSettings.noteDuration}
         onClick_PlayButton={onClick_PlayButton}
         width={StyleUtils.STANDARD_GAMEPLAY_ITEM_WIDTH}
+        hasPlayed={gameState.hasPlayed}
       />
     );
   };
