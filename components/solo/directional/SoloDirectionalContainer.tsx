@@ -19,6 +19,7 @@ export interface NoteOctavePair {
 }
 
 export interface SoloDirectionalState extends BaseSoloGameState {
+  hasPlayedSecond: boolean;
   noteOctavePair: NoteOctavePair;
   correctDirection: PitchDirection;
 }
@@ -44,6 +45,7 @@ export default function SoloDirectionalContainer(): JSX.Element {
       correctDirection: correctPitchDirection,
       isRoundOver: false,
       hasPlayed: false,
+      hasPlayedSecond: false,
     };
   };
   const [gameState, setGameState] = useState<SoloDirectionalState>(generateNewState(gameSettings));
@@ -56,7 +58,7 @@ export default function SoloDirectionalContainer(): JSX.Element {
     setGameState(newState);
   };
 
-  const onClick_PlayButton = useCallback((): void => {
+  const onClick_PlayButtonFirst = useCallback((): void => {
     setGameState(
       (prevState) => {
         if (prevState.hasPlayed === true) {
@@ -75,6 +77,33 @@ export default function SoloDirectionalContainer(): JSX.Element {
           },
           correctDirection: prevState.correctDirection,
           hasPlayed: true,
+          hasPlayedSecond: prevState.hasPlayedSecond,
+          isRoundOver: prevState.isRoundOver,
+        };
+      },
+    );
+  }, []);
+
+  const onClick_PlayButtonSecond = useCallback((): void => {
+    setGameState(
+      (prevState) => {
+        if (prevState.hasPlayedSecond === true) {
+          return prevState;
+        }
+        return {
+          noteOctavePair: {
+            firstNoteOctave: {
+              note: prevState.noteOctavePair.firstNoteOctave.note,
+              octave: prevState.noteOctavePair.firstNoteOctave.octave,
+            },
+            secondNoteOctave: {
+              note: prevState.noteOctavePair.secondNoteOctave.note,
+              octave: prevState.noteOctavePair.secondNoteOctave.octave,
+            },
+          },
+          correctDirection: prevState.correctDirection,
+          hasPlayed: prevState.hasPlayed,
+          hasPlayedSecond: true,
           isRoundOver: prevState.isRoundOver,
         };
       },
@@ -86,7 +115,7 @@ export default function SoloDirectionalContainer(): JSX.Element {
       <SoundCard
         noteOctave={gameState.noteOctavePair.firstNoteOctave}
         noteDuration={gameSettings.noteDuration}
-        onClick_PlayButton={onClick_PlayButton}
+        onClick_PlayButton={onClick_PlayButtonFirst}
         width={SOUND_CARD_WIDTH}
       />
     );
@@ -97,7 +126,7 @@ export default function SoloDirectionalContainer(): JSX.Element {
       <SoundCard
         noteOctave={gameState.noteOctavePair.secondNoteOctave}
         noteDuration={gameSettings.noteDuration}
-        onClick_PlayButton={onClick_PlayButton}
+        onClick_PlayButton={onClick_PlayButtonSecond}
         width={SOUND_CARD_WIDTH}
       />
     );
@@ -119,6 +148,7 @@ export default function SoloDirectionalContainer(): JSX.Element {
           },
           correctDirection: prevState.correctDirection,
           hasPlayed: prevState.hasPlayed,
+          hasPlayedSecond: prevState.hasPlayedSecond,
           isRoundOver: true,
         };
       },
@@ -146,7 +176,7 @@ export default function SoloDirectionalContainer(): JSX.Element {
           text={NoteUtils.convertPitchDirectionToText(answerChoice)}
           onClick_Button={onClick_AnswerChoice}
           isCorrect={isCorrect}
-          hasPlayed={gameState.hasPlayed}
+          hasPlayed={gameState.hasPlayed && gameState.hasPlayedSecond}
           isRoundOver={gameState.isRoundOver}
         />
       ));
