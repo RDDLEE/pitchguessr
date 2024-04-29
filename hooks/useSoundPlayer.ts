@@ -8,6 +8,7 @@ import AppSettingUtils from "../utils/AppSettingUtils";
 
 export interface UseSoundPlayer_Return {
   playNote: (_noteOctave: NoteOctave | null, _noteDuration: number) => void;
+  playFreq: (_freqHz: number, _noteDuration: number) => void;
 }
 
 // TODO: Instrument as a param.
@@ -35,7 +36,6 @@ const useSoundPlayer = (): UseSoundPlayer_Return => {
     };
   }, []);
 
-  // TODO: Note duration
   const playNote = (noteOctave: NoteOctave | null, noteDuration: number): void => {
     if (noteOctave === null) {
       return;
@@ -51,8 +51,20 @@ const useSoundPlayer = (): UseSoundPlayer_Return => {
     synthRef.current.triggerAttackRelease(`${noteOctave.note}${noteOctave.octave}`, noteDuration);
   };
 
+  const playFreq = (freqHz: number, noteDuration: number): void => {
+    if (synthRef.current === null) {
+      return;
+    }
+    if (appSettings.volume === AppSettingUtils.VOLUME_SETTING_MUTE) {
+      return;
+    }
+    synthRef.current.volume.value = appSettings.volume;
+    synthRef.current.triggerAttackRelease(freqHz, noteDuration);
+  };
+
   return {
     playNote: playNote,
+    playFreq: playFreq,
   };
 };
 

@@ -1,3 +1,5 @@
+import * as Tone from "tone/build/esm/index";
+
 export type MusicalNote = "C" | "C#" | "Db" | "D" | "D#" | "Eb" | "E" | "F" | "F#" | "Gb" | "G" | "G#" | "Ab" | "A" | "A#" | "Bb" | "B";
 
 export type MusicalOctave = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
@@ -140,5 +142,15 @@ export default class NoteUtils {
       return "Equal";
     }
     return "Higher";
+  };
+
+  public static readonly convertNoteOctaveToFrequency = (noteOctave: NoteOctave): number => {
+    const hertz = Tone.Frequency(`${noteOctave.note}${noteOctave.octave}`).toFrequency();
+    return hertz;
+  };
+
+  public static readonly convertFrequencyToNoteOctave = (freq: number): Tone.Unit.Note => {
+    const note = Tone.Frequency(freq).toNote();
+    return note;
   };
 }

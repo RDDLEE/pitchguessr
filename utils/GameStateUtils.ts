@@ -18,6 +18,8 @@ export interface SoloDirectionSettings extends BaseSoloSettings {
   // TODO: Tone distance.
 }
 
+export interface SoloSliderSettings extends BaseSoloSettings {}
+
 export default class GameStateUtils {
   public static readonly NOTE_DURATION_SETTING_MIN = 0.25;
 
@@ -40,6 +42,19 @@ export default class GameStateUtils {
   };
 
   public static readonly DEFAULT_SOLO_DIRECTIONAL_SETTINGS: SoloDirectionSettings = {
+    noteDuration: GameStateUtils.NOTE_DURATION_SETTING_DEFAULT,
+    generateNoteOctaveOptions: {
+      octaveOptions: {
+        min: 3,
+        max: 4,
+      },
+      noteOptions: {
+        noteType: NoteTypes.NATURAL,
+      },
+    },
+  };
+
+  public static readonly DEFAULT_SOLO_SLIDER_SETTINGS: SoloSliderSettings = {
     noteDuration: GameStateUtils.NOTE_DURATION_SETTING_DEFAULT,
     generateNoteOctaveOptions: {
       octaveOptions: {

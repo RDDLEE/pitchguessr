@@ -86,6 +86,9 @@
       }
     ],
     "object-curly-newline": "off",
-    "prefer-destructuring": "off"
+    "prefer-destructuring": "off",
+    "react/require-default-props": "off",
+    "react/jsx-curly-brace-presence": "off",
+    "react/no-unescaped-entities": "off"
   }
 }

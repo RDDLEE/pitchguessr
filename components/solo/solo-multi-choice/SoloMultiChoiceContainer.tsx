@@ -14,13 +14,6 @@ import SoloMultiChoiceSettingsModal from "./settings-modal/SoloMultiChoiceSettin
 import StyleUtils from "../../../utils/StyleUtils";
 import QuestionPrompt from "../../shared/question-prompt/QuestionPrompt";
 
-export interface SoloMultiChoiceOptions {
-  noteDuration: number;
-  numberOfChoices: number;
-  noteRangeMin: number;
-  noteRangeMax: number;
-}
-
 export interface SoloMultiChoiceState extends BaseSoloGameState {
   correctNoteOctave: NoteOctave;
   noteGroup: MusicalNote[];

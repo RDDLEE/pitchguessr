@@ -35,12 +35,13 @@ export default function HomePage(): JSX.Element {
         <VStack>
           <Text fontSize="sm">Train your pitch perception.</Text>
           <HStack>
+
             <Card variant="outline" align="center" w={CARD_WIDTH} maxWidth={CARD_WIDTH} h={CARD_HEIGHT}>
               <CardHeader>
                 <Center>
                   <VStack>
                     <Heading size="md">Directional</Heading>
-                    <Text fontSize="sm" color="green">
+                    <Text fontSize="sm" color="green.500">
                       (Easy)
                     </Text>
                   </VStack>
@@ -61,12 +62,13 @@ export default function HomePage(): JSX.Element {
                 </NextLink>
               </CardFooter>
             </Card>
+
             <Card variant="outline" align="center" w={CARD_WIDTH} maxWidth={CARD_WIDTH} h={CARD_HEIGHT}>
               <CardHeader>
                 <Center>
                   <VStack>
                     <Heading size="md">Multi-Choice</Heading>
-                    <Text fontSize="sm" color="orangeRed">
+                    <Text fontSize="sm" color="orange.500">
                       (Medium)
                     </Text>
                   </VStack>
@@ -87,6 +89,34 @@ export default function HomePage(): JSX.Element {
                 </NextLink>
               </CardFooter>
             </Card>
+
+            <Card variant="outline" align="center" w={CARD_WIDTH} maxWidth={CARD_WIDTH} h={CARD_HEIGHT}>
+              <CardHeader>
+                <Center>
+                  <VStack>
+                    <Heading size="md">Slider</Heading>
+                    <Text fontSize="sm" color="red.500">
+                      (Hard)
+                    </Text>
+                  </VStack>
+                </Center>
+              </CardHeader>
+              <CardBody>
+                <Center>
+                  <Text fontSize="sm">
+                    Use the slider to match the note.
+                  </Text>
+                </Center>
+              </CardBody>
+              <CardFooter>
+                <NextLink href="/solo/slider" passHref={true} legacyBehavior={true}>
+                  <Button as="a" colorScheme="teal" variant="solid">
+                    Play
+                  </Button>
+                </NextLink>
+              </CardFooter>
+            </Card>
+
           </HStack>
         </VStack>
       </Center>
