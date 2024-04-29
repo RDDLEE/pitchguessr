@@ -41,6 +41,7 @@ export default function FrequencySlider(props: FrequencySlider_Props): JSX.Eleme
     props.onClick_SubmitButton(sliderAnswerHz);
   };
 
+  // FIXME: Slider/Container max width.
   return (
     <React.Fragment>
       <Slider
@@ -51,6 +52,7 @@ export default function FrequencySlider(props: FrequencySlider_Props): JSX.Eleme
         onChange={onChange_AnswerSlider}
         onChangeEnd={onChangeEnd_AnswerSlider}
         value={sliderAnswerHz}
+        size="lg"
       >
         <SliderTrack>
           <SliderFilledTrack />
