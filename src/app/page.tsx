@@ -1,29 +1,21 @@
 "use client";
 
-import { AbsoluteCenter, Box, Button, Card, CardBody, CardFooter, CardHeader, Center, Divider, Heading, HStack, Text, VStack } from "@chakra-ui/react";
+import { AbsoluteCenter, Box, Button, Card, CardBody, CardFooter, CardHeader, Center, Divider, Flex, Heading, HStack, Text, VStack } from "@chakra-ui/react";
 import React from "react";
 import NextLink from "next/link";
-import Image from "next/image";
 
 export default function HomePage(): JSX.Element {
   const CARD_WIDTH = 250;
-
   const CARD_HEIGHT = 350;
-
   const BOX_DIVIDER_PADDING = 8;
+  const CARD_SHADOW = "0px 5px 10px 0px rgba(0,0,0,0.1);";
+  const TEXT_DIFFICULTY_FONT_WEIGHT = 500;
+
 
   return (
     <main>
       <Center>
-        <HStack gap={1}>
-          <Image
-            src="/logo/logo_sq_white.png"
-            width={50}
-            height={50}
-            alt="PitchGuessr Logo."
-          />
-          <Heading fontSize="4xl">PitchGuessr</Heading>
-        </HStack>
+        <Heading fontSize="4xl">PitchGuessr</Heading>
       </Center>
       <Box position="relative" padding={BOX_DIVIDER_PADDING}>
         <Divider />
@@ -34,14 +26,20 @@ export default function HomePage(): JSX.Element {
       <Center>
         <VStack>
           <Text fontSize="sm">Train your pitch perception.</Text>
-          <HStack>
-
-            <Card variant="outline" align="center" w={CARD_WIDTH} maxWidth={CARD_WIDTH} h={CARD_HEIGHT}>
+          <Flex gap={2} wrap="wrap" align="center" justifyContent="center">
+            <Card
+              variant="outline"
+              align="center"
+              w={CARD_WIDTH}
+              maxWidth={CARD_WIDTH}
+              h={CARD_HEIGHT}
+              boxShadow={CARD_SHADOW}
+            >
               <CardHeader>
                 <Center>
                   <VStack>
                     <Heading size="md">Directional</Heading>
-                    <Text fontSize="sm" color="green.500">
+                    <Text fontSize="sm" color="green.500" fontWeight={TEXT_DIFFICULTY_FONT_WEIGHT}>
                       (Easy)
                     </Text>
                   </VStack>
@@ -56,19 +54,26 @@ export default function HomePage(): JSX.Element {
               </CardBody>
               <CardFooter>
                 <NextLink href="/solo/directional" passHref={true} legacyBehavior={true}>
-                  <Button as="a" colorScheme="teal" variant="solid">
+                  <Button as="a" colorScheme="teal" variant="solid" size="sm">
                     Play
                   </Button>
                 </NextLink>
               </CardFooter>
             </Card>
 
-            <Card variant="outline" align="center" w={CARD_WIDTH} maxWidth={CARD_WIDTH} h={CARD_HEIGHT}>
+            <Card
+              variant="outline"
+              align="center"
+              w={CARD_WIDTH}
+              maxWidth={CARD_WIDTH}
+              h={CARD_HEIGHT}
+              boxShadow={CARD_SHADOW}
+            >
               <CardHeader>
                 <Center>
                   <VStack>
                     <Heading size="md">Multi-Choice</Heading>
-                    <Text fontSize="sm" color="orange.500">
+                    <Text fontSize="sm" color="orange.500" fontWeight={TEXT_DIFFICULTY_FONT_WEIGHT}>
                       (Medium)
                     </Text>
                   </VStack>
@@ -83,19 +88,26 @@ export default function HomePage(): JSX.Element {
               </CardBody>
               <CardFooter>
                 <NextLink href="/solo/multi-choice" passHref={true} legacyBehavior={true}>
-                  <Button as="a" colorScheme="teal" variant="solid">
+                  <Button as="a" colorScheme="teal" variant="solid" size="sm">
                     Play
                   </Button>
                 </NextLink>
               </CardFooter>
             </Card>
 
-            <Card variant="outline" align="center" w={CARD_WIDTH} maxWidth={CARD_WIDTH} h={CARD_HEIGHT}>
+            <Card
+              variant="outline"
+              align="center"
+              w={CARD_WIDTH}
+              maxWidth={CARD_WIDTH}
+              h={CARD_HEIGHT}
+              boxShadow={CARD_SHADOW}
+            >
               <CardHeader>
                 <Center>
                   <VStack>
                     <Heading size="md">Slider</Heading>
-                    <Text fontSize="sm" color="red.500">
+                    <Text fontSize="sm" color="red.500" fontWeight={TEXT_DIFFICULTY_FONT_WEIGHT}>
                       (Hard)
                     </Text>
                   </VStack>
@@ -110,14 +122,14 @@ export default function HomePage(): JSX.Element {
               </CardBody>
               <CardFooter>
                 <NextLink href="/solo/slider" passHref={true} legacyBehavior={true}>
-                  <Button as="a" colorScheme="teal" variant="solid">
+                  <Button as="a" colorScheme="teal" variant="solid" size="sm">
                     Play
                   </Button>
                 </NextLink>
               </CardFooter>
             </Card>
 
-          </HStack>
+          </Flex>
         </VStack>
       </Center>
 
@@ -130,7 +142,14 @@ export default function HomePage(): JSX.Element {
       <Center>
         <VStack>
           <Text fontSize="sm">Play against your friends.</Text>
-          <Card variant="outline" align="center" w={CARD_WIDTH} maxWidth={CARD_WIDTH} h={CARD_HEIGHT}>
+          <Card
+            variant="outline"
+            align="center"
+            w={CARD_WIDTH}
+            maxWidth={CARD_WIDTH}
+            h={CARD_HEIGHT}
+            boxShadow={CARD_SHADOW}
+          >
             <CardBody>
               <Text fontSize="sm">Coming Soon!</Text>
             </CardBody>
