@@ -7,6 +7,7 @@ import NoteUtils, { MusicalOctave, NoteTypes } from "../../utils/NoteUtils";
 import GameStateUtils, { BaseSoloSettings } from "../../utils/GameStateUtils";
 import { AppSettingsContext } from "../../components/global/AppSettingsProvider";
 import AppSettingUtils from "../../utils/AppSettingUtils";
+import { produce } from "immer";
 
 interface OctaveMinMax {
   min: MusicalOctave;
@@ -53,14 +54,14 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>(params: UseSoloSetting
   const [noteType, setNoteType] = useState<NoteTypes>(params.settings.generateNoteOctaveOptions.noteOptions.noteType);
 
   const onChange_AppVolumeSlider = useCallback((value: number): void => {
-    setFormState((prevState) => {
-      return {
-        isDirty: true,
-        shouldResetGame: prevState.shouldResetGame || false,
-      };
-    });
+    setFormState(
+      produce(formState, (draft): void => {
+        draft.isDirty = true;
+        draft.shouldResetGame = draft.shouldResetGame || false;
+      })
+    );
     setAppVolume(value);
-  }, []);
+  }, [formState]);
 
   const renderAppVolumeSlider = (): JSX.Element => {
     let appVolumeText: string = `${appVolume} dB`;
@@ -91,14 +92,14 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>(params: UseSoloSetting
   };
 
   const onChange_NoteDurationSlider = useCallback((value: number): void => {
-    setFormState((prevState) => {
-      return {
-        isDirty: true,
-        shouldResetGame: prevState.shouldResetGame || false,
-      };
-    });
+    setFormState(
+      produce(formState, (draft): void => {
+        draft.isDirty = true;
+        draft.shouldResetGame = draft.shouldResetGame || false;
+      })
+    );
     setNoteDuration(value);
-  }, []);
+  }, [formState]);
 
   const renderNoteDurationSlider = (): JSX.Element => {
     return (

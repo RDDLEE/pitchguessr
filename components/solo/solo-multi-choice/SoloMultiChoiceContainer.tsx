@@ -13,6 +13,7 @@ import MathUtils from "../../../utils/MathUtils";
 import SoloMultiChoiceSettingsModal from "./settings-modal/SoloMultiChoiceSettingsModal";
 import StyleUtils from "../../../utils/StyleUtils";
 import QuestionPrompt from "../../shared/question-prompt/QuestionPrompt";
+import { produce } from "immer";
 
 export interface SoloMultiChoiceState extends BaseSoloGameState {
   correctNoteOctave: NoteOctave;
@@ -67,21 +68,12 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
 
   const onClick_AnswerChoice = useCallback((answerChoice: string): void => {
     setGameState(
-      (prevState) => {
-        if (prevState.isRoundOver === true) {
-          return prevState;
+      produce(gameState, (draft): void => {
+        if (draft.isRoundOver) {
+          return;
         }
-        return {
-          correctNoteOctave: {
-            note: prevState.correctNoteOctave.note,
-            octave: prevState.correctNoteOctave.octave,
-          },
-          noteGroup: [...prevState.noteGroup],
-          answerChoices: [...prevState.answerChoices],
-          hasPlayed: prevState.hasPlayed,
-          isRoundOver: true,
-        };
-      },
+        draft.isRoundOver = true;
+      })
     );
     if (answerChoice === gameState.correctNoteOctave.note) {
       scoreTracker.incrementNumCorrect();
@@ -119,23 +111,14 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
 
   const onClick_PlayButton = useCallback((): void => {
     setGameState(
-      (prevState) => {
-        if (prevState.hasPlayed === true) {
-          return prevState;
+      produce(gameState, (draft): void => {
+        if (draft.hasPlayed === true) {
+          return;
         }
-        return {
-          correctNoteOctave: {
-            note: prevState.correctNoteOctave.note,
-            octave: prevState.correctNoteOctave.octave,
-          },
-          noteGroup: [...prevState.noteGroup],
-          answerChoices: [...prevState.answerChoices],
-          hasPlayed: true,
-          isRoundOver: prevState.isRoundOver,
-        };
-      },
+        draft.hasPlayed = true;
+      })
     );
-  }, []);
+  }, [gameState]);
 
   const renderSoundCard = (): JSX.Element => {
     const noteOctave = gameState.correctNoteOctave;

@@ -1,12 +1,7 @@
 import React from "react";
-import dynamic from "next/dynamic";
+import SoloSliderContainer from "../../../../components/solo/slider/SoloSliderContainer";
 
-const SoloSliderContainer = dynamic(
-  () => {
-    return import("../../../../components/solo/slider/SoloSliderContainer");
-  },
-  { ssr: false },
-);
+export const dynamic = "force-dynamic"; 
 
 export default function SoloSliderPage() {
   return (

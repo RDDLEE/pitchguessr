@@ -1,12 +1,7 @@
 import React from "react";
-import dynamic from "next/dynamic";
+import SoloDirectionalContainer from "../../../../components/solo/directional/SoloDirectionalContainer";
 
-const SoloDirectionalContainer = dynamic(
-  () => {
-    return import("../../../../components/solo/directional/SoloDirectionalContainer");
-  },
-  { ssr: false },
-);
+export const dynamic = "force-dynamic"; 
 
 export default function SoloDirectionalPage() {
   return (

@@ -12,6 +12,7 @@ import StyleUtils from "../../../utils/StyleUtils";
 import QuestionPrompt from "../../shared/question-prompt/QuestionPrompt";
 import SoloSliderSettingsModal from "./settings-modal/SoloSliderSettingsModal";
 import FrequencySlider from "./frequency-slider/FrequencySlider";
+import { produce } from "immer";
 
 export interface SoloSliderState extends BaseSoloGameState {
   correctNoteOctave: NoteOctave;
@@ -43,21 +44,14 @@ export default function SoloSliderContainer(): JSX.Element {
 
   const onClick_PlayButton = useCallback((): void => {
     setGameState(
-      (prevState) => {
-        if (prevState.hasPlayed === true) {
-          return prevState;
+      produce(gameState, (draft): void => {
+        if (draft.hasPlayed === true) {
+          return;
         }
-        return {
-          correctNoteOctave: {
-            note: prevState.correctNoteOctave.note,
-            octave: prevState.correctNoteOctave.octave,
-          },
-          hasPlayed: true,
-          isRoundOver: prevState.isRoundOver,
-        };
-      },
+        draft.hasPlayed = true;
+      })
     );
-  }, []);
+  }, [gameState]);
 
   const renderSoundCard = (): JSX.Element => {
     const noteOctave = gameState.correctNoteOctave;
@@ -74,24 +68,18 @@ export default function SoloSliderContainer(): JSX.Element {
 
   const onClick_SliderAnswerSubmit = useCallback((sliderAnswerHz: number): void => {
     setGameState(
-      (prevState) => {
-        if (prevState.isRoundOver === true) {
-          return prevState;
+      produce(gameState, (draft): void => {
+        if (draft.isRoundOver) {
+          return;
         }
-        return {
-          correctNoteOctave: {
-            note: prevState.correctNoteOctave.note,
-            octave: prevState.correctNoteOctave.octave,
-          },
-          hasPlayed: prevState.hasPlayed,
-          isRoundOver: true,
-        };
-      },
+        draft.isRoundOver = true;
+      })
     );
     const correctHz = NoteUtils.convertNoteOctaveToFrequency(gameState.correctNoteOctave);
     // Converting from NoteOctave to Freq to Tone.Unit.Note.
     const correctNote = NoteUtils.convertFrequencyToNoteOctave(correctHz);
     const chosenNote = NoteUtils.convertFrequencyToNoteOctave(sliderAnswerHz);
+    // FIXME: Display correct slider value.
     if (chosenNote === correctNote) {
       scoreTracker.incrementNumCorrect();
     } else {

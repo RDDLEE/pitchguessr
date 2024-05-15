@@ -1,5 +1,6 @@
 "use client";
 
+import { produce } from "immer";
 import { useCallback, useState } from "react";
 
 export interface ScoreTrackerState {
@@ -23,25 +24,19 @@ const useScoreTracker = (): UseScoreTracker_Return => {
 
   const incrementNumCorrect = useCallback((): void => {
     setScoreTrackerState(
-      (prevState) => {
-        return {
-          numCorrect: prevState.numCorrect + 1,
-          numIncorrect: prevState.numIncorrect,
-        };
-      },
+      produce(scoreTrackerState, (draft): void => {
+        draft.numCorrect = draft.numCorrect + 1;
+      })
     );
-  }, []);
+  }, [scoreTrackerState]);
 
   const incrementNumIncorrect = useCallback((): void => {
     setScoreTrackerState(
-      (prevState) => {
-        return {
-          numCorrect: prevState.numCorrect,
-          numIncorrect: prevState.numIncorrect + 1,
-        };
-      },
+      produce(scoreTrackerState, (draft): void => {
+        draft.numIncorrect = draft.numIncorrect + 1;
+      })
     );
-  }, []);
+  }, [scoreTrackerState]);
 
   const resetScore = useCallback((): void => {
     setScoreTrackerState({

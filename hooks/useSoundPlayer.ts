@@ -19,6 +19,7 @@ const useSoundPlayer = (): UseSoundPlayer_Return => {
 
   // FIXME: May have to init synth on PlayButton click.
   useEffect(() => {
+    // FIXME: Probably init in useRef.
     const initSynth = (): Tone.Synth | null => {
       if (typeof window === "undefined" || !window.AudioContext) {
         return null;

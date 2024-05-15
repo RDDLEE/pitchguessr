@@ -1,6 +1,6 @@
 "use client";
 
-import { AbsoluteCenter, Box, Button, Card, CardBody, CardFooter, CardHeader, Center, Divider, Flex, Heading, HStack, Text, VStack } from "@chakra-ui/react";
+import { AbsoluteCenter, Box, Button, Card, CardBody, CardFooter, CardHeader, Center, Divider, Flex, Heading, Text, VStack } from "@chakra-ui/react";
 import React from "react";
 import NextLink from "next/link";
 
