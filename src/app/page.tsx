@@ -4,7 +4,7 @@ import React from "react";
 import NextLink from "next/link";
 import { Button, Card, Flex, Text, Title } from "@mantine/core";
 
-export enum GameDifficultyTypes {
+enum GameDifficultyTypes {
   EASY = "Easy",
   MEDIUM = "Medium",
   HARD = "Hard",
