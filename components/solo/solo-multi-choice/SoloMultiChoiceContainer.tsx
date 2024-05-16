@@ -60,9 +60,7 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
   const scoreTracker = useScoreTracker();
 
   const onNewRound = (settings: SoloMultiChoiceSettings, shouldResetScore: boolean): void => {
-    if (shouldResetScore === true) {
-      scoreTracker.resetScore();
-    }
+    scoreTracker.onNewRound(shouldResetScore);
     const newState = generateNewGameState(settings);
     setGameState(newState);
   };

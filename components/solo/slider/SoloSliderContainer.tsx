@@ -13,6 +13,7 @@ import SoloSliderSettingsModal from "./settings-modal/SoloSliderSettingsModal";
 import FrequencySlider from "./frequency-slider/FrequencySlider";
 import { produce } from "immer";
 import GameContainer from "../game-container/GameContainer";
+import { Text } from "@mantine/core";
 
 export interface SoloSliderState extends BaseSoloGameState {
   correctNoteOctave: NoteOctave;
@@ -35,9 +36,7 @@ export default function SoloSliderContainer(): JSX.Element {
   const scoreTracker = useScoreTracker();
 
   const onNewRound = (settings: SoloSliderSettings, shouldResetScore: boolean): void => {
-    if (shouldResetScore === true) {
-      scoreTracker.resetScore();
-    }
+    scoreTracker.onNewRound(shouldResetScore);
     const newState = generateNewGameState(settings);
     setGameState(newState);
   };
@@ -111,6 +110,18 @@ export default function SoloSliderContainer(): JSX.Element {
     );
   };
 
+  const renderCorrectAnswerText = (): JSX.Element | null => {
+    if (!gameState.isRoundOver) {
+      return null;
+    }
+    const correctHz = NoteUtils.convertNoteOctaveToFrequency(gameState.correctNoteOctave);
+    return (
+      <Text size="sm">
+        {`The correct note was: ${gameState.correctNoteOctave.note}${gameState.correctNoteOctave.octave} at ${Math.round(correctHz)} Hz.`}
+      </Text>
+    );
+  };
+
   return (
     <GameContainer>
       <SoloSliderSettingsModal
@@ -124,6 +135,7 @@ export default function SoloSliderContainer(): JSX.Element {
         text="Use the slider to match the note."
       />
       {renderSoundSlider()}
+      {renderCorrectAnswerText()}
       {renderNextRoundButton()}
     </GameContainer>
   );

@@ -1,13 +1,39 @@
 import React from "react";
 import { ScoreTrackerState } from "../../../hooks/useScoreTracker";
 import StyleUtils from "../../../utils/StyleUtils";
-import { Card, Flex, Text } from "@mantine/core";
+import { Card, Flex, Text, Tooltip } from "@mantine/core";
 
 export interface ScoreTracker_Props {
   scoreStats: ScoreTrackerState;
 }
 
 export default function ScoreTracker(props: ScoreTracker_Props): JSX.Element {
+  const isCorrectTooltipOpen = (): boolean => {
+    const scoreStats = props.scoreStats;
+    if (scoreStats.didAnswer) {
+      if (scoreStats.wasCorrect) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  };
+
+  const isIncorrectTooltipOpen = (): boolean => {
+    const scoreStats = props.scoreStats;
+    if (scoreStats.didAnswer) {
+      if (scoreStats.wasCorrect) {
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return false;
+    }
+  };
+
   return (
     <Card
       withBorder={true}
@@ -20,8 +46,32 @@ export default function ScoreTracker(props: ScoreTracker_Props): JSX.Element {
         wrap="wrap"
         w="100%"
       >
-        <Text>{`${props.scoreStats.numCorrect} correct`}</Text>
-        <Text>{`${props.scoreStats.numIncorrect} incorrect`}</Text>
+        <Tooltip
+          label="😃"
+          opened={isCorrectTooltipOpen()}
+          position="left-start"
+          withArrow={true}
+          arrowOffset={14}
+          arrowSize={8}
+          offset={10}
+        >
+          <Text c="green.7">
+            {`${props.scoreStats.numCorrect} correct`}
+          </Text>
+        </Tooltip>
+        <Tooltip
+          label="😭"
+          opened={isIncorrectTooltipOpen()}
+          position="left-start"
+          withArrow={true}
+          arrowOffset={14}
+          arrowSize={8}
+          offset={10}
+        >
+          <Text c="red.7">
+            {`${props.scoreStats.numIncorrect} incorrect`}
+          </Text>
+        </Tooltip>
       </Flex>
     </Card>
   );

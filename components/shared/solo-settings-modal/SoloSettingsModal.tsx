@@ -19,10 +19,10 @@ export default function SoloSettingsModal(props: SoloSettingsModal_Props): JSX.E
         w="100%"
       >
         <ActionIcon
-          variant="gradient"
+          variant="subtle"
           size="md"
           aria-label="Settings Button"
-          gradient={{ from: "blue", to: "cyan", deg: 0 }}
+          radius="xl"
           onClick={props.disclosureHandlers.open}
         >
           <FaCogs />
@@ -34,6 +34,7 @@ export default function SoloSettingsModal(props: SoloSettingsModal_Props): JSX.E
         onClose={props.disclosureHandlers.close}
         size="xs"
         title="Settings"
+        zIndex={1000}
       >
         {props.modalBody}
         <Flex

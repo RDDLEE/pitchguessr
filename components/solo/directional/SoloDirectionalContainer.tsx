@@ -53,9 +53,7 @@ export default function SoloDirectionalContainer(): JSX.Element {
   const [gameState, setGameState] = useState<SoloDirectionalState>(generateNewState(gameSettings));
 
   const onNewRound = (settings: SoloDirectionSettings, shouldResetScore: boolean): void => {
-    if (shouldResetScore === true) {
-      scoreTracker.resetScore();
-    }
+    scoreTracker.onNewRound(shouldResetScore);
     const newState = generateNewState(settings);
     setGameState(newState);
   };
@@ -90,6 +88,7 @@ export default function SoloDirectionalContainer(): JSX.Element {
         onClick_PlayButton={onClick_PlayButtonFirst}
         width={SOUND_CARD_WIDTH}
         hasPlayed={gameState.hasPlayed}
+        tooltipText="Play Me First!"
       />
     );
   };
@@ -102,6 +101,8 @@ export default function SoloDirectionalContainer(): JSX.Element {
         onClick_PlayButton={onClick_PlayButtonSecond}
         width={SOUND_CARD_WIDTH}
         hasPlayed={gameState.hasPlayedSecond}
+        tooltipText="Play Me Second!"
+        disabled={!gameState.hasPlayed}
       />
     );
   };

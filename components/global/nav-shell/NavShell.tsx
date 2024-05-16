@@ -55,8 +55,7 @@ export default function NavShell({ children }: Readonly<{ children: React.ReactN
           </Anchor>
         </Flex>
       </AppShell.Header>
-      {/* zIndex of 201 to put infront of button Tooltips. */}
-      <AppShell.Navbar p="md" zIndex={201}>
+      <AppShell.Navbar p="md" zIndex={900}>
         <Flex
           justify="flex-start"
           align="center"

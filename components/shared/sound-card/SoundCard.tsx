@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { FaPlay } from "react-icons/fa";
 import useSoundPlayer from "../../../hooks/useSoundPlayer";
 import { NoteOctave } from "../../../utils/NoteUtils";
@@ -10,16 +10,34 @@ export interface SoundCard_Props {
   onClick_PlayButton?: () => void;
   width: number;
   hasPlayed: boolean;
+  tooltipText?: string;
+  disabled?: boolean;
 }
 
 export default function SoundCard(props: SoundCard_Props): JSX.Element {
   const soundPlayer = useSoundPlayer();
 
-  const onClick_PlayButton = (): void => {
+  const onClick_PlayButton = useCallback((): void => {
     soundPlayer.playNote(props.noteOctave, props.noteDuration);
     if (props.onClick_PlayButton) {
       props.onClick_PlayButton();
     }
+  }, [props, soundPlayer]);
+
+  const getToolTipText = (): string => {
+    const tooltipText = props.tooltipText;
+    if (tooltipText === undefined) {
+      return "Play Me!";
+    }
+    return tooltipText;
+  };
+
+  const isButtonDisabled = (): boolean => {
+    const isDisabled = props.disabled;
+    if (isDisabled === undefined) {
+      return false;
+    }
+    return isDisabled;
   };
 
   return (
@@ -29,12 +47,10 @@ export default function SoundCard(props: SoundCard_Props): JSX.Element {
     >
       <Center>
         <Tooltip
-          label="Play Me!"
+          label={getToolTipText()}
           position="top"
           withArrow={true}
           opened={props.hasPlayed === false}
-          // zIndex: 199 to be behind modal's 200.
-          zIndex={199}
         >
           <ActionIcon
             variant="gradient"
@@ -43,6 +59,7 @@ export default function SoundCard(props: SoundCard_Props): JSX.Element {
             gradient={{ from: "blue", to: "cyan", deg: 0 }}
             onClick={onClick_PlayButton}
             radius="xl"
+            disabled={isButtonDisabled()}
           >
             <FaPlay />
           </ActionIcon>

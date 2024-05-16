@@ -60,6 +60,7 @@ export default function FrequencySlider(props: FrequencySlider_Props): JSX.Eleme
         value={sliderAnswerHz}
         size="lg"
         w="100%"
+        mb="md"
       />
       <Button
         color="teal"
