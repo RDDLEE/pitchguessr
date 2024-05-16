@@ -2,16 +2,16 @@ import React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import ChakraProviders from "../../components/global/ChakraProviders";
+import { ColorSchemeScript, createTheme, MantineProvider } from "@mantine/core";
+import "@mantine/core/styles.css";
 import AppSettingsProvider from "../../components/global/AppSettingsProvider";
-import NavDrawer from "../../components/global/nav-drawer/NavDrawer";
+import NavShell from "../../components/global/nav-shell/NavShell";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "PitchGuessr",
-  // TODO: Description.
-  description: "Pitch practice.",
+  description: "Practice your pitch perception with these fun minigames.",
   icons: [
     {
       rel: "icon",
@@ -34,15 +34,24 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
 };
 
+const theme = createTheme({
+
+});
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
   return (
     <html lang="en">
+      <head>
+        <ColorSchemeScript defaultColorScheme="dark" />
+      </head>
       <body className={inter.className}>
         <AppSettingsProvider>
-          <ChakraProviders>
-            <NavDrawer />
-            {children}
-          </ChakraProviders>
+          <MantineProvider theme={theme} defaultColorScheme="dark">
+            <NavShell>
+              {children}
+            </NavShell>
+
+          </MantineProvider>
         </AppSettingsProvider>
       </body>
     </html>

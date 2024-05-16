@@ -1,8 +1,9 @@
 import React, { useCallback, useState } from "react";
-import { Text, Slider, useDisclosure, SliderFilledTrack, SliderThumb, SliderTrack, Divider } from "@chakra-ui/react";
 import GameStateUtils, { BaseSoloSettings, SoloMultiChoiceSettings } from "../../../../utils/GameStateUtils";
 import useSoloSettingsModal from "../../../../hooks/solo/useSoloSettingsModal";
 import SoloSettingsModal from "../../../shared/solo-settings-modal/SoloSettingsModal";
+import { Divider, Slider, Text } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 
 export interface SoloMultiChoiceSettingsModal_Props {
   settings: SoloMultiChoiceSettings;
@@ -11,7 +12,7 @@ export interface SoloMultiChoiceSettingsModal_Props {
 }
 
 export default function SoloMultiChoiceSettingsModal(props: SoloMultiChoiceSettingsModal_Props): JSX.Element {
-  const modalDisclosure = useDisclosure();
+  const [isModalOpened, modalHandlers] = useDisclosure();
 
   const NUM_ANSWER_CHOICES_MIN = 2;
   const NUM_ANSWER_CHOICES_MAX = 12;
@@ -37,7 +38,7 @@ export default function SoloMultiChoiceSettingsModal(props: SoloMultiChoiceSetti
     onClick_ApplySettingsButton: onClick_ApplySettingsButton,
     onClick_ResetSettingsButton: onClick_ResetSettingsButton,
     onNewRound: props.onNewRound,
-    closeModal: modalDisclosure.onClose,
+    closeModal: modalHandlers.close,
   });
 
   const onChange_NumAnswerChoicesSlider = useCallback((value: number): void => {
@@ -48,7 +49,7 @@ export default function SoloMultiChoiceSettingsModal(props: SoloMultiChoiceSetti
   const renderNumAnswerChoicesSlider = (): JSX.Element => {
     return (
       <React.Fragment>
-        <Text fontSize="md" fontWeight="medium">
+        <Text size="md" fw="medium">
           {`# Answer Choices: ${numAnswerChoices}`}
         </Text>
         <Slider
@@ -58,12 +59,7 @@ export default function SoloMultiChoiceSettingsModal(props: SoloMultiChoiceSetti
           step={1}
           onChange={onChange_NumAnswerChoicesSlider}
           value={numAnswerChoices}
-        >
-          <SliderTrack>
-            <SliderFilledTrack />
-          </SliderTrack>
-          <SliderThumb />
-        </Slider>
+        />
         <Divider />
       </React.Fragment>
     );
@@ -85,7 +81,8 @@ export default function SoloMultiChoiceSettingsModal(props: SoloMultiChoiceSetti
     <SoloSettingsModal
       modalBody={renderModalBody()}
       modalButtons={settingsModal.renderModalButtons()}
-      modalDisclosure={modalDisclosure}
+      isOpened={isModalOpened}
+      disclosureHandlers={modalHandlers}
     />
   );
 }

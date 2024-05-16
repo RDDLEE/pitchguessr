@@ -1,8 +1,8 @@
-import { Box, Card, CardBody, Icon, IconButton, Tooltip } from "@chakra-ui/react";
 import React from "react";
 import { FaPlay } from "react-icons/fa";
 import useSoundPlayer from "../../../hooks/useSoundPlayer";
 import { NoteOctave } from "../../../utils/NoteUtils";
+import { ActionIcon, Card, Center, Tooltip } from "@mantine/core";
 
 export interface SoundCard_Props {
   noteOctave: NoteOctave | null;
@@ -22,36 +22,32 @@ export default function SoundCard(props: SoundCard_Props): JSX.Element {
     }
   };
 
-  // TODO: Placeholder sound graphic.
   return (
-    <Box>
-      <Card
-        variant="outline"
-        align="center"
-        w={props.width}
-        maxWidth={props.width}
-      >
-        <CardBody>
-          <Tooltip
-            label="Play Me!"
-            placement="top"
-            defaultIsOpen={true}
-            hasArrow={true}
-            isOpen={props.hasPlayed === false}
+    <Card
+      w={props.width}
+      withBorder={true}
+    >
+      <Center>
+        <Tooltip
+          label="Play Me!"
+          position="top"
+          withArrow={true}
+          opened={props.hasPlayed === false}
+          // zIndex: 199 to be behind modal's 200.
+          zIndex={199}
+        >
+          <ActionIcon
+            variant="gradient"
+            size="xl"
+            aria-label="Play Button"
+            gradient={{ from: "blue", to: "cyan", deg: 0 }}
+            onClick={onClick_PlayButton}
+            radius="xl"
           >
-            <IconButton
-              isRound={true}
-              variant="solid"
-              colorScheme="teal"
-              aria-label="Play"
-              fontSize="25px"
-              icon={<Icon as={FaPlay} />}
-              onClick={onClick_PlayButton}
-              size="lg"
-            />
-          </Tooltip>
-        </CardBody>
-      </Card>
-    </Box>
+            <FaPlay />
+          </ActionIcon>
+        </Tooltip>
+      </Center>
+    </Card>
   );
 }

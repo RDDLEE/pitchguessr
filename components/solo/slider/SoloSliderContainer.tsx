@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useCallback, useState } from "react";
-import { Center, VStack } from "@chakra-ui/react";
 import SoundCard from "../../shared/sound-card/SoundCard";
 import NextRoundButton from "../../shared/next-round-button/NextRoundButton";
 import useScoreTracker from "../../../hooks/useScoreTracker";
@@ -13,6 +12,7 @@ import QuestionPrompt from "../../shared/question-prompt/QuestionPrompt";
 import SoloSliderSettingsModal from "./settings-modal/SoloSliderSettingsModal";
 import FrequencySlider from "./frequency-slider/FrequencySlider";
 import { produce } from "immer";
+import GameContainer from "../game-container/GameContainer";
 
 export interface SoloSliderState extends BaseSoloGameState {
   correctNoteOctave: NoteOctave;
@@ -112,21 +112,19 @@ export default function SoloSliderContainer(): JSX.Element {
   };
 
   return (
-    <Center>
-      <VStack>
-        <SoloSliderSettingsModal
-          settings={gameSettings}
-          setGameSettings={setGameSettings}
-          onNewRound={onNewRound}
-        />
-        <ScoreTracker scoreStats={scoreTracker.scoreStats} />
-        {renderSoundCard()}
-        <QuestionPrompt
-          text="Use the slider to match the note."
-        />
-        {renderSoundSlider()}
-        {renderNextRoundButton()}
-      </VStack>
-    </Center>
+    <GameContainer>
+      <SoloSliderSettingsModal
+        settings={gameSettings}
+        setGameSettings={setGameSettings}
+        onNewRound={onNewRound}
+      />
+      <ScoreTracker scoreStats={scoreTracker.scoreStats} />
+      {renderSoundCard()}
+      <QuestionPrompt
+        text="Use the slider to match the note."
+      />
+      {renderSoundSlider()}
+      {renderNextRoundButton()}
+    </GameContainer>
   );
 }

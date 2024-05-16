@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useCallback, useState } from "react";
-import { Center, Stack, VStack } from "@chakra-ui/react";
 import SoundCard from "../../shared/sound-card/SoundCard";
 import AnswerChoiceButton from "../../shared/answer-choice/AnswerChoiceButton";
 import NextRoundButton from "../../shared/next-round-button/NextRoundButton";
@@ -14,6 +13,8 @@ import SoloMultiChoiceSettingsModal from "./settings-modal/SoloMultiChoiceSettin
 import StyleUtils from "../../../utils/StyleUtils";
 import QuestionPrompt from "../../shared/question-prompt/QuestionPrompt";
 import { produce } from "immer";
+import { Group } from "@mantine/core";
+import GameContainer from "../game-container/GameContainer";
 
 export interface SoloMultiChoiceState extends BaseSoloGameState {
   correctNoteOctave: NoteOctave;
@@ -103,9 +104,9 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
       ));
     }
     return (
-      <Stack direction="row" spacing={4} align="center">
+      <Group>
         {buttons}
-      </Stack>
+      </Group>
     );
   };
 
@@ -147,21 +148,19 @@ export default function SoloMultiChoiceContainer(): JSX.Element {
   };
 
   return (
-    <Center>
-      <VStack>
-        <SoloMultiChoiceSettingsModal
-          settings={gameSettings}
-          setGameSettings={setGameSettings}
-          onNewRound={onNewRound}
-        />
-        <ScoreTracker scoreStats={scoreTracker.scoreStats} />
-        {renderSoundCard()}
-        <QuestionPrompt
-          text="What note was played?"
-        />
-        {renderAnswerChoiceButtons()}
-        {renderNextRoundButton()}
-      </VStack>
-    </Center>
+    <GameContainer>
+      <SoloMultiChoiceSettingsModal
+        settings={gameSettings}
+        setGameSettings={setGameSettings}
+        onNewRound={onNewRound}
+      />
+      <ScoreTracker scoreStats={scoreTracker.scoreStats} />
+      {renderSoundCard()}
+      <QuestionPrompt
+        text="What note was played?"
+      />
+      {renderAnswerChoiceButtons()}
+      {renderNextRoundButton()}
+    </GameContainer>
   );
 }

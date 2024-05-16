@@ -1,4 +1,4 @@
-import { Button } from "@chakra-ui/react";
+import { Button } from "@mantine/core";
 import React from "react";
 
 export interface AnswerChoiceButton_Props {
@@ -12,32 +12,36 @@ export interface AnswerChoiceButton_Props {
 
 export default function AnswerChoiceButton(props: AnswerChoiceButton_Props): JSX.Element {
   const onClick_Button = (): void => {
+    const disabled = props.isRoundOver === true || props.hasPlayed === false;
+    if (disabled) {
+      return;
+    }
     props.onClick_Button(props.id);
   };
 
-  const determineColorScheme = (): string => {
+  const calcColorScheme = (): string => {
     if (props.isRoundOver === false) {
-      return "teal";
+      return "teal.7";
     }
     if (props.isCorrect === true) {
-      return "green";
+      return "green.7";
     }
-    return "red";
+    return "red.7";
   };
 
-  const determineVariant = (): string => {
+  const calcVariant = (): string => {
     if (props.isRoundOver === true && props.isCorrect === true) {
-      return "solid";
+      return "filled";
     }
     return "outline";
   };
 
   return (
     <Button
-      colorScheme={determineColorScheme()}
-      variant={determineVariant()}
+      color={calcColorScheme()}
+      variant={calcVariant()}
       onClick={onClick_Button}
-      isDisabled={props.isRoundOver === true || props.hasPlayed === false}
+      disabled={props.hasPlayed === false}
     >
       {props.text}
     </Button>

@@ -1,8 +1,8 @@
 import React, { useCallback } from "react";
-import { useDisclosure } from "@chakra-ui/react";
 import GameStateUtils, { BaseSoloSettings, SoloDirectionSettings, SoloSliderSettings } from "../../../../utils/GameStateUtils";
 import useSoloSettingsModal from "../../../../hooks/solo/useSoloSettingsModal";
 import SoloSettingsModal from "../../../shared/solo-settings-modal/SoloSettingsModal";
+import { useDisclosure } from "@mantine/hooks";
 
 export interface SoloSliderSettingsModal_Props {
   settings: SoloSliderSettings;
@@ -11,7 +11,7 @@ export interface SoloSliderSettingsModal_Props {
 }
 
 export default function SoloSliderSettingsModal(props: SoloSliderSettingsModal_Props): JSX.Element {
-  const modalDisclosure = useDisclosure();
+  const [isModalOpened, modalHandlers] = useDisclosure();
 
   const onClick_ApplySettingsButton = useCallback((newBaseSettings: BaseSoloSettings): SoloSliderSettings => {
     const newGameSettings = {
@@ -29,7 +29,7 @@ export default function SoloSliderSettingsModal(props: SoloSliderSettingsModal_P
     onClick_ApplySettingsButton: onClick_ApplySettingsButton,
     onClick_ResetSettingsButton: onClick_ResetSettingsButton,
     onNewRound: props.onNewRound,
-    closeModal: modalDisclosure.onClose,
+    closeModal: modalHandlers.close,
   });
 
   const renderModalBody = (): JSX.Element => {
@@ -47,7 +47,8 @@ export default function SoloSliderSettingsModal(props: SoloSliderSettingsModal_P
     <SoloSettingsModal
       modalBody={renderModalBody()}
       modalButtons={settingsModal.renderModalButtons()}
-      modalDisclosure={modalDisclosure}
+      isOpened={isModalOpened}
+      disclosureHandlers={modalHandlers}
     />
   );
 }

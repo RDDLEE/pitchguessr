@@ -1,161 +1,129 @@
 "use client";
 
-import { AbsoluteCenter, Box, Button, Card, CardBody, CardFooter, CardHeader, Center, Divider, Flex, Heading, Text, VStack } from "@chakra-ui/react";
 import React from "react";
 import NextLink from "next/link";
+import { Button, Card, Flex, Text, Title } from "@mantine/core";
+
+export enum GameDifficultyTypes {
+  EASY = "Easy",
+  MEDIUM = "Medium",
+  HARD = "Hard",
+}
+
+interface GameData {
+  name: string;
+  difficulty: GameDifficultyTypes,
+  description: string;
+  link: string;
+}
 
 export default function HomePage(): JSX.Element {
-  const CARD_WIDTH = 250;
-  const CARD_HEIGHT = 350;
-  const BOX_DIVIDER_PADDING = 8;
-  const CARD_SHADOW = "0px 5px 10px 0px rgba(0,0,0,0.1);";
-  const TEXT_DIFFICULTY_FONT_WEIGHT = 500;
+  const CARD_WIDTH = 225;
+  const CARD_HEIGHT = 300;
 
+  const games: GameData[] = [
+    {
+      name: "Directional",
+      difficulty: GameDifficultyTypes.EASY,
+      description: "Is the second note lower, equal or higher to the first note?",
+      link: "/solo/directional",
+    },
+    {
+      name: "Multi-Choice",
+      difficulty: GameDifficultyTypes.MEDIUM,
+      description: "Given a set of choices, guess what note was played.",
+      link: "/solo/multi-choice",
+    },
+    {
+      name: "Slider",
+      difficulty: GameDifficultyTypes.HARD,
+      description: "Use the slider to match the note.",
+      link: "/solo/slider",
+    },
+  ];
+
+  const getDifficultyColor = (difficulty: GameDifficultyTypes): string => {
+    if (difficulty === GameDifficultyTypes.EASY) {
+      return "green.7";
+    }
+    if (difficulty === GameDifficultyTypes.MEDIUM) {
+      return "orange.7";
+    }
+    if (difficulty === GameDifficultyTypes.HARD) {
+      return "red.7";
+    }
+    return "red.7"
+  };
+
+  const renderGameCard = (gameData: GameData): JSX.Element => {
+    return (
+      <Card
+        key={gameData.name}
+        w={CARD_WIDTH}
+        h={CARD_HEIGHT}
+        shadow="xl"
+        withBorder={true}
+      >
+        <Title order={3} ta="center">{gameData.name}</Title>
+        {/* FIXME: Get color based on difficulty. */}
+        <Text c={getDifficultyColor(gameData.difficulty)} ta="center" size="sm">
+          ({gameData.difficulty})
+        </Text>
+        <Flex
+          justify="center"
+          align="center"
+          direction="column"
+          wrap="wrap"
+          w="100%"
+          h="100%"
+        >
+          <Text size="sm">
+            {gameData.description}
+          </Text>
+        </Flex>
+        <NextLink href={gameData.link} passHref={true} legacyBehavior={true}>
+          <Button component="a" variant="filled" size="sm" color="green.7">
+            Play
+          </Button>
+        </NextLink>
+      </Card>
+    );
+  };
+
+  const renderGameCards = (): JSX.Element[] => {
+    const gamesJSX: JSX.Element[] = [];
+    games.forEach((value: GameData) => {
+      gamesJSX.push(renderGameCard(value));
+    });
+    return gamesJSX;
+  };
 
   return (
     <main>
-      <Center>
-        <Heading fontSize="4xl">PitchGuessr</Heading>
-      </Center>
-      <Box position="relative" padding={BOX_DIVIDER_PADDING}>
-        <Divider />
-        <AbsoluteCenter bg="white" px="4">
-          <Heading fontSize="3xl">Solo</Heading>
-        </AbsoluteCenter>
-      </Box>
-      <Center>
-        <VStack>
-          <Text fontSize="sm">Train your pitch perception.</Text>
-          <Flex gap={2} wrap="wrap" align="center" justifyContent="center">
-            <Card
-              variant="outline"
-              align="center"
-              w={CARD_WIDTH}
-              maxWidth={CARD_WIDTH}
-              h={CARD_HEIGHT}
-              boxShadow={CARD_SHADOW}
-            >
-              <CardHeader>
-                <Center>
-                  <VStack>
-                    <Heading size="md">Directional</Heading>
-                    <Text fontSize="sm" color="green.500" fontWeight={TEXT_DIFFICULTY_FONT_WEIGHT}>
-                      (Easy)
-                    </Text>
-                  </VStack>
-                </Center>
-              </CardHeader>
-              <CardBody>
-                <Center>
-                  <Text fontSize="sm">
-                    Is the second note lower, equal or higher to the first note?
-                  </Text>
-                </Center>
-              </CardBody>
-              <CardFooter>
-                <NextLink href="/solo/directional" passHref={true} legacyBehavior={true}>
-                  <Button as="a" colorScheme="teal" variant="solid" size="sm">
-                    Play
-                  </Button>
-                </NextLink>
-              </CardFooter>
-            </Card>
-
-            <Card
-              variant="outline"
-              align="center"
-              w={CARD_WIDTH}
-              maxWidth={CARD_WIDTH}
-              h={CARD_HEIGHT}
-              boxShadow={CARD_SHADOW}
-            >
-              <CardHeader>
-                <Center>
-                  <VStack>
-                    <Heading size="md">Multi-Choice</Heading>
-                    <Text fontSize="sm" color="orange.500" fontWeight={TEXT_DIFFICULTY_FONT_WEIGHT}>
-                      (Medium)
-                    </Text>
-                  </VStack>
-                </Center>
-              </CardHeader>
-              <CardBody>
-                <Center>
-                  <Text fontSize="sm">
-                    Given a set of choices, guess what note was played.
-                  </Text>
-                </Center>
-              </CardBody>
-              <CardFooter>
-                <NextLink href="/solo/multi-choice" passHref={true} legacyBehavior={true}>
-                  <Button as="a" colorScheme="teal" variant="solid" size="sm">
-                    Play
-                  </Button>
-                </NextLink>
-              </CardFooter>
-            </Card>
-
-            <Card
-              variant="outline"
-              align="center"
-              w={CARD_WIDTH}
-              maxWidth={CARD_WIDTH}
-              h={CARD_HEIGHT}
-              boxShadow={CARD_SHADOW}
-            >
-              <CardHeader>
-                <Center>
-                  <VStack>
-                    <Heading size="md">Slider</Heading>
-                    <Text fontSize="sm" color="red.500" fontWeight={TEXT_DIFFICULTY_FONT_WEIGHT}>
-                      (Hard)
-                    </Text>
-                  </VStack>
-                </Center>
-              </CardHeader>
-              <CardBody>
-                <Center>
-                  <Text fontSize="sm">
-                    Use the slider to match the note.
-                  </Text>
-                </Center>
-              </CardBody>
-              <CardFooter>
-                <NextLink href="/solo/slider" passHref={true} legacyBehavior={true}>
-                  <Button as="a" colorScheme="teal" variant="solid" size="sm">
-                    Play
-                  </Button>
-                </NextLink>
-              </CardFooter>
-            </Card>
-
-          </Flex>
-        </VStack>
-      </Center>
-
-      <Box position="relative" padding={BOX_DIVIDER_PADDING}>
-        <Divider />
-        <AbsoluteCenter bg="white" px="4">
-          <Heading fontSize="3xl">Battle</Heading>
-        </AbsoluteCenter>
-      </Box>
-      <Center>
-        <VStack>
-          <Text fontSize="sm">Play against your friends.</Text>
-          <Card
-            variant="outline"
-            align="center"
-            w={CARD_WIDTH}
-            maxWidth={CARD_WIDTH}
-            h={CARD_HEIGHT}
-            boxShadow={CARD_SHADOW}
-          >
-            <CardBody>
-              <Text fontSize="sm">Coming Soon!</Text>
-            </CardBody>
-          </Card>
-        </VStack>
-      </Center>
-    </main>
+      <Flex
+        justify="flex-start"
+        align="center"
+        direction="column"
+        wrap="wrap"
+        w="100%"
+      >
+        <Title order={1} mt="xl" c="green.7">
+          PitchGuessr
+        </Title>
+        <Text size="md" mb="xl">
+          Train your pitch perception.
+        </Text>
+        <Flex
+          justify="center"
+          align="center"
+          direction="row"
+          wrap="wrap"
+          w="100%"
+          gap="md"
+        >
+          {renderGameCards()}
+        </Flex>
+      </Flex>
+    </main >
   );
 }

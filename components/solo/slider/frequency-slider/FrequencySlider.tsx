@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Button, Slider, SliderFilledTrack, SliderThumb, SliderTrack } from "@chakra-ui/react";
 import NoteUtils, { GenerateOctaveOptions, NoteOctave } from "../../../../utils/NoteUtils";
 import useSoundPlayer from "../../../../hooks/useSoundPlayer";
+import { Button, Flex, Slider } from "@mantine/core";
 
 export interface FrequencySlider_Props {
   octaveOptions: GenerateOctaveOptions;
@@ -43,7 +43,13 @@ export default function FrequencySlider(props: FrequencySlider_Props): JSX.Eleme
 
   // FIXME: Slider/Container max width.
   return (
-    <React.Fragment>
+    <Flex
+      justify="flex-start"
+      align="center"
+      direction="column"
+      wrap="wrap"
+      w="100%"
+    >
       <Slider
         defaultValue={initSliderAnswer()}
         min={minFreq}
@@ -53,21 +59,16 @@ export default function FrequencySlider(props: FrequencySlider_Props): JSX.Eleme
         onChangeEnd={onChangeEnd_AnswerSlider}
         value={sliderAnswerHz}
         size="lg"
-      >
-        <SliderTrack>
-          <SliderFilledTrack />
-        </SliderTrack>
-        <SliderThumb />
-      </Slider>
+        w="100%"
+      />
       <Button
-        colorScheme="teal"
-        variant="solid"
+        color="teal"
+        variant="filled"
         onClick={onClick_SubmitButton}
-        isDisabled={props.isRoundOver === true || props.hasPlayed === false}
+        disabled={props.isRoundOver === true || props.hasPlayed === false}
       >
         Submit
       </Button>
-    </React.Fragment>
-
+    </Flex>
   );
 }

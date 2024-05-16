@@ -1,13 +1,21 @@
 import React, { useCallback, useContext, useState } from "react";
-import {
-  Button, Divider, Radio, RadioGroup, RangeSlider, RangeSliderFilledTrack, RangeSliderThumb,
-  RangeSliderTrack, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Stack, Text,
-} from "@chakra-ui/react";
 import NoteUtils, { MusicalOctave, NoteTypes } from "../../utils/NoteUtils";
 import GameStateUtils, { BaseSoloSettings } from "../../utils/GameStateUtils";
 import { AppSettingsContext } from "../../components/global/AppSettingsProvider";
 import AppSettingUtils from "../../utils/AppSettingUtils";
 import { produce } from "immer";
+import { Button, Divider, Radio, RangeSlider, RangeSliderValue, Slider, Text } from "@mantine/core";
+
+export interface UseDisclosureHandlers {
+  open: () => void;
+  close: () => void;
+  toggle: () => void;
+}
+
+export interface UseDisclosureReturn {
+  isOpened: boolean;
+  disclosureHandlers: UseDisclosureHandlers;
+}
 
 interface OctaveMinMax {
   min: MusicalOctave;
@@ -70,7 +78,7 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>(params: UseSoloSetting
     }
     return (
       <React.Fragment>
-        <Text fontSize="md" fontWeight="medium">
+        <Text>
           {`Volume: ${appVolumeText}`}
         </Text>
         <Slider
@@ -80,14 +88,9 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>(params: UseSoloSetting
           step={1}
           onChange={onChange_AppVolumeSlider}
           value={appVolume}
-        >
-          <SliderTrack>
-            <SliderFilledTrack />
-          </SliderTrack>
-          <SliderThumb />
-        </Slider>
-        <Divider />
-      </React.Fragment>
+        />
+        <Divider mt="xs" mb="xs" />
+      </React.Fragment >
     );
   };
 
@@ -104,7 +107,7 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>(params: UseSoloSetting
   const renderNoteDurationSlider = (): JSX.Element => {
     return (
       <React.Fragment>
-        <Text fontSize="md" fontWeight="medium">
+        <Text>
           {`Note Duration: ${noteDuration}s`}
         </Text>
         <Slider
@@ -114,18 +117,13 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>(params: UseSoloSetting
           step={0.25}
           onChange={onChange_NoteDurationSlider}
           value={noteDuration}
-        >
-          <SliderTrack>
-            <SliderFilledTrack />
-          </SliderTrack>
-          <SliderThumb />
-        </Slider>
-        <Divider />
+        />
+        <Divider mt="xs" mb="xs" />
       </React.Fragment>
     );
   };
 
-  const onChangeEnd_OctaveRangeSlider = useCallback((value: number[]): void => {
+  const onChange_OctaveRangeSlider = useCallback((value: RangeSliderValue): void => {
     setFormState({ isDirty: true, shouldResetGame: true });
     setOctaveMinMax({
       min: value[0] as MusicalOctave,
@@ -136,13 +134,11 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>(params: UseSoloSetting
   const renderOctaveRangeSlider = (): JSX.Element => {
     return (
       <React.Fragment>
-        <Text fontSize="md" fontWeight="medium">
+        <Text>
           {`Octave Range: ${octaveMinMax.min} - ${octaveMinMax.max}`}
         </Text>
         <RangeSlider
-          // eslint-disable-next-line jsx-a11y/aria-proptypes
-          aria-label={["min", "max"]}
-          onChange={onChangeEnd_OctaveRangeSlider}
+          onChange={onChange_OctaveRangeSlider}
           defaultValue={[
             params.settings.generateNoteOctaveOptions.octaveOptions.min,
             params.settings.generateNoteOctaveOptions.octaveOptions.max,
@@ -153,15 +149,10 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>(params: UseSoloSetting
           ]}
           min={NoteUtils.OCTAVE_MIN}
           max={NoteUtils.OCTAVE_MAX}
+          minRange={0}
           step={1}
-        >
-          <RangeSliderTrack>
-            <RangeSliderFilledTrack />
-          </RangeSliderTrack>
-          <RangeSliderThumb index={0} />
-          <RangeSliderThumb index={1} />
-        </RangeSlider>
-        <Divider />
+        />
+        <Divider mt="xs" mb="xs" />
       </React.Fragment>
     );
   };
@@ -174,15 +165,16 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>(params: UseSoloSetting
   const renderNoteTypeRadio = (): JSX.Element => {
     return (
       <React.Fragment>
-        <Text fontSize="md" fontWeight="medium">Notes:</Text>
-        <RadioGroup onChange={onChange_NoteTypeRadio} value={noteType}>
-          <Stack direction="column" ml={4}>
-            <Radio value={NoteTypes.NATURAL} size="sm">Naturals only</Radio>
-            <Radio value={NoteTypes.SHARPS} size="sm">Naturals + Sharps</Radio>
-            <Radio value={NoteTypes.FLATS} size="sm">Naturals + Flats</Radio>
-          </Stack>
-        </RadioGroup>
-        <Divider />
+        <Text>Notes:</Text>
+        <Radio.Group
+          value={noteType}
+          onChange={onChange_NoteTypeRadio as (_: string) => void}
+        >
+          <Radio value={NoteTypes.NATURAL} size="sm" label="Naturals only" />
+          <Radio value={NoteTypes.SHARPS} size="sm" label="Naturals + Sharps" />
+          <Radio value={NoteTypes.FLATS} size="sm" label="Naturals + Flats" />
+        </Radio.Group>
+        <Divider mt="xs" mb="xs" />
       </React.Fragment>
     );
   };
@@ -230,10 +222,10 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>(params: UseSoloSetting
   const renderModalButtons = (): JSX.Element => {
     return (
       <React.Fragment>
-        <Button mt={4} mr={4} colorScheme="teal" variant="solid" onClick={onClick_ApplySettingsButton} isDisabled={formState.isDirty === false}>
+        <Button mt={4} mr={4} color="teal" variant="filled" onClick={onClick_ApplySettingsButton} disabled={formState.isDirty === false}>
           Apply
         </Button>
-        <Button mt={4} colorScheme="gray" variant="outline" onClick={onClick_ResetSettingsButton}>
+        <Button mt={4} color="gray" variant="outline" onClick={onClick_ResetSettingsButton}>
           Reset
         </Button>
       </React.Fragment>

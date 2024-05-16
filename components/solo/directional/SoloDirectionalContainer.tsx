@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useCallback, useState } from "react";
-import { Center, HStack, Stack, VStack } from "@chakra-ui/react";
 import useScoreTracker from "../../../hooks/useScoreTracker";
 import ScoreTracker from "../../shared/score-tracker/ScoreTracker";
 import SoundCard from "../../shared/sound-card/SoundCard";
@@ -13,6 +12,8 @@ import SoloDirectionalSettingsModal from "./settings-modal/SoloDirectionalSettin
 import StyleUtils from "../../../utils/StyleUtils";
 import QuestionPrompt from "../../shared/question-prompt/QuestionPrompt";
 import { produce } from "immer";
+import { Group } from "@mantine/core";
+import GameContainer from "../game-container/GameContainer";
 
 export interface NoteOctavePair {
   firstNoteOctave: NoteOctave;
@@ -140,9 +141,9 @@ export default function SoloDirectionalContainer(): JSX.Element {
       ));
     }
     return (
-      <Stack direction="row" spacing={4} align="center">
+      <Group>
         {buttons}
-      </Stack>
+      </Group>
     );
   };
 
@@ -160,24 +161,22 @@ export default function SoloDirectionalContainer(): JSX.Element {
   };
 
   return (
-    <Center>
-      <VStack>
-        <SoloDirectionalSettingsModal
-          settings={gameSettings}
-          setGameSettings={setGameSettings}
-          onNewRound={onNewRound}
-        />
-        <ScoreTracker scoreStats={scoreTracker.scoreStats} />
-        <HStack gap={2}>
-          {renderFirstSoundCard()}
-          {renderSecondSoundCard()}
-        </HStack>
-        <QuestionPrompt
-          text="Is the second note higher, lower, or equal to the first note?"
-        />
-        {renderAnswerChoiceButtons()}
-        {renderNextRoundButton()}
-      </VStack>
-    </Center>
+    <GameContainer>
+      <SoloDirectionalSettingsModal
+        settings={gameSettings}
+        setGameSettings={setGameSettings}
+        onNewRound={onNewRound}
+      />
+      <ScoreTracker scoreStats={scoreTracker.scoreStats} />
+      <Group gap="xs">
+        {renderFirstSoundCard()}
+        {renderSecondSoundCard()}
+      </Group>
+      <QuestionPrompt
+        text="Is the second note higher, lower, or equal to the first note?"
+      />
+      {renderAnswerChoiceButtons()}
+      {renderNextRoundButton()}
+    </GameContainer>
   );
 }

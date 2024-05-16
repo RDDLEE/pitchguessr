@@ -1,4 +1,4 @@
-import { Text } from "@chakra-ui/react";
+import { Text } from "@mantine/core";
 import React from "react";
 
 export interface QuestionPrompt_Props {
@@ -7,7 +7,7 @@ export interface QuestionPrompt_Props {
 
 export default function QuestionPrompt(props: QuestionPrompt_Props): JSX.Element {
   return (
-    <Text fontSize="sm">
+    <Text size="sm">
       {props.text}
     </Text>
   );
