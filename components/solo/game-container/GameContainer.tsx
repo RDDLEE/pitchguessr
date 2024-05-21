@@ -14,7 +14,7 @@ export default function GameContainer({ children }: Readonly<{ children: React.R
       <Card
         withBorder={true}
         shadow="xl"
-        w={500}
+        w={400}
         p="md"
       >
         <Flex
