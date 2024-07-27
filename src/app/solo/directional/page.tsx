@@ -1,5 +1,5 @@
 import React from "react";
-import SoloDirectionalContainer from "../../../../components/solo/directional/SoloDirectionalContainer";
+import SoloDirectionalContainer from "../../../../src/components/solo/directional/SoloDirectionalContainer";
 
 export const dynamic = "force-dynamic"; 
 

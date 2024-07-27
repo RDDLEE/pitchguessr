@@ -4,8 +4,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ColorSchemeScript, createTheme, MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
-import AppSettingsProvider from "../../components/global/AppSettingsProvider";
-import NavShell from "../../components/global/nav-shell/NavShell";
+import AppSettingsProvider from "../../src/components/global/AppSettingsProvider";
+import NavShell from "../../src/components/global/nav-shell/NavShell";
 
 const inter = Inter({ subsets: ["latin"] });
 
