@@ -1,8 +1,9 @@
+import { ActionIcon, Card, Center, Tooltip } from "@mantine/core";
 import React, { useCallback } from "react";
 import { FaPlay } from "react-icons/fa";
+
 import useSoundPlayer from "../../../hooks/useSoundPlayer";
-import { NoteOctave } from "../../../utils/NoteUtils";
-import { ActionIcon, Card, Center, Tooltip } from "@mantine/core";
+import type { NoteOctave } from "../../../utils/NoteUtils";
 
 export interface SoundCard_Props {
   noteOctave: NoteOctave | null;

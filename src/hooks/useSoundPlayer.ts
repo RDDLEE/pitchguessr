@@ -2,9 +2,10 @@
 
 import { useContext, useEffect, useRef } from "react";
 import * as Tone from "tone/build/esm/index";
-import { NoteOctave } from "../utils/NoteUtils";
+
 import { AppSettingsContext } from "../components/global/AppSettingsProvider";
 import AppSettingUtils from "../utils/AppSettingUtils";
+import type { NoteOctave } from "../utils/NoteUtils";
 
 export interface UseSoundPlayer_Return {
   playNote: (_noteOctave: NoteOctave | null, _noteDuration: number) => void;

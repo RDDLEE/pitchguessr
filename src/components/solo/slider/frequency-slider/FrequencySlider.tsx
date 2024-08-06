@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-import NoteUtils, { GenerateOctaveOptions, NoteOctave } from "../../../../utils/NoteUtils";
-import useSoundPlayer from "../../../../hooks/useSoundPlayer";
 import { Button, Flex, Slider } from "@mantine/core";
+import React, { useState } from "react";
+
+import useSoundPlayer from "../../../../hooks/useSoundPlayer";
+import type { GenerateOctaveOptions, NoteOctave } from "../../../../utils/NoteUtils";
+import NoteUtils from "../../../../utils/NoteUtils";
 
 export interface FrequencySlider_Props {
   octaveOptions: GenerateOctaveOptions;

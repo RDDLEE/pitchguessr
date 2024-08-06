@@ -1,10 +1,10 @@
-import React from "react";
 import dynamic from "next/dynamic";
+import React from "react";
 
 // Loaded on client to prevent server/client mismatch when generating answer choices.
 const SoloMultiChoiceContainer = dynamic(
   () => {
-    return import("../../../../src/components/solo/solo-multi-choice/SoloMultiChoiceContainer");
+    return import("../../../components/solo/solo-multi-choice/SoloMultiChoiceContainer");
   },
   { ssr: false },
 );

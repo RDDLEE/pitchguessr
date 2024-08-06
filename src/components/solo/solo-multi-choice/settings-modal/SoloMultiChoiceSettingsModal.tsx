@@ -1,9 +1,11 @@
-import React, { useCallback, useState } from "react";
-import GameStateUtils, { BaseSoloSettings, SoloMultiChoiceSettings } from "../../../../utils/GameStateUtils";
-import useSoloSettingsModal from "../../../../hooks/solo/useSoloSettingsModal";
-import SoloSettingsModal from "../../../shared/solo-settings-modal/SoloSettingsModal";
 import { Divider, Slider, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import React, { useCallback, useState } from "react";
+
+import useSoloSettingsModal from "../../../../hooks/solo/useSoloSettingsModal";
+import type { BaseSoloSettings, SoloMultiChoiceSettings } from "../../../../utils/GameStateUtils";
+import GameStateUtils from "../../../../utils/GameStateUtils";
+import SoloSettingsModal from "../../../shared/solo-settings-modal/SoloSettingsModal";
 
 export interface SoloMultiChoiceSettingsModal_Props {
   settings: SoloMultiChoiceSettings;

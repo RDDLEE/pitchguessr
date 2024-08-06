@@ -1,4 +1,5 @@
-import { GenerateNoteOctaveOptions, NoteTypes } from "./NoteUtils";
+import type { GenerateNoteOctaveOptions } from "./NoteUtils";
+import { NoteTypes } from "./NoteUtils";
 
 export interface BaseSoloGameState {
   hasPlayed: boolean;

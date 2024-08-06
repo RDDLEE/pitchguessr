@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
-import NextLink from "next/link";
 import { Button, Card, Flex, Text, Title } from "@mantine/core";
+import NextLink from "next/link";
+import React from "react";
 
 enum GameDifficultyTypes {
   EASY = "Easy",
@@ -52,7 +52,7 @@ export default function HomePage(): JSX.Element {
     if (difficulty === GameDifficultyTypes.HARD) {
       return "red.7";
     }
-    return "red.7"
+    return "red.7";
   };
 
   const renderGameCard = (gameData: GameData): JSX.Element => {
@@ -64,10 +64,12 @@ export default function HomePage(): JSX.Element {
         shadow="xl"
         withBorder={true}
       >
-        <Title order={3} ta="center">{gameData.name}</Title>
+        <Title order={3} ta="center">
+          {gameData.name}
+        </Title>
         {/* FIXME: Get color based on difficulty. */}
         <Text c={getDifficultyColor(gameData.difficulty)} ta="center" size="sm">
-          ({gameData.difficulty})
+          {gameData.difficulty}
         </Text>
         <Flex
           justify="center"
@@ -124,6 +126,6 @@ export default function HomePage(): JSX.Element {
           {renderGameCards()}
         </Flex>
       </Flex>
-    </main >
+    </main>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { AppShell, Burger, Anchor, Text, Flex } from "@mantine/core";
+import { Anchor, AppShell, Burger, Flex, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { usePathname } from "next/navigation";
 import React from "react";

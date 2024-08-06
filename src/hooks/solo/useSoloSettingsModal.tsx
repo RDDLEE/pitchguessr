@@ -1,10 +1,14 @@
+import type { RangeSliderValue } from "@mantine/core";
+import { Button, Divider, Radio, RangeSlider, Slider, Text } from "@mantine/core";
+import { produce } from "immer";
 import React, { useCallback, useContext, useState } from "react";
-import NoteUtils, { MusicalOctave, NoteTypes } from "../../utils/NoteUtils";
-import GameStateUtils, { BaseSoloSettings } from "../../utils/GameStateUtils";
+
 import { AppSettingsContext } from "../../components/global/AppSettingsProvider";
 import AppSettingUtils from "../../utils/AppSettingUtils";
-import { produce } from "immer";
-import { Button, Divider, Radio, RangeSlider, RangeSliderValue, Slider, Text } from "@mantine/core";
+import type { BaseSoloSettings } from "../../utils/GameStateUtils";
+import GameStateUtils from "../../utils/GameStateUtils";
+import type { MusicalOctave } from "../../utils/NoteUtils";
+import NoteUtils, { NoteTypes } from "../../utils/NoteUtils";
 
 export interface UseDisclosureHandlers {
   open: () => void;
@@ -48,7 +52,9 @@ export interface UseSoloSettingsModal_Return {
 const useSoloSettingsModal = <S extends BaseSoloSettings>(params: UseSoloSettingsModal_Params<S>): UseSoloSettingsModal_Return => {
   const appSettings = useContext(AppSettingsContext);
 
-  const [formState, setFormState] = useState<SettingsFormState>({ isDirty: false, shouldResetGame: false });
+  const [formState, setFormState] = useState<SettingsFormState>(
+    { isDirty: false, shouldResetGame: false }
+  );
 
   const [appVolume, setAppVolume] = useState<number>(appSettings.volume);
 
@@ -90,7 +96,7 @@ const useSoloSettingsModal = <S extends BaseSoloSettings>(params: UseSoloSetting
           value={appVolume}
         />
         <Divider mt="xs" mb="xs" />
-      </React.Fragment >
+      </React.Fragment>
     );
   };
 

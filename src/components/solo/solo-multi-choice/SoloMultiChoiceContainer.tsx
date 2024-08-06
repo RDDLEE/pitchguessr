@@ -1,20 +1,23 @@
 "use client";
 
+import { Group } from "@mantine/core";
+import { produce } from "immer";
 import React, { useCallback, useState } from "react";
-import SoundCard from "../../shared/sound-card/SoundCard";
+
+import useScoreTracker from "../../../hooks/useScoreTracker";
+import type { BaseSoloGameState, SoloMultiChoiceSettings } from "../../../utils/GameStateUtils";
+import GameStateUtils from "../../../utils/GameStateUtils";
+import MathUtils from "../../../utils/MathUtils";
+import type { MusicalNote, NoteOctave } from "../../../utils/NoteUtils";
+import NoteUtils from "../../../utils/NoteUtils";
+import StyleUtils from "../../../utils/StyleUtils";
 import AnswerChoiceButton from "../../shared/answer-choice/AnswerChoiceButton";
 import NextRoundButton from "../../shared/next-round-button/NextRoundButton";
-import useScoreTracker from "../../../hooks/useScoreTracker";
-import ScoreTracker from "../../shared/score-tracker/ScoreTracker";
-import NoteUtils, { MusicalNote, NoteOctave } from "../../../utils/NoteUtils";
-import GameStateUtils, { BaseSoloGameState, SoloMultiChoiceSettings } from "../../../utils/GameStateUtils";
-import MathUtils from "../../../utils/MathUtils";
-import SoloMultiChoiceSettingsModal from "./settings-modal/SoloMultiChoiceSettingsModal";
-import StyleUtils from "../../../utils/StyleUtils";
 import QuestionPrompt from "../../shared/question-prompt/QuestionPrompt";
-import { produce } from "immer";
-import { Group } from "@mantine/core";
+import ScoreTracker from "../../shared/score-tracker/ScoreTracker";
+import SoundCard from "../../shared/sound-card/SoundCard";
 import GameContainer from "../game-container/GameContainer";
+import SoloMultiChoiceSettingsModal from "./settings-modal/SoloMultiChoiceSettingsModal";
 
 export interface SoloMultiChoiceState extends BaseSoloGameState {
   correctNoteOctave: NoteOctave;

@@ -1,7 +1,8 @@
-import React from "react";
 import { ActionIcon, Flex, Modal } from "@mantine/core";
+import React from "react";
 import { FaCogs } from "react-icons/fa";
-import { UseDisclosureReturn } from "../../../hooks/solo/useSoloSettingsModal";
+
+import type { UseDisclosureReturn } from "../../../hooks/solo/useSoloSettingsModal";
 
 export interface SoloSettingsModal_Props extends UseDisclosureReturn {
   modalBody: JSX.Element;

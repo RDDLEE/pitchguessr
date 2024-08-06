@@ -1,8 +1,10 @@
-import React, { useCallback } from "react";
-import GameStateUtils, { BaseSoloSettings, SoloDirectionSettings } from "../../../../utils/GameStateUtils";
-import useSoloSettingsModal from "../../../../hooks/solo/useSoloSettingsModal";
-import SoloSettingsModal from "../../../shared/solo-settings-modal/SoloSettingsModal";
 import { useDisclosure } from "@mantine/hooks";
+import React, { useCallback } from "react";
+
+import useSoloSettingsModal from "../../../../hooks/solo/useSoloSettingsModal";
+import type { BaseSoloSettings, SoloDirectionSettings } from "../../../../utils/GameStateUtils";
+import GameStateUtils from "../../../../utils/GameStateUtils";
+import SoloSettingsModal from "../../../shared/solo-settings-modal/SoloSettingsModal";
 
 export interface SoloDirectionalSettingsModal_Props {
   settings: SoloDirectionSettings;

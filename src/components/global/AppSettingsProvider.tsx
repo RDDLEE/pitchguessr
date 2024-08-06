@@ -1,7 +1,9 @@
 "use client";
 
 import React, { createContext, useCallback, useMemo, useState } from "react";
-import AppSettingUtils, { AppSettings } from "../../utils/AppSettingUtils";
+
+import type { AppSettings } from "../../utils/AppSettingUtils";
+import AppSettingUtils from "../../utils/AppSettingUtils";
 import MathUtils from "../../utils/MathUtils";
 
 export const AppSettingsContext = createContext<AppSettings>({
