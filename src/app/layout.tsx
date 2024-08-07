@@ -6,8 +6,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import React from "react";
 
-import AppSettingsProvider from "../components/global/AppSettingsProvider";
-import NavShell from "../components/global/nav-shell/NavShell";
+import AppSettingsProvider from "@/components/AppSettingsProvider/AppSettingsProvider";
+import NavShell from "@/components/NavShell/NavShell";
 
 const inter = Inter({ subsets: ["latin"] });
 

@@ -1,25 +1,25 @@
 import type { GenerateNoteOctaveOptions } from "./NoteUtils";
 import { NoteTypes } from "./NoteUtils";
 
-export interface BaseSoloGameState {
+export interface BaseGameState {
   hasPlayed: boolean;
   isRoundOver: boolean;
 }
 
-export interface BaseSoloSettings {
+export interface BaseSettings {
   generateNoteOctaveOptions: GenerateNoteOctaveOptions;
   noteDuration: number;
 }
 
-export interface SoloMultiChoiceSettings extends BaseSoloSettings {
+export interface MultiChoiceSettings extends BaseSettings {
   numAnswerChoices: number;
 }
 
-export interface SoloDirectionSettings extends BaseSoloSettings {
+export interface DirectionSettings extends BaseSettings {
   // TODO: Tone distance.
 }
 
-export interface SoloSliderSettings extends BaseSoloSettings {}
+export interface SliderSettings extends BaseSettings {}
 
 export default class GameStateUtils {
   public static readonly NOTE_DURATION_SETTING_MIN = 0.25;
@@ -28,7 +28,7 @@ export default class GameStateUtils {
 
   private static readonly NOTE_DURATION_SETTING_DEFAULT = 0.5;
 
-  public static readonly DEFAULT_SOLO_MULTI_CHOICE_SETTINGS: SoloMultiChoiceSettings = {
+  public static readonly DEFAULT_MULTI_CHOICE_SETTINGS: MultiChoiceSettings = {
     numAnswerChoices: 5,
     noteDuration: GameStateUtils.NOTE_DURATION_SETTING_DEFAULT,
     generateNoteOctaveOptions: {
@@ -42,7 +42,7 @@ export default class GameStateUtils {
     },
   };
 
-  public static readonly DEFAULT_SOLO_DIRECTIONAL_SETTINGS: SoloDirectionSettings = {
+  public static readonly DEFAULT_DIRECTIONAL_SETTINGS: DirectionSettings = {
     noteDuration: GameStateUtils.NOTE_DURATION_SETTING_DEFAULT,
     generateNoteOctaveOptions: {
       octaveOptions: {
@@ -55,7 +55,7 @@ export default class GameStateUtils {
     },
   };
 
-  public static readonly DEFAULT_SOLO_SLIDER_SETTINGS: SoloSliderSettings = {
+  public static readonly DEFAULT_SLIDER_SETTINGS: SliderSettings = {
     noteDuration: GameStateUtils.NOTE_DURATION_SETTING_DEFAULT,
     generateNoteOctaveOptions: {
       octaveOptions: {

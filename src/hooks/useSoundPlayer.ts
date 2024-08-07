@@ -3,7 +3,8 @@
 import { useContext, useEffect, useRef } from "react";
 import * as Tone from "tone/build/esm/index";
 
-import { AppSettingsContext } from "../components/global/AppSettingsProvider";
+import { AppSettingsContext } from "@/contexts/AppSettingsContext";
+
 import AppSettingUtils from "../utils/AppSettingUtils";
 import type { NoteOctave } from "../utils/NoteUtils";
 
@@ -55,6 +56,9 @@ const useSoundPlayer = (): UseSoundPlayer_Return => {
 
   const playFreq = (freqHz: number, noteDuration: number): void => {
     if (synthRef.current === null) {
+      return;
+    }
+    if (appSettings === null) {
       return;
     }
     if (appSettings.volume === AppSettingUtils.VOLUME_SETTING_MUTE) {

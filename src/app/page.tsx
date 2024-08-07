@@ -1,8 +1,8 @@
-"use client";
-
 import { Button, Card, Flex, Text, Title } from "@mantine/core";
 import NextLink from "next/link";
 import React from "react";
+
+import PathUtils from "@/utils/PathUtils";
 
 enum GameDifficultyTypes {
   EASY = "Easy",
@@ -26,19 +26,19 @@ export default function HomePage(): JSX.Element {
       name: "Directional",
       difficulty: GameDifficultyTypes.EASY,
       description: "Is the second note lower, equal or higher to the first note?",
-      link: "/solo/directional",
+      link: PathUtils.DIRECTIONAL_PATH,
     },
     {
       name: "Multi-Choice",
       difficulty: GameDifficultyTypes.MEDIUM,
       description: "Given a set of choices, guess what note was played.",
-      link: "/solo/multi-choice",
+      link: PathUtils.MULTI_CHOICE_PATH,
     },
     {
       name: "Slider",
       difficulty: GameDifficultyTypes.HARD,
       description: "Use the slider to match the note.",
-      link: "/solo/slider",
+      link: PathUtils.SLIDER_PATH,
     },
   ];
 
