@@ -1,15 +1,8 @@
-"use client";
-
 import { Group } from "@mantine/core";
-import { produce } from "immer";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useContext } from "react";
 
-import useScoreTracker from "../../../hooks/useScoreTracker";
-import type { BaseGameState, MultiChoiceSettings } from "../../../utils/GameStateUtils";
-import GameStateUtils from "../../../utils/GameStateUtils";
-import MathUtils from "../../../utils/MathUtils";
-import type { MusicalNote, NoteOctave } from "../../../utils/NoteUtils";
-import NoteUtils from "../../../utils/NoteUtils";
+import { MultiChoiceContext } from "@/contexts/MultiChoiceContext";
+
 import StyleUtils from "../../../utils/StyleUtils";
 import AnswerChoiceButton from "../../AnswerChoice/AnswerChoiceButton";
 import NextRoundButton from "../../NextRoundButton/NextRoundButton";
@@ -19,70 +12,11 @@ import SoundCard from "../../SoundCard/SoundCard";
 import GameContainer from "../GameContainer/GameContainer";
 import MultiChoiceSettingsModal from "./SettingsModal/MultiChoiceSettingsModal";
 
-export interface MultiChoiceState extends BaseGameState {
-  correctNoteOctave: NoteOctave;
-  noteGroup: MusicalNote[];
-  answerChoices: MusicalNote[];
-}
-
 export default function MultiChoiceContainer(): JSX.Element {
-  const [gameSettings, setGameSettings] = useState<MultiChoiceSettings>(GameStateUtils.DEFAULT_MULTI_CHOICE_SETTINGS);
+  const multiChoiceContext = useContext(MultiChoiceContext);
 
-  const generateAnswerChoices = (numAnswerChoices: number, correctNote: MusicalNote, noteGroup: MusicalNote[]): MusicalNote[] => {
-    const filteredNotes = noteGroup.filter(
-      (note: string) => {
-        if (note !== correctNote) {
-          return true;
-        }
-        return false;
-      },
-    );
-    filteredNotes.sort(() => { return Math.random() - 0.5; });
-    const range = MathUtils.clamp(numAnswerChoices - 1, 1, filteredNotes.length);
-    const items = [correctNote].concat(filteredNotes.slice(0, range));
-    // FIXME: Sort items from Ab to G#.
-    items.sort(() => { return Math.random() - 0.5; });
-    return items;
-  };
-
-  const generateNewGameState = (settings: MultiChoiceSettings): MultiChoiceState => {
-    const generateResult = NoteUtils.generateNoteOctave(settings.generateNoteOctaveOptions);
-    const noteOctave = generateResult.noteOctave;
-    const noteGroup = generateResult.noteGroup;
-    const answerChoices = generateAnswerChoices(settings.numAnswerChoices, noteOctave.note, noteGroup);
-    return {
-      correctNoteOctave: noteOctave,
-      noteGroup: noteGroup,
-      answerChoices: answerChoices,
-      isRoundOver: false,
-      hasPlayed: false,
-    };
-  };
-  const [gameState, setGameState] = useState<MultiChoiceState>(generateNewGameState(gameSettings));
-
-  const scoreTracker = useScoreTracker();
-
-  const onNewRound = (settings: MultiChoiceSettings, shouldResetScore: boolean): void => {
-    scoreTracker.onNewRound(shouldResetScore);
-    const newState = generateNewGameState(settings);
-    setGameState(newState);
-  };
-
-  const onClick_AnswerChoice = useCallback((answerChoice: string): void => {
-    setGameState(
-      produce(gameState, (draft): void => {
-        if (draft.isRoundOver) {
-          return;
-        }
-        draft.isRoundOver = true;
-      })
-    );
-    if (answerChoice === gameState.correctNoteOctave.note) {
-      scoreTracker.incrementNumCorrect();
-    } else {
-      scoreTracker.incrementNumIncorrect();
-    }
-  }, [gameState, scoreTracker]);
+  const gameState = multiChoiceContext.gameState;
+  const gameSettings = multiChoiceContext.gameSettings;
 
   const renderAnswerChoiceButtons = (): JSX.Element => {
     const buttons: JSX.Element[] = [];
@@ -97,7 +31,7 @@ export default function MultiChoiceContainer(): JSX.Element {
           key={answerChoice}
           id={answerChoice}
           text={answerChoice}
-          onClick_Button={onClick_AnswerChoice}
+          onClick_Button={multiChoiceContext.submitAnswer}
           isCorrect={isCorrect}
           hasPlayed={gameState.hasPlayed}
           isRoundOver={gameState.isRoundOver}
@@ -111,51 +45,38 @@ export default function MultiChoiceContainer(): JSX.Element {
     );
   };
 
-  const onClick_PlayButton = useCallback((): void => {
-    setGameState(
-      produce(gameState, (draft): void => {
-        if (draft.hasPlayed === true) {
-          return;
-        }
-        draft.hasPlayed = true;
-      })
-    );
-  }, [gameState]);
-
   const renderSoundCard = (): JSX.Element => {
-    const noteOctave = gameState.correctNoteOctave;
     return (
       <SoundCard
-        noteOctave={noteOctave}
+        noteOctave={gameState.correctNoteOctave}
         noteDuration={gameSettings.noteDuration}
-        onClick_PlayButton={onClick_PlayButton}
+        onClick_PlayButton={multiChoiceContext.onPlay}
         width={StyleUtils.STANDARD_GAMEPLAY_ITEM_WIDTH}
         hasPlayed={gameState.hasPlayed}
       />
     );
   };
 
-  const onClick_NextRoundButton = (): void => {
-    onNewRound(gameSettings, false);
-  };
+  const onClick_NextRoundButton = useCallback((): void => {
+    if (multiChoiceContext.onNewRound === undefined) {
+      return;
+    }
+    multiChoiceContext.onNewRound(gameSettings, false);
+  }, [gameSettings, multiChoiceContext]);
 
-  const renderNextRoundButton = (): JSX.Element | null => {
+  const renderNextRoundButton = useCallback((): JSX.Element | null => {
     if (gameState.isRoundOver === false) {
       return null;
     }
     return (
       <NextRoundButton onClick_NextRoundButton={onClick_NextRoundButton} />
     );
-  };
+  }, [gameState.isRoundOver, onClick_NextRoundButton]);
 
   return (
     <GameContainer>
-      <MultiChoiceSettingsModal
-        settings={gameSettings}
-        setGameSettings={setGameSettings}
-        onNewRound={onNewRound}
-      />
-      <ScoreTracker scoreStats={scoreTracker.scoreStats} />
+      <MultiChoiceSettingsModal />
+      <ScoreTracker scoreStats={multiChoiceContext.scoreTracker.scoreStats} />
       {renderSoundCard()}
       <QuestionPrompt
         text="What note was played?"

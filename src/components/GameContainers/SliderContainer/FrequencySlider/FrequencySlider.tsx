@@ -1,47 +1,46 @@
 import { Button, Flex, Slider } from "@mantine/core";
-import React, { useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
+
+import { SliderContext } from "@/contexts/SliderContext";
 
 import useSoundPlayer from "../../../../hooks/useSoundPlayer";
-import type { GenerateOctaveOptions, NoteOctave } from "../../../../utils/NoteUtils";
+import type { NoteOctave } from "../../../../utils/NoteUtils";
 import NoteUtils from "../../../../utils/NoteUtils";
 
-export interface FrequencySlider_Props {
-  octaveOptions: GenerateOctaveOptions;
-  isRoundOver: boolean;
-  hasPlayed: boolean;
-  onClick_SubmitButton: (_sliderAnswerHz: number) => void;
-}
+export default function FrequencySlider(): JSX.Element {
+  const sliderContext = useContext(SliderContext);
 
-export default function FrequencySlider(props: FrequencySlider_Props): JSX.Element {
   const soundPlayer = useSoundPlayer();
 
   const minNoteOctave: NoteOctave = {
     note: "C",
-    octave: props.octaveOptions.min,
+    octave: sliderContext.gameSettings.generateNoteOctaveOptions.octaveOptions.min,
   };
   const maxNoteOctave: NoteOctave = {
     note: "B",
-    octave: props.octaveOptions.max,
+    octave: sliderContext.gameSettings.generateNoteOctaveOptions.octaveOptions.max,
   };
   const minFreq = NoteUtils.convertNoteOctaveToFrequency(minNoteOctave);
   const maxFreq = NoteUtils.convertNoteOctaveToFrequency(maxNoteOctave);
   const initSliderAnswer = (): number => {
     return Math.floor((minFreq + maxFreq) / 2);
   };
-
   const [sliderAnswerHz, setSliderAnswerHz] = useState<number>(initSliderAnswer());
 
+  // NOTE: If this is wrapped with useCallback, MantineUI's slider won't update.
   const onChange_AnswerSlider = (value: number): void => {
     setSliderAnswerHz(value);
   };
 
-  const onChangeEnd_AnswerSlider = (value: number): void => {
+  const onChangeEnd_AnswerSlider = useCallback((value: number): void => {
     soundPlayer.playFreq(value, 0.25);
-  };
+  }, [soundPlayer]);
 
-  const onClick_SubmitButton = (): void => {
-    props.onClick_SubmitButton(sliderAnswerHz);
-  };
+  const onClick_SubmitButton = useCallback((): void => {
+    if (sliderContext.submitAnswer) {
+      sliderContext.submitAnswer(sliderAnswerHz);
+    }
+  }, [sliderAnswerHz, sliderContext]);
 
   // FIXME: Slider/Container max width.
   return (
@@ -68,7 +67,7 @@ export default function FrequencySlider(props: FrequencySlider_Props): JSX.Eleme
         color="teal"
         variant="filled"
         onClick={onClick_SubmitButton}
-        disabled={props.isRoundOver === true || props.hasPlayed === false}
+        disabled={sliderContext.gameState.isRoundOver === true || sliderContext.gameState.hasPlayed === false}
       >
         Submit
       </Button>

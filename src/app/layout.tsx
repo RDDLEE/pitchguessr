@@ -1,13 +1,14 @@
 import "./globals.css";
 import "@mantine/core/styles.css";
 
-import { ColorSchemeScript, createTheme, MantineProvider } from "@mantine/core";
+import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import React from "react";
 
 import AppSettingsProvider from "@/components/AppSettingsProvider/AppSettingsProvider";
 import NavShell from "@/components/NavShell/NavShell";
+import theme from "@/theme/theme";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -36,10 +37,6 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
 };
 
-const theme = createTheme({
-
-});
-
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
   return (
     <html lang="en">
@@ -47,14 +44,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <ColorSchemeScript defaultColorScheme="dark" />
       </head>
       <body className={inter.className}>
-        <AppSettingsProvider>
-          <MantineProvider theme={theme} defaultColorScheme="dark">
+        <MantineProvider theme={theme} defaultColorScheme="dark">
+          <AppSettingsProvider>
             <NavShell>
               {children}
             </NavShell>
-
-          </MantineProvider>
-        </AppSettingsProvider>
+          </AppSettingsProvider>
+        </MantineProvider>
       </body>
     </html>
   );

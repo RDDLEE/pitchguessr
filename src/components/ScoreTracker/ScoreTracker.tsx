@@ -1,10 +1,10 @@
 import { Card, Flex, Text, Tooltip } from "@mantine/core";
 import React from "react";
 
-import type { ScoreTrackerState } from "../../hooks/useScoreTracker";
-import StyleUtils from "../../utils/StyleUtils";
+import type { ScoreTrackerState } from "@/utils/ScoreTrackerUtils";
+import StyleUtils from "@/utils/StyleUtils";
 
-export interface ScoreTracker_Props {
+interface ScoreTracker_Props {
   scoreStats: ScoreTrackerState;
 }
 

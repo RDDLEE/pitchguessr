@@ -33,7 +33,7 @@ export default function SettingsModal(props: SettingsModal_Props): JSX.Element |
         closeOnClickOutside={false}
         opened={props.isOpened}
         onClose={props.disclosureHandlers.close}
-        size="xs"
+        size="sm"
         title="Settings"
         zIndex={1000}
       >

@@ -1,38 +1,37 @@
 import { useDisclosure } from "@mantine/hooks";
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 
 import SettingsModal from "@/components/SettingsModal/SettingsModal";
+import type { DirectionalGameSettings } from "@/contexts/DirectionalContext";
+import { DIRECTIONAL_GAME_SETTINGS_DEFAULT, DirectionalContext } from "@/contexts/DirectionalContext";
 import useSettingsModal from "@/hooks/useSettingsModal";
-import type { BaseSettings, DirectionSettings } from "@/utils/GameStateUtils";
-import GameStateUtils from "@/utils/GameStateUtils";
+import type { BaseGameSettings } from "@/utils/GameStateUtils";
 
-interface DirectionalSettingsModal_Props {
-  settings: DirectionSettings;
-  setGameSettings: React.Dispatch<React.SetStateAction<DirectionSettings>>;
-  onNewRound: (_settings: DirectionSettings, _shouldResetScore: boolean) => void;
-}
+export default function DirectionalSettingsModal(): JSX.Element {
+  const directionalContext = useContext(DirectionalContext);
 
-export default function DirectionalSettingsModal(props: DirectionalSettingsModal_Props): JSX.Element {
   const [isModalOpened, modalHandlers] = useDisclosure();
 
-  const onClick_ApplySettingsButton = useCallback((newBaseSettings: BaseSettings): DirectionSettings => {
+  const onClick_ApplySettingsButton = useCallback((newBaseSettings: BaseGameSettings): DirectionalGameSettings => {
     const newGameSettings = {
       ...newBaseSettings,
     };
-    props.setGameSettings(newGameSettings);
+    if (directionalContext.setGameSettings) {
+      directionalContext.setGameSettings(newGameSettings);
+    }
     return newGameSettings;
-  }, [props]);
+  }, [directionalContext]);
 
   const onClick_ResetSettingsButton = useCallback((): void => {
     // TODO: With pitch difference, etc.
   }, []);
 
-  const settingsModal = useSettingsModal<DirectionSettings>({
-    settings: props.settings,
-    defaultSettings: GameStateUtils.DEFAULT_DIRECTIONAL_SETTINGS,
+  const settingsModal = useSettingsModal<DirectionalGameSettings>({
+    settings: directionalContext.gameSettings,
+    defaultSettings: DIRECTIONAL_GAME_SETTINGS_DEFAULT,
     onClick_ApplySettingsButton: onClick_ApplySettingsButton,
     onClick_ResetSettingsButton: onClick_ResetSettingsButton,
-    onNewRound: props.onNewRound,
+    onNewRound: directionalContext.onNewRound,
     closeModal: modalHandlers.close,
   });
 

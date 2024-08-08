@@ -4,9 +4,11 @@ import React from "react";
 export interface AnswerChoiceButton_Props {
   id: string;
   text: string;
-  onClick_Button: (_answerChoice: string) => void;
+  onClick_Button?: (_answerChoice: string) => void;
   isCorrect: boolean;
+  // FIXME: Read from Context.
   hasPlayed: boolean;
+  // FIXME: Read from Context.
   isRoundOver: boolean;
 }
 
@@ -16,7 +18,9 @@ export default function AnswerChoiceButton(props: AnswerChoiceButton_Props): JSX
     if (disabled) {
       return;
     }
-    props.onClick_Button(props.id);
+    if (props.onClick_Button) {
+      props.onClick_Button(props.id);
+    }
   };
 
   const calcColorScheme = (): string => {

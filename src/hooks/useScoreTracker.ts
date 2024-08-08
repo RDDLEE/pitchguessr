@@ -3,27 +3,10 @@
 import { produce } from "immer";
 import { useCallback, useState } from "react";
 
-export interface ScoreTrackerState {
-  numCorrect: number;
-  numIncorrect: number;
-  didAnswer: boolean;
-  wasCorrect: boolean;
-}
-
-export interface UseScoreTracker_Return {
-  scoreStats: ScoreTrackerState;
-  incrementNumCorrect: () => void;
-  incrementNumIncorrect: () => void;
-  onNewRound: (resetScore: boolean) => void;
-}
+import { SCORE_TRACKER_STATE_DEFAULT, type ScoreTrackerState, type UseScoreTracker_Return } from "@/utils/ScoreTrackerUtils";
 
 const useScoreTracker = (): UseScoreTracker_Return => {
-  const [scoreTrackerState, setScoreTrackerState] = useState<ScoreTrackerState>({
-    numCorrect: 0,
-    numIncorrect: 0,
-    didAnswer: false,
-    wasCorrect: false,
-  });
+  const [scoreTrackerState, setScoreTrackerState] = useState<ScoreTrackerState>(SCORE_TRACKER_STATE_DEFAULT);
 
   const incrementNumCorrect = useCallback((): void => {
     setScoreTrackerState(
@@ -45,7 +28,7 @@ const useScoreTracker = (): UseScoreTracker_Return => {
     );
   }, [scoreTrackerState]);
 
-  const onNewRound = useCallback((resetScore: boolean): void => {
+  const resetScoreState = useCallback((resetScore: boolean): void => {
     if (resetScore) {
       setScoreTrackerState({
         numCorrect: 0,
@@ -67,7 +50,7 @@ const useScoreTracker = (): UseScoreTracker_Return => {
     scoreStats: scoreTrackerState,
     incrementNumCorrect: incrementNumCorrect,
     incrementNumIncorrect: incrementNumIncorrect,
-    onNewRound: onNewRound,
+    resetScoreState: resetScoreState,
   };
 };
 

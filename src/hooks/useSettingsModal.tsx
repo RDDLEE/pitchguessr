@@ -5,7 +5,7 @@ import React, { useCallback, useContext, useState } from "react";
 
 import { AppSettingsContext } from "@/contexts/AppSettingsContext";
 import AppSettingUtils from "@/utils/AppSettingUtils";
-import type { BaseSettings } from "@/utils/GameStateUtils";
+import type { BaseGameSettings } from "@/utils/GameStateUtils";
 import GameStateUtils from "@/utils/GameStateUtils";
 import type { MusicalOctave } from "@/utils/NoteUtils";
 import NoteUtils, { NoteTypes } from "@/utils/NoteUtils";
@@ -31,12 +31,14 @@ interface SettingsFormState {
   shouldResetGame: boolean;
 }
 
-export interface UseSettingsModal_Params<S extends BaseSettings> {
+export interface UseSettingsModal_Params<S extends BaseGameSettings> {
   settings: S;
   defaultSettings: S;
-  onClick_ApplySettingsButton: (_newBaseSettings: BaseSettings) => S;
+  // FIXME: Reevaluate necessity for base settings.
+  onClick_ApplySettingsButton: (_newBaseSettings: BaseGameSettings) => S;
+  // FIXME: Reevaluate handling for resetting settings. At least allow undefined.
   onClick_ResetSettingsButton: () => void;
-  onNewRound: (_settings: S, _shouldResetScore: boolean) => void;
+  onNewRound?: (_settings: S, _shouldResetScore: boolean) => void;
   closeModal: () => void;
 }
 
@@ -49,7 +51,7 @@ export interface UseSettingsModal_Return {
   renderModalButtons: () => JSX.Element;
 }
 
-const useSettingsModal = <S extends BaseSettings>(params: UseSettingsModal_Params<S>): UseSettingsModal_Return => {
+const useSettingsModal = <S extends BaseGameSettings>(params: UseSettingsModal_Params<S>): UseSettingsModal_Return => {
   const appSettings = useContext(AppSettingsContext);
 
   const [formState, setFormState] = useState<SettingsFormState>(
@@ -77,7 +79,7 @@ const useSettingsModal = <S extends BaseSettings>(params: UseSettingsModal_Param
     setAppVolume(value);
   }, [formState]);
 
-  const renderAppVolumeSlider = (): JSX.Element => {
+  const renderAppVolumeSlider = useCallback((): JSX.Element => {
     let appVolumeText: string = `${appVolume} dB`;
     if (appVolume === AppSettingUtils.VOLUME_SETTING_MUTE) {
       appVolumeText = "None";
@@ -98,7 +100,7 @@ const useSettingsModal = <S extends BaseSettings>(params: UseSettingsModal_Param
         <Divider mt="xs" mb="xs" />
       </React.Fragment>
     );
-  };
+  }, [appVolume, onChange_AppVolumeSlider]);
 
   const onChange_NoteDurationSlider = useCallback((value: number): void => {
     setFormState(
@@ -110,7 +112,7 @@ const useSettingsModal = <S extends BaseSettings>(params: UseSettingsModal_Param
     setNoteDuration(value);
   }, [formState]);
 
-  const renderNoteDurationSlider = (): JSX.Element => {
+  const renderNoteDurationSlider = useCallback((): JSX.Element => {
     return (
       <React.Fragment>
         <Text>
@@ -127,7 +129,7 @@ const useSettingsModal = <S extends BaseSettings>(params: UseSettingsModal_Param
         <Divider mt="xs" mb="xs" />
       </React.Fragment>
     );
-  };
+  }, [noteDuration, onChange_NoteDurationSlider, params.defaultSettings.noteDuration]);
 
   const onChange_OctaveRangeSlider = useCallback((value: RangeSliderValue): void => {
     setFormState({ isDirty: true, shouldResetGame: true });
@@ -137,7 +139,7 @@ const useSettingsModal = <S extends BaseSettings>(params: UseSettingsModal_Param
     });
   }, []);
 
-  const renderOctaveRangeSlider = (): JSX.Element => {
+  const renderOctaveRangeSlider = useCallback((): JSX.Element => {
     return (
       <React.Fragment>
         <Text>
@@ -161,14 +163,14 @@ const useSettingsModal = <S extends BaseSettings>(params: UseSettingsModal_Param
         <Divider mt="xs" mb="xs" />
       </React.Fragment>
     );
-  };
+  }, [octaveMinMax.max, octaveMinMax.min, onChange_OctaveRangeSlider, params.settings.generateNoteOctaveOptions.octaveOptions.max, params.settings.generateNoteOctaveOptions.octaveOptions.min]);
 
   const onChange_NoteTypeRadio = useCallback((nextValue: NoteTypes): void => {
     setFormState({ isDirty: true, shouldResetGame: true });
     setNoteType(nextValue);
   }, []);
 
-  const renderNoteTypeRadio = (): JSX.Element => {
+  const renderNoteTypeRadio = useCallback((): JSX.Element => {
     return (
       <React.Fragment>
         <Text>Notes:</Text>
@@ -183,13 +185,13 @@ const useSettingsModal = <S extends BaseSettings>(params: UseSettingsModal_Param
         <Divider mt="xs" mb="xs" />
       </React.Fragment>
     );
-  };
+  }, [noteType, onChange_NoteTypeRadio]);
 
   const onClick_ApplySettingsButton = useCallback((): void => {
     if (appSettings.setVolume !== undefined) {
       appSettings.setVolume(appVolume);
     }
-    const newBaseSettings: BaseSettings = {
+    const newBaseSettings: BaseGameSettings = {
       noteDuration: noteDuration,
       generateNoteOctaveOptions: {
         noteOptions: {
@@ -203,7 +205,9 @@ const useSettingsModal = <S extends BaseSettings>(params: UseSettingsModal_Param
     };
     const newSettings = params.onClick_ApplySettingsButton(newBaseSettings);
     if (formState.shouldResetGame === true) {
-      params.onNewRound(newSettings, true);
+      if (params.onNewRound) {
+        params.onNewRound(newSettings, true);
+      }
     }
     setFormState({ isDirty: false, shouldResetGame: false });
     // Could reset form state on close.
@@ -225,7 +229,7 @@ const useSettingsModal = <S extends BaseSettings>(params: UseSettingsModal_Param
     params.onClick_ResetSettingsButton();
   }, [params]);
 
-  const renderModalButtons = (): JSX.Element => {
+  const renderModalButtons = useCallback((): JSX.Element => {
     return (
       <React.Fragment>
         <Button mt={4} mr={4} color="teal" variant="filled" onClick={onClick_ApplySettingsButton} disabled={formState.isDirty === false}>
@@ -236,7 +240,7 @@ const useSettingsModal = <S extends BaseSettings>(params: UseSettingsModal_Param
         </Button>
       </React.Fragment>
     );
-  };
+  }, [formState.isDirty, onClick_ApplySettingsButton, onClick_ResetSettingsButton]);
 
   return {
     setFormState: setFormState,

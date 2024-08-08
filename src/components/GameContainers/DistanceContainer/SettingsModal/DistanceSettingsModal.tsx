@@ -2,48 +2,51 @@ import { useDisclosure } from "@mantine/hooks";
 import React, { useCallback, useContext } from "react";
 
 import SettingsModal from "@/components/SettingsModal/SettingsModal";
-import type { SliderGameSettings } from "@/contexts/SliderContext";
-import { SLIDER_GAME_SETTINGS_DEFAULT, SliderContext } from "@/contexts/SliderContext";
+import type { DistanceGameSettings } from "@/contexts/DistanceContext";
+import { DISTANCE_SETTINGS_DEFAULT, DistanceContext } from "@/contexts/DistanceContext";
 import useSettingsModal from "@/hooks/useSettingsModal";
 import type { BaseGameSettings } from "@/utils/GameStateUtils";
 
-export default function SliderSettingsModal(): JSX.Element {
-  const sliderContext = useContext(SliderContext);
+export default function DistanceSettingsModal(): JSX.Element {
+  const distanceContext = useContext(DistanceContext);
 
   const [isModalOpened, modalHandlers] = useDisclosure();
 
-  // FIXME: Extract out to Provider.
-  const onClick_ApplySettingsButton = useCallback((newBaseSettings: BaseGameSettings): SliderGameSettings => {
+  const onClick_ApplySettingsButton = useCallback((newBaseSettings: BaseGameSettings): DistanceGameSettings => {
     const newGameSettings = {
       ...newBaseSettings,
     };
-    if (sliderContext.setGameSettings) {
-      sliderContext.setGameSettings(newGameSettings);
+    if (distanceContext.setGameSettings) {
+      distanceContext.setGameSettings(newGameSettings);
     }
     return newGameSettings;
-  }, [sliderContext]);
+  }, [distanceContext]);
 
   const onClick_ResetSettingsButton = useCallback((): void => {}, []);
 
-  const settingsModal = useSettingsModal<SliderGameSettings>({
-    settings: sliderContext.gameSettings,
-    defaultSettings: SLIDER_GAME_SETTINGS_DEFAULT,
+  const settingsModal = useSettingsModal<DistanceGameSettings>({
+    // FIXME: Get from context.
+    settings: distanceContext.gameSettings,
+    // FIXME: Maybe get from context?
+    defaultSettings: DISTANCE_SETTINGS_DEFAULT,
     onClick_ApplySettingsButton: onClick_ApplySettingsButton,
     onClick_ResetSettingsButton: onClick_ResetSettingsButton,
-    onNewRound: sliderContext.onNewRound,
+    // FIXME: Get from context.
+    onNewRound: distanceContext.onNewRound,
     closeModal: modalHandlers.close,
   });
 
-  const renderModalBody = (): JSX.Element => {
+  const renderModalBody = useCallback((): JSX.Element => {
     return (
       <React.Fragment>
         {settingsModal.renderAppVolumeSlider()}
         {settingsModal.renderNoteDurationSlider()}
-        {settingsModal.renderOctaveRangeSlider()}
+        {/* TODO: Implement Distance octaves. */}
+        {/* {settingsModal.renderOctaveRangeSlider()} */}
         {settingsModal.renderNoteTypeRadio()}
       </React.Fragment>
     );
-  };
+  }, [settingsModal]);
 
   return (
     <SettingsModal

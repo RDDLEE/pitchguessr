@@ -1,45 +1,45 @@
 import { Divider, Slider, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 
 import SettingsModal from "@/components/SettingsModal/SettingsModal";
+import type { MultiChoiceGameSettings } from "@/contexts/MultiChoiceContext";
+import { MULTI_CHOICE_GAME_SETTINGS_DEFAULT, MultiChoiceContext } from "@/contexts/MultiChoiceContext";
 import useSettingsModal from "@/hooks/useSettingsModal";
-import type { BaseSettings, MultiChoiceSettings } from "@/utils/GameStateUtils";
-import GameStateUtils from "@/utils/GameStateUtils";
+import type { BaseGameSettings } from "@/utils/GameStateUtils";
 
-interface MultiChoiceSettingsModal_Props {
-  settings: MultiChoiceSettings;
-  setGameSettings: React.Dispatch<React.SetStateAction<MultiChoiceSettings>>;
-  onNewRound: (_settings: MultiChoiceSettings, _shouldResetScore: boolean) => void;
-}
+export default function MultiChoiceSettingsModal(): JSX.Element {
+  const multiChoiceContext = useContext(MultiChoiceContext);
+  const gameSettings = multiChoiceContext.gameSettings;
 
-export default function MultiChoiceSettingsModal(props: MultiChoiceSettingsModal_Props): JSX.Element {
+  const [numAnswerChoices, setNumAnswerChoices] = useState<number>(gameSettings.numAnswerChoices);
+
   const [isModalOpened, modalHandlers] = useDisclosure();
 
   const NUM_ANSWER_CHOICES_MIN = 2;
   const NUM_ANSWER_CHOICES_MAX = 12;
 
-  const [numAnswerChoices, setNumAnswerChoices] = useState<number>(props.settings.numAnswerChoices);
-
-  const onClick_ApplySettingsButton = useCallback((newBaseSettings: BaseSettings): MultiChoiceSettings => {
+  const onClick_ApplySettingsButton = useCallback((newBaseSettings: BaseGameSettings): MultiChoiceGameSettings => {
     const newGameSettings = {
       ...newBaseSettings,
       numAnswerChoices: numAnswerChoices,
     };
-    props.setGameSettings(newGameSettings);
+    if (multiChoiceContext.setGameSettings) {
+      multiChoiceContext.setGameSettings(newGameSettings);
+    }
     return newGameSettings;
-  }, [numAnswerChoices, props]);
+  }, [multiChoiceContext, numAnswerChoices]);
 
   const onClick_ResetSettingsButton = useCallback((): void => {
-    setNumAnswerChoices(GameStateUtils.DEFAULT_MULTI_CHOICE_SETTINGS.numAnswerChoices);
+    setNumAnswerChoices(MULTI_CHOICE_GAME_SETTINGS_DEFAULT.numAnswerChoices);
   }, []);
 
-  const settingsModal = useSettingsModal<MultiChoiceSettings>({
-    settings: props.settings,
-    defaultSettings: GameStateUtils.DEFAULT_MULTI_CHOICE_SETTINGS,
+  const settingsModal = useSettingsModal<MultiChoiceGameSettings>({
+    settings: gameSettings,
+    defaultSettings: MULTI_CHOICE_GAME_SETTINGS_DEFAULT,
     onClick_ApplySettingsButton: onClick_ApplySettingsButton,
     onClick_ResetSettingsButton: onClick_ResetSettingsButton,
-    onNewRound: props.onNewRound,
+    onNewRound: multiChoiceContext.onNewRound,
     closeModal: modalHandlers.close,
   });
 
@@ -55,7 +55,7 @@ export default function MultiChoiceSettingsModal(props: MultiChoiceSettingsModal
           {`# Answer Choices: ${numAnswerChoices}`}
         </Text>
         <Slider
-          defaultValue={props.settings.numAnswerChoices}
+          defaultValue={gameSettings.numAnswerChoices}
           min={NUM_ANSWER_CHOICES_MIN}
           max={NUM_ANSWER_CHOICES_MAX}
           step={1}

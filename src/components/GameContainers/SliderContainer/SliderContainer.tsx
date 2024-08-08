@@ -1,17 +1,11 @@
-"use client";
-
 import { Text } from "@mantine/core";
-import { produce } from "immer";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useContext } from "react";
 
 import NextRoundButton from "@/components/NextRoundButton/NextRoundButton";
 import QuestionPrompt from "@/components/QuestionPrompt/QuestionPrompt";
 import ScoreTracker from "@/components/ScoreTracker/ScoreTracker";
 import SoundCard from "@/components/SoundCard/SoundCard";
-import useScoreTracker from "@/hooks/useScoreTracker";
-import type { BaseGameState, SliderSettings } from "@/utils/GameStateUtils";
-import GameStateUtils from "@/utils/GameStateUtils";
-import type { NoteOctave } from "@/utils/NoteUtils";
+import { SliderContext } from "@/contexts/SliderContext";
 import NoteUtils from "@/utils/NoteUtils";
 import StyleUtils from "@/utils/StyleUtils";
 
@@ -19,102 +13,41 @@ import GameContainer from "../GameContainer/GameContainer";
 import FrequencySlider from "./FrequencySlider/FrequencySlider";
 import SliderSettingsModal from "./SettingsModal/SliderSettingsModal";
 
-interface SliderState extends BaseGameState {
-  correctNoteOctave: NoteOctave;
-}
-
 export default function SliderContainer(): JSX.Element {
-  const [gameSettings, setGameSettings] = useState<SliderSettings>(GameStateUtils.DEFAULT_SLIDER_SETTINGS);
+  const sliderContext = useContext(SliderContext);
 
-  const generateNewGameState = (settings: SliderSettings): SliderState => {
-    const generateResult = NoteUtils.generateNoteOctave(settings.generateNoteOctaveOptions);
-    const noteOctave = generateResult.noteOctave;
-    return {
-      correctNoteOctave: noteOctave,
-      isRoundOver: false,
-      hasPlayed: false,
-    };
-  };
-  const [gameState, setGameState] = useState<SliderState>(generateNewGameState(gameSettings));
-
-  const scoreTracker = useScoreTracker();
-
-  const onNewRound = (settings: SliderSettings, shouldResetScore: boolean): void => {
-    scoreTracker.onNewRound(shouldResetScore);
-    const newState = generateNewGameState(settings);
-    setGameState(newState);
-  };
-
-  const onClick_PlayButton = useCallback((): void => {
-    setGameState(
-      produce(gameState, (draft): void => {
-        if (draft.hasPlayed === true) {
-          return;
-        }
-        draft.hasPlayed = true;
-      })
-    );
-  }, [gameState]);
+  const gameState = sliderContext.gameState;
+  const gameSettings = sliderContext.gameSettings;
 
   const renderSoundCard = (): JSX.Element => {
-    const noteOctave = gameState.correctNoteOctave;
     return (
       <SoundCard
-        noteOctave={noteOctave}
+        noteOctave={gameState.correctNoteOctave}
         noteDuration={gameSettings.noteDuration}
-        onClick_PlayButton={onClick_PlayButton}
+        onClick_PlayButton={sliderContext.onPlay}
         width={StyleUtils.STANDARD_GAMEPLAY_ITEM_WIDTH}
         hasPlayed={gameState.hasPlayed}
       />
     );
   };
 
-  const onClick_SliderAnswerSubmit = useCallback((sliderAnswerHz: number): void => {
-    setGameState(
-      produce(gameState, (draft): void => {
-        if (draft.isRoundOver) {
-          return;
-        }
-        draft.isRoundOver = true;
-      })
-    );
-    const correctHz = NoteUtils.convertNoteOctaveToFrequency(gameState.correctNoteOctave);
-    // Converting from NoteOctave to Freq to Tone.Unit.Note.
-    const correctNote = NoteUtils.convertFrequencyToNoteOctave(correctHz);
-    const chosenNote = NoteUtils.convertFrequencyToNoteOctave(sliderAnswerHz);
-    // FIXME: Display correct slider value.
-    if (chosenNote === correctNote) {
-      scoreTracker.incrementNumCorrect();
-    } else {
-      scoreTracker.incrementNumIncorrect();
+  const onClick_NextRoundButton = useCallback((): void => {
+    if (sliderContext.onNewRound === undefined) {
+      return;
     }
-  }, [gameState, scoreTracker]);
+    sliderContext.onNewRound(gameSettings, false);
+  }, [gameSettings, sliderContext]);
 
-  const renderSoundSlider = (): JSX.Element => {
-    return (
-      <FrequencySlider
-        octaveOptions={gameSettings.generateNoteOctaveOptions.octaveOptions}
-        onClick_SubmitButton={onClick_SliderAnswerSubmit}
-        hasPlayed={gameState.hasPlayed}
-        isRoundOver={gameState.isRoundOver}
-      />
-    );
-  };
-
-  const onClick_NextRoundButton = (): void => {
-    onNewRound(gameSettings, false);
-  };
-
-  const renderNextRoundButton = (): JSX.Element | null => {
+  const renderNextRoundButton = useCallback((): JSX.Element | null => {
     if (gameState.isRoundOver === false) {
       return null;
     }
     return (
       <NextRoundButton onClick_NextRoundButton={onClick_NextRoundButton} />
     );
-  };
+  }, [gameState.isRoundOver, onClick_NextRoundButton]);
 
-  const renderCorrectAnswerText = (): JSX.Element | null => {
+  const renderCorrectAnswerText = useCallback((): JSX.Element | null => {
     if (!gameState.isRoundOver) {
       return null;
     }
@@ -124,21 +57,17 @@ export default function SliderContainer(): JSX.Element {
         {`The correct note was: ${gameState.correctNoteOctave.note}${gameState.correctNoteOctave.octave} at ${Math.round(correctHz)} Hz.`}
       </Text>
     );
-  };
+  }, [gameState.correctNoteOctave, gameState.isRoundOver]);
 
   return (
     <GameContainer>
-      <SliderSettingsModal
-        settings={gameSettings}
-        setGameSettings={setGameSettings}
-        onNewRound={onNewRound}
-      />
-      <ScoreTracker scoreStats={scoreTracker.scoreStats} />
+      <SliderSettingsModal />
+      <ScoreTracker scoreStats={sliderContext.scoreTracker.scoreStats} />
       {renderSoundCard()}
       <QuestionPrompt
         text="Use the slider to match the note."
       />
-      {renderSoundSlider()}
+      <FrequencySlider />
       {renderCorrectAnswerText()}
       {renderNextRoundButton()}
     </GameContainer>

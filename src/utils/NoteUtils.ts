@@ -25,6 +25,11 @@ export interface NoteOctave {
   octave: MusicalOctave;
 }
 
+export const NOTE_OCTAVE_DEFAULT: NoteOctave = {
+  note: "A",
+  octave: 0,
+};
+
 export interface GenerateNoteOptions {
   noteType: NoteTypes;
 }
@@ -113,6 +118,12 @@ export default class NoteUtils {
     const noteValue = NoteUtils.NOTE_VALUES[noteOctave.note];
     const noteOctaveValue = noteValue + (noteOctave.octave * 12);
     return noteOctaveValue;
+  };
+
+  public static readonly getStepDifferenceOfNoteValues = (firstNoteOctave: NoteOctave, secondNoteOctave: NoteOctave): number => {
+    const firstVal = NoteUtils.calculateNoteOctaveValue(firstNoteOctave);
+    const secondVal = NoteUtils.calculateNoteOctaveValue(secondNoteOctave);
+    return Math.abs(firstVal - secondVal);
   };
 
   /**

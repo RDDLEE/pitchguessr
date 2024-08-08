@@ -1,5 +1,3 @@
-"use client";
-
 import { Card, Flex } from "@mantine/core";
 import React from "react";
 

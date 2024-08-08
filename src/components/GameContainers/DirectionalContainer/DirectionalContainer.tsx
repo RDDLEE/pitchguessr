@@ -1,95 +1,33 @@
-"use client";
-
 import { Group } from "@mantine/core";
-import { produce } from "immer";
-import React, { useCallback, useState } from "react";
+import React, { useContext } from "react";
 
 import AnswerChoiceButton from "@/components/AnswerChoice/AnswerChoiceButton";
 import NextRoundButton from "@/components/NextRoundButton/NextRoundButton";
 import QuestionPrompt from "@/components/QuestionPrompt/QuestionPrompt";
 import ScoreTracker from "@/components/ScoreTracker/ScoreTracker";
 import SoundCard from "@/components/SoundCard/SoundCard";
-import useScoreTracker from "@/hooks/useScoreTracker";
-import type { BaseGameState, DirectionSettings } from "@/utils/GameStateUtils";
-import GameStateUtils from "@/utils/GameStateUtils";
-import type { NoteOctave, PitchDirection } from "@/utils/NoteUtils";
+import { DirectionalContext } from "@/contexts/DirectionalContext";
 import NoteUtils from "@/utils/NoteUtils";
 import StyleUtils from "@/utils/StyleUtils";
 
 import GameContainer from "../GameContainer/GameContainer";
 import DirectionalSettingsModal from "./SettingsModal/DirectionalSettingsModal";
 
-export interface NoteOctavePair {
-  firstNoteOctave: NoteOctave;
-  secondNoteOctave: NoteOctave;
-}
-
-export interface DirectionalState extends BaseGameState {
-  hasPlayedSecond: boolean;
-  noteOctavePair: NoteOctavePair;
-  correctDirection: PitchDirection;
-}
+const SOUND_CARD_HSTACK_GAP_WIDTH = 2;
+const SOUND_CARD_WIDTH = (StyleUtils.STANDARD_GAMEPLAY_ITEM_WIDTH - (SOUND_CARD_HSTACK_GAP_WIDTH * 4)) / 2;
 
 export default function DirectionalContainer(): JSX.Element {
-  const [gameSettings, setGameSettings] = useState<DirectionSettings>(GameStateUtils.DEFAULT_DIRECTIONAL_SETTINGS);
+  const directionalContext = useContext(DirectionalContext);
 
-  const scoreTracker = useScoreTracker();
-
-  const SOUND_CARD_HSTACK_GAP_WIDTH = 2;
-
-  const SOUND_CARD_WIDTH = (StyleUtils.STANDARD_GAMEPLAY_ITEM_WIDTH - (SOUND_CARD_HSTACK_GAP_WIDTH * 4)) / 2;
-
-  const generateNewState = (settings: DirectionSettings): DirectionalState => {
-    const newFirstNoteOctave = NoteUtils.generateNoteOctave(settings.generateNoteOctaveOptions).noteOctave;
-    const newSecondNoteOctave = NoteUtils.generateNoteOctave(settings.generateNoteOctaveOptions).noteOctave;
-    const correctPitchDirection = NoteUtils.compareNoteOctaveValues(newFirstNoteOctave, newSecondNoteOctave);
-    return {
-      noteOctavePair: {
-        firstNoteOctave: newFirstNoteOctave,
-        secondNoteOctave: newSecondNoteOctave,
-      },
-      correctDirection: correctPitchDirection,
-      isRoundOver: false,
-      hasPlayed: false,
-      hasPlayedSecond: false,
-    };
-  };
-  const [gameState, setGameState] = useState<DirectionalState>(generateNewState(gameSettings));
-
-  const onNewRound = (settings: DirectionSettings, shouldResetScore: boolean): void => {
-    scoreTracker.onNewRound(shouldResetScore);
-    const newState = generateNewState(settings);
-    setGameState(newState);
-  };
-
-  const onClick_PlayButtonFirst = useCallback((): void => {
-    setGameState(
-      produce(gameState, (draft): void => {
-        if (draft.hasPlayed === true) {
-          return;
-        }
-        draft.hasPlayed = true;
-      })
-    );
-  }, [gameState]);
-
-  const onClick_PlayButtonSecond = useCallback((): void => {
-    setGameState(
-      produce(gameState, (draft): void => {
-        if (draft.hasPlayedSecond === true) {
-          return;
-        }
-        draft.hasPlayedSecond = true;
-      })
-    );
-  }, [gameState]);
+  const gameState = directionalContext.gameState;
+  const gameSettings = directionalContext.gameSettings;
 
   const renderFirstSoundCard = (): JSX.Element => {
     return (
       <SoundCard
-        noteOctave={gameState.noteOctavePair.firstNoteOctave}
+        noteOctave={gameState.firstNoteOctave}
         noteDuration={gameSettings.noteDuration}
-        onClick_PlayButton={onClick_PlayButtonFirst}
+        onClick_PlayButton={directionalContext.onPlay}
         width={SOUND_CARD_WIDTH}
         hasPlayed={gameState.hasPlayed}
         tooltipText="Play Me First!"
@@ -100,9 +38,9 @@ export default function DirectionalContainer(): JSX.Element {
   const renderSecondSoundCard = (): JSX.Element => {
     return (
       <SoundCard
-        noteOctave={gameState.noteOctavePair.secondNoteOctave}
+        noteOctave={gameState.secondNoteOctave}
         noteDuration={gameSettings.noteDuration}
-        onClick_PlayButton={onClick_PlayButtonSecond}
+        onClick_PlayButton={directionalContext.onPlaySecond}
         width={SOUND_CARD_WIDTH}
         hasPlayed={gameState.hasPlayedSecond}
         tooltipText="Play Me Second!"
@@ -110,19 +48,6 @@ export default function DirectionalContainer(): JSX.Element {
       />
     );
   };
-
-  const onClick_AnswerChoice = useCallback((answerChoice: string): void => {
-    setGameState(
-      produce(gameState, (draft): void => {
-        draft.isRoundOver = true;
-      })
-    );
-    if (Number(answerChoice) === gameState.correctDirection) {
-      scoreTracker.incrementNumCorrect();
-    } else {
-      scoreTracker.incrementNumIncorrect();
-    }
-  }, [gameState, scoreTracker]);
 
   const renderAnswerChoiceButtons = (): JSX.Element => {
     const buttons: JSX.Element[] = [];
@@ -138,7 +63,7 @@ export default function DirectionalContainer(): JSX.Element {
           key={answerChoice}
           id={answerChoice.toString()}
           text={NoteUtils.convertPitchDirectionToText(answerChoice)}
-          onClick_Button={onClick_AnswerChoice}
+          onClick_Button={directionalContext.submitAnswer}
           isCorrect={isCorrect}
           hasPlayed={gameState.hasPlayed && gameState.hasPlayedSecond}
           isRoundOver={gameState.isRoundOver}
@@ -153,7 +78,10 @@ export default function DirectionalContainer(): JSX.Element {
   };
 
   const onClick_NextRoundButton = (): void => {
-    onNewRound(gameSettings, false);
+    if (directionalContext.onNewRound === undefined) {
+      return;
+    }
+    directionalContext.onNewRound(gameSettings, false);
   };
 
   const renderNextRoundButton = (): JSX.Element | null => {
@@ -167,12 +95,8 @@ export default function DirectionalContainer(): JSX.Element {
 
   return (
     <GameContainer>
-      <DirectionalSettingsModal
-        settings={gameSettings}
-        setGameSettings={setGameSettings}
-        onNewRound={onNewRound}
-      />
-      <ScoreTracker scoreStats={scoreTracker.scoreStats} />
+      <DirectionalSettingsModal />
+      <ScoreTracker scoreStats={directionalContext.scoreTracker.scoreStats} />
       <Group gap="xs">
         {renderFirstSoundCard()}
         {renderSecondSoundCard()}

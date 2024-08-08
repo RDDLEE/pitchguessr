@@ -1,5 +1,9 @@
+"use client";
+
 import dynamic from "next/dynamic";
 import React from "react";
+
+import MultiChoiceProvider from "@/components/GameContainers/MultiChoiceContainer/MultiChoiceProvider";
 
 // Loaded on client to prevent server/client mismatch when generating answer choices. Will make pure later.
 const MultiChoiceContainer = dynamic(
@@ -12,7 +16,9 @@ const MultiChoiceContainer = dynamic(
 export default function MultiChoicePage() {
   return (
     <main>
-      <MultiChoiceContainer />
+      <MultiChoiceProvider>
+        <MultiChoiceContainer />
+      </MultiChoiceProvider>
     </main>
   );
 }
