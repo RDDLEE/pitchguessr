@@ -1,4 +1,3 @@
-// FIXME: Put in class.
 export interface ScoreTrackerState {
   numCorrect: number;
   numIncorrect: number;

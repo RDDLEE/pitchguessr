@@ -6,9 +6,7 @@ export interface AnswerChoiceButton_Props {
   text: string;
   onClick_Button?: (_answerChoice: string) => void;
   isCorrect: boolean;
-  // FIXME: Read from Context.
   hasPlayed: boolean;
-  // FIXME: Read from Context.
   isRoundOver: boolean;
 }
 

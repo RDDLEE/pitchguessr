@@ -45,9 +45,7 @@ export default function DistanceContainer(): JSX.Element {
   return (
     <GameContainer>
       <DistanceSettingsModal />
-      {/* FIXME: Extract scoreStats from context. */}
       <ScoreTracker scoreStats={distanceContext.scoreTracker.scoreStats} />
-      {/* Sound card extract values from context. */}
       {renderFirstSoundCard()}
       <DistanceSlider />
       {renderNextRoundButton()}

@@ -19,7 +19,7 @@ export default function MultiChoiceSettingsModal(): JSX.Element {
   const NUM_ANSWER_CHOICES_MIN = 2;
   const NUM_ANSWER_CHOICES_MAX = 12;
 
-  const onClick_ApplySettingsButton = useCallback((newBaseSettings: BaseGameSettings): MultiChoiceGameSettings => {
+  const applyExtendedSettings = useCallback((newBaseSettings: BaseGameSettings): MultiChoiceGameSettings => {
     const newGameSettings = {
       ...newBaseSettings,
       numAnswerChoices: numAnswerChoices,
@@ -30,15 +30,15 @@ export default function MultiChoiceSettingsModal(): JSX.Element {
     return newGameSettings;
   }, [multiChoiceContext, numAnswerChoices]);
 
-  const onClick_ResetSettingsButton = useCallback((): void => {
+  const resetExtendedSettings = useCallback((): void => {
     setNumAnswerChoices(MULTI_CHOICE_GAME_SETTINGS_DEFAULT.numAnswerChoices);
   }, []);
 
   const settingsModal = useSettingsModal<MultiChoiceGameSettings>({
     settings: gameSettings,
     defaultSettings: MULTI_CHOICE_GAME_SETTINGS_DEFAULT,
-    onClick_ApplySettingsButton: onClick_ApplySettingsButton,
-    onClick_ResetSettingsButton: onClick_ResetSettingsButton,
+    applyExtendedSettings: applyExtendedSettings,
+    resetExtendedSettings: resetExtendedSettings,
     onNewRound: multiChoiceContext.onNewRound,
     closeModal: modalHandlers.close,
   });

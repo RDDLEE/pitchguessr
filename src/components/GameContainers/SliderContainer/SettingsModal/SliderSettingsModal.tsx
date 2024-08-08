@@ -12,8 +12,7 @@ export default function SliderSettingsModal(): JSX.Element {
 
   const [isModalOpened, modalHandlers] = useDisclosure();
 
-  // FIXME: Extract out to Provider.
-  const onClick_ApplySettingsButton = useCallback((newBaseSettings: BaseGameSettings): SliderGameSettings => {
+  const applyExtendedSettings = useCallback((newBaseSettings: BaseGameSettings): SliderGameSettings => {
     const newGameSettings = {
       ...newBaseSettings,
     };
@@ -23,13 +22,10 @@ export default function SliderSettingsModal(): JSX.Element {
     return newGameSettings;
   }, [sliderContext]);
 
-  const onClick_ResetSettingsButton = useCallback((): void => {}, []);
-
   const settingsModal = useSettingsModal<SliderGameSettings>({
     settings: sliderContext.gameSettings,
     defaultSettings: SLIDER_GAME_SETTINGS_DEFAULT,
-    onClick_ApplySettingsButton: onClick_ApplySettingsButton,
-    onClick_ResetSettingsButton: onClick_ResetSettingsButton,
+    applyExtendedSettings: applyExtendedSettings,
     onNewRound: sliderContext.onNewRound,
     closeModal: modalHandlers.close,
   });

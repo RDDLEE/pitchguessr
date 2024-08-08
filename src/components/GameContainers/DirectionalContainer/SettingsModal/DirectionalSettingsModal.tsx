@@ -12,7 +12,7 @@ export default function DirectionalSettingsModal(): JSX.Element {
 
   const [isModalOpened, modalHandlers] = useDisclosure();
 
-  const onClick_ApplySettingsButton = useCallback((newBaseSettings: BaseGameSettings): DirectionalGameSettings => {
+  const applyExtendedSettings = useCallback((newBaseSettings: BaseGameSettings): DirectionalGameSettings => {
     const newGameSettings = {
       ...newBaseSettings,
     };
@@ -22,15 +22,10 @@ export default function DirectionalSettingsModal(): JSX.Element {
     return newGameSettings;
   }, [directionalContext]);
 
-  const onClick_ResetSettingsButton = useCallback((): void => {
-    // TODO: With pitch difference, etc.
-  }, []);
-
   const settingsModal = useSettingsModal<DirectionalGameSettings>({
     settings: directionalContext.gameSettings,
     defaultSettings: DIRECTIONAL_GAME_SETTINGS_DEFAULT,
-    onClick_ApplySettingsButton: onClick_ApplySettingsButton,
-    onClick_ResetSettingsButton: onClick_ResetSettingsButton,
+    applyExtendedSettings: applyExtendedSettings,
     onNewRound: directionalContext.onNewRound,
     closeModal: modalHandlers.close,
   });

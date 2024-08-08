@@ -12,7 +12,7 @@ export default function DistanceSettingsModal(): JSX.Element {
 
   const [isModalOpened, modalHandlers] = useDisclosure();
 
-  const onClick_ApplySettingsButton = useCallback((newBaseSettings: BaseGameSettings): DistanceGameSettings => {
+  const applyExtendedSettings = useCallback((newBaseSettings: BaseGameSettings): DistanceGameSettings => {
     const newGameSettings = {
       ...newBaseSettings,
     };
@@ -22,16 +22,10 @@ export default function DistanceSettingsModal(): JSX.Element {
     return newGameSettings;
   }, [distanceContext]);
 
-  const onClick_ResetSettingsButton = useCallback((): void => {}, []);
-
   const settingsModal = useSettingsModal<DistanceGameSettings>({
-    // FIXME: Get from context.
     settings: distanceContext.gameSettings,
-    // FIXME: Maybe get from context?
     defaultSettings: DISTANCE_SETTINGS_DEFAULT,
-    onClick_ApplySettingsButton: onClick_ApplySettingsButton,
-    onClick_ResetSettingsButton: onClick_ResetSettingsButton,
-    // FIXME: Get from context.
+    applyExtendedSettings: applyExtendedSettings,
     onNewRound: distanceContext.onNewRound,
     closeModal: modalHandlers.close,
   });

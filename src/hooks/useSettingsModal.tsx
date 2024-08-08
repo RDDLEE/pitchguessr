@@ -34,10 +34,8 @@ interface SettingsFormState {
 export interface UseSettingsModal_Params<S extends BaseGameSettings> {
   settings: S;
   defaultSettings: S;
-  // FIXME: Reevaluate necessity for base settings.
-  onClick_ApplySettingsButton: (_newBaseSettings: BaseGameSettings) => S;
-  // FIXME: Reevaluate handling for resetting settings. At least allow undefined.
-  onClick_ResetSettingsButton: () => void;
+  applyExtendedSettings: (_newBaseSettings: BaseGameSettings) => S;
+  resetExtendedSettings?: () => void;
   onNewRound?: (_settings: S, _shouldResetScore: boolean) => void;
   closeModal: () => void;
 }
@@ -187,6 +185,8 @@ const useSettingsModal = <S extends BaseGameSettings>(params: UseSettingsModal_P
     );
   }, [noteType, onChange_NoteTypeRadio]);
 
+  // NOTE: Common settings are applied here.
+  // - To override, use params.applyExtendedSettings.
   const onClick_ApplySettingsButton = useCallback((): void => {
     if (appSettings.setVolume !== undefined) {
       appSettings.setVolume(appVolume);
@@ -203,7 +203,7 @@ const useSettingsModal = <S extends BaseGameSettings>(params: UseSettingsModal_P
         },
       },
     };
-    const newSettings = params.onClick_ApplySettingsButton(newBaseSettings);
+    const newSettings = params.applyExtendedSettings(newBaseSettings);
     if (formState.shouldResetGame === true) {
       if (params.onNewRound) {
         params.onNewRound(newSettings, true);
@@ -217,6 +217,8 @@ const useSettingsModal = <S extends BaseGameSettings>(params: UseSettingsModal_P
     noteDuration, noteType, octaveMinMax.max, octaveMinMax.min, params,
   ]);
 
+  // NOTE: Common settings are handled here.
+  // - For resetting extended settings, use params.resetExtendedSettings;
   const onClick_ResetSettingsButton = useCallback((): void => {
     setFormState({ isDirty: true, shouldResetGame: true });
     setAppVolume(AppSettingUtils.VOLUME_SETTING_DEFAULT);
@@ -226,7 +228,9 @@ const useSettingsModal = <S extends BaseGameSettings>(params: UseSettingsModal_P
       max: params.defaultSettings.generateNoteOctaveOptions.octaveOptions.max,
     });
     setNoteType(params.defaultSettings.generateNoteOctaveOptions.noteOptions.noteType);
-    params.onClick_ResetSettingsButton();
+    if (params.resetExtendedSettings) {
+      params.resetExtendedSettings();
+    }
   }, [params]);
 
   const renderModalButtons = useCallback((): JSX.Element => {

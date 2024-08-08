@@ -67,7 +67,6 @@ export default function HomePage(): JSX.Element {
         <Title order={3} ta="center">
           {gameData.name}
         </Title>
-        {/* FIXME: Get color based on difficulty. */}
         <Text c={getDifficultyColor(gameData.difficulty)} ta="center" size="sm">
           {gameData.difficulty}
         </Text>
