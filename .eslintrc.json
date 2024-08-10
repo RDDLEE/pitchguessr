@@ -4,7 +4,9 @@
     "airbnb-base",
     "next/core-web-vitals" // Needed to avoid warning in next.js build: 'The Next.js plugin was not detected in your ESLint configuration'
   ],
-  "rules": {},
+  "rules": {
+    "quotes": ["warn", "double"]
+  },
   "ignorePatterns": ["node_modules", ".next"],
   "overrides": [
     // Configuration for TypeScript files
@@ -17,11 +19,11 @@
       "plugins": [
         "@typescript-eslint",
         "unused-imports",
-        // "tailwindcss",
+        "tailwindcss",
         "simple-import-sort"
       ],
       "extends": [
-        // "plugin:tailwindcss/recommended",
+        "plugin:tailwindcss/recommended",
         "airbnb",
         "airbnb-typescript",
         "next/core-web-vitals"

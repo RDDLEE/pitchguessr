@@ -1,8 +1,16 @@
 import { Button, Card, Flex, Text, Title } from "@mantine/core";
+import dynamic from "next/dynamic";
 import NextLink from "next/link";
 import React from "react";
 
 import PathUtils from "@/utils/PathUtils";
+
+const FloaterContainer = dynamic(
+  () => {
+    return import("@/components/FloaterContainer/FloaterContainer");
+  },
+  { ssr: false },
+);
 
 enum GameDifficultyTypes {
   EASY = "Easy",
@@ -100,31 +108,35 @@ export default function HomePage(): JSX.Element {
   };
 
   return (
-    <main>
-      <Flex
-        justify="flex-start"
-        align="center"
-        direction="column"
-        wrap="wrap"
-        w="100%"
-      >
-        <Title order={1} mt="xl" c="green.7">
-          PitchGuessr
-        </Title>
-        <Text size="md" mb="xl">
-          Train your pitch perception.
-        </Text>
+    <React.Fragment>
+      <main>
         <Flex
-          justify="center"
+          justify="flex-start"
           align="center"
-          direction="row"
+          direction="column"
           wrap="wrap"
           w="100%"
-          gap="md"
         >
-          {renderGameCards()}
+          <Title order={1} mt="xl" c="green.7">
+            PitchGuessr
+          </Title>
+          <Text size="md" mb="xl">
+            Train your pitch perception.
+          </Text>
+          <Flex
+            justify="center"
+            align="center"
+            direction="row"
+            wrap="wrap"
+            w="100%"
+            gap="md"
+          >
+            {renderGameCards()}
+          </Flex>
         </Flex>
-      </Flex>
-    </main>
+      </main>
+      <FloaterContainer />
+    </React.Fragment>
+
   );
 }

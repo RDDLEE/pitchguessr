@@ -43,7 +43,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <head>
         <ColorSchemeScript defaultColorScheme="dark" />
       </head>
-      <body className={inter.className}>
+      <body className={`${inter.className} overflow-x-hidden`}>
         <MantineProvider theme={theme} defaultColorScheme="dark">
           <AppSettingsProvider>
             <NavShell>
