@@ -1,16 +1,10 @@
 import { Button, Card, Flex, Text, Title } from "@mantine/core";
-import dynamic from "next/dynamic";
 import NextLink from "next/link";
 import React from "react";
 
 import PathUtils from "@/utils/PathUtils";
 
-const FloaterContainer = dynamic(
-  () => {
-    return import("@/components/FloaterContainer/FloaterContainer");
-  },
-  { ssr: false },
-);
+import classes from "./page.module.css";
 
 enum GameDifficultyTypes {
   EASY = "Easy",
@@ -26,9 +20,6 @@ interface GameData {
 }
 
 export default function HomePage(): JSX.Element {
-  const CARD_WIDTH = 225;
-  const CARD_HEIGHT = 300;
-
   const games: GameData[] = [
     {
       name: "Directional",
@@ -67,8 +58,7 @@ export default function HomePage(): JSX.Element {
     return (
       <Card
         key={gameData.name}
-        w={CARD_WIDTH}
-        h={CARD_HEIGHT}
+        className={classes["game-card"]}
         shadow="xl"
         withBorder={true}
       >
@@ -91,7 +81,7 @@ export default function HomePage(): JSX.Element {
           </Text>
         </Flex>
         <NextLink href={gameData.link} passHref={true} legacyBehavior={true}>
-          <Button component="a" variant="filled" size="sm" color="green.7">
+          <Button component="a" variant="filled" size="md" color="green.7">
             Play
           </Button>
         </NextLink>
@@ -128,15 +118,14 @@ export default function HomePage(): JSX.Element {
             align="center"
             direction="row"
             wrap="wrap"
-            w="100%"
             gap="md"
+            ml="md"
+            mr="md"
           >
             {renderGameCards()}
           </Flex>
         </Flex>
       </main>
-      <FloaterContainer />
     </React.Fragment>
-
   );
 }

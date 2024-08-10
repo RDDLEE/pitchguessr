@@ -3,12 +3,20 @@ import "@mantine/core/styles.css";
 
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { Inter } from "next/font/google";
 import React from "react";
 
 import AppSettingsProvider from "@/components/AppSettingsProvider/AppSettingsProvider";
 import NavShell from "@/components/NavShell/NavShell";
 import theme from "@/theme/theme";
+
+const FloaterContainer = dynamic(
+  () => {
+    return import("@/components/FloaterContainer/FloaterContainer");
+  },
+  { ssr: false },
+);
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -51,6 +59,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             </NavShell>
           </AppSettingsProvider>
         </MantineProvider>
+        <FloaterContainer />
       </body>
     </html>
   );

@@ -2,6 +2,7 @@
 
 import { Anchor, AppShell, Burger, Flex, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
@@ -52,7 +53,7 @@ export default function NavShell({ children }: Readonly<{ children: React.ReactN
             /* hiddenFrom="sm" */
             size="sm"
           />
-          <Anchor href={PathUtils.HOME_PATH} c={LINK_COLOR}>
+          <Anchor href={PathUtils.HOME_PATH} c={LINK_COLOR} component={NextLink}>
             <Text fw={1000}>PitchGuessr</Text>
           </Anchor>
         </Flex>
@@ -67,13 +68,13 @@ export default function NavShell({ children }: Readonly<{ children: React.ReactN
           h="100%"
           gap="md"
         >
-          <Anchor href={PathUtils.DIRECTIONAL_PATH} underline="never" c={LINK_COLOR}>
+          <Anchor href={PathUtils.DIRECTIONAL_PATH} underline="never" c={LINK_COLOR} component={NextLink}>
             <Text fw={LINK_WEIGHT}>Directional</Text>
           </Anchor>
-          <Anchor href={PathUtils.MULTI_CHOICE_PATH} underline="never" c={LINK_COLOR}>
+          <Anchor href={PathUtils.MULTI_CHOICE_PATH} underline="never" c={LINK_COLOR} component={NextLink}>
             <Text fw={LINK_WEIGHT}>Multi-Choice</Text>
           </Anchor>
-          <Anchor href={PathUtils.SLIDER_PATH} underline="never" c={LINK_COLOR}>
+          <Anchor href={PathUtils.SLIDER_PATH} underline="never" c={LINK_COLOR} component={NextLink}>
             <Text fw={LINK_WEIGHT}>Slider</Text>
           </Anchor>
         </Flex>

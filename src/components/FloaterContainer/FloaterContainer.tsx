@@ -22,7 +22,7 @@ export default function FloaterContainer() {
   };
 
   const generateX = (num: number): number => {
-    return num * (90 / NUM_FLOATERS);
+    return num * (95 / NUM_FLOATERS);
   };
 
   const generateSize = (): number => {
@@ -40,5 +40,9 @@ export default function FloaterContainer() {
     return floaters;
   };
 
-  return renderFloaters();
+  return (
+    <div>
+      {renderFloaters()}
+    </div>
+  );
 }

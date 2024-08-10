@@ -30,7 +30,7 @@ export default function Floater(props: Floater_Props) {
 
   return (
     <div
-      className={`${classes["note"]} pointer-events-none absolute bottom-0 -z-10`}
+      className={`${classes["note"]} pointer-events-none fixed bottom-0 -z-10`}
       style={{
         left: `${props.x}vw`,
         animationDuration: `${props.duration}s`,
