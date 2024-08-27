@@ -8,13 +8,9 @@ import ScoreTracker from "@/components/ScoreTracker/ScoreTracker";
 import SoundCard from "@/components/SoundCard/SoundCard";
 import { DirectionalContext } from "@/contexts/DirectionalContext";
 import NoteUtils from "@/utils/NoteUtils";
-import StyleUtils from "@/utils/StyleUtils";
 
 import GameContainer from "../GameContainer/GameContainer";
 import DirectionalSettingsModal from "./SettingsModal/DirectionalSettingsModal";
-
-const SOUND_CARD_HSTACK_GAP_WIDTH = 2;
-const SOUND_CARD_WIDTH = (StyleUtils.STANDARD_GAMEPLAY_ITEM_WIDTH - (SOUND_CARD_HSTACK_GAP_WIDTH * 4)) / 2;
 
 export default function DirectionalContainer(): JSX.Element {
   const directionalContext = useContext(DirectionalContext);
@@ -28,7 +24,6 @@ export default function DirectionalContainer(): JSX.Element {
         noteOctave={gameState.firstNoteOctave}
         noteDuration={gameSettings.noteDuration}
         onClick_PlayButton={directionalContext.onPlay}
-        width={SOUND_CARD_WIDTH}
         hasPlayed={gameState.hasPlayed}
         tooltipText="Play Me First!"
       />
@@ -41,7 +36,6 @@ export default function DirectionalContainer(): JSX.Element {
         noteOctave={gameState.secondNoteOctave}
         noteDuration={gameSettings.noteDuration}
         onClick_PlayButton={directionalContext.onPlaySecond}
-        width={SOUND_CARD_WIDTH}
         hasPlayed={gameState.hasPlayedSecond}
         tooltipText="Play Me Second!"
         disabled={!gameState.hasPlayed}
@@ -97,7 +91,7 @@ export default function DirectionalContainer(): JSX.Element {
     <GameContainer>
       <DirectionalSettingsModal />
       <ScoreTracker scoreStats={directionalContext.scoreTracker.scoreStats} />
-      <Group gap="xs">
+      <Group className="w-full" gap="xs">
         {renderFirstSoundCard()}
         {renderSecondSoundCard()}
       </Group>

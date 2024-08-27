@@ -1,32 +1,19 @@
-import { Card, Flex } from "@mantine/core";
+import { Card } from "@mantine/core";
 import React from "react";
 
 export default function GameContainer({ children }: Readonly<{ children: React.ReactNode; }>): JSX.Element {
   return (
-    <Flex
-      justify="flex-start"
-      align="center"
-      direction="column"
-      wrap="wrap"
-      w="100%"
-    >
+    <div className="flex w-full flex-col flex-wrap items-center justify-start">
       <Card
+        className="w-full sm:w-[400px]"
         withBorder={true}
         shadow="xl"
-        w={400}
         p="md"
       >
-        <Flex
-          justify="flex-start"
-          align="center"
-          direction="column"
-          wrap="wrap"
-          w="100%"
-          gap="xs"
-        >
+        <div className="flex w-full flex-col flex-wrap items-center justify-start gap-2">
           {children}
-        </Flex>
+        </div>
       </Card>
-    </Flex>
+    </div>
   );
 }

@@ -7,7 +7,7 @@ export interface QuestionPrompt_Props {
 
 export default function QuestionPrompt(props: QuestionPrompt_Props): JSX.Element {
   return (
-    <Text size="sm">
+    <Text className="text-center" size="sm">
       {props.text}
     </Text>
   );

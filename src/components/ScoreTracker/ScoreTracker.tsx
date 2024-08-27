@@ -2,7 +2,6 @@ import { Card, Flex, Text, Tooltip } from "@mantine/core";
 import React from "react";
 
 import type { ScoreTrackerState } from "@/utils/ScoreTrackerUtils";
-import StyleUtils from "@/utils/StyleUtils";
 
 interface ScoreTracker_Props {
   scoreStats: ScoreTrackerState;
@@ -36,10 +35,7 @@ export default function ScoreTracker(props: ScoreTracker_Props): JSX.Element {
   };
 
   return (
-    <Card
-      withBorder={true}
-      w={StyleUtils.STANDARD_GAMEPLAY_ITEM_WIDTH}
-    >
+    <Card className="w-full" withBorder={true}>
       <Flex
         justify="center"
         align="center"

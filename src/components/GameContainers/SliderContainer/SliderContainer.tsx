@@ -7,7 +7,6 @@ import ScoreTracker from "@/components/ScoreTracker/ScoreTracker";
 import SoundCard from "@/components/SoundCard/SoundCard";
 import { SliderContext } from "@/contexts/SliderContext";
 import NoteUtils from "@/utils/NoteUtils";
-import StyleUtils from "@/utils/StyleUtils";
 
 import GameContainer from "../GameContainer/GameContainer";
 import FrequencySlider from "./FrequencySlider/FrequencySlider";
@@ -25,7 +24,6 @@ export default function SliderContainer(): JSX.Element {
         noteOctave={gameState.correctNoteOctave}
         noteDuration={gameSettings.noteDuration}
         onClick_PlayButton={sliderContext.onPlay}
-        width={StyleUtils.STANDARD_GAMEPLAY_ITEM_WIDTH}
         hasPlayed={gameState.hasPlayed}
       />
     );

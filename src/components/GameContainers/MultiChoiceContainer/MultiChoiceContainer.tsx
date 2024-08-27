@@ -3,7 +3,6 @@ import React, { useCallback, useContext } from "react";
 
 import { MultiChoiceContext } from "@/contexts/MultiChoiceContext";
 
-import StyleUtils from "../../../utils/StyleUtils";
 import AnswerChoiceButton from "../../AnswerChoice/AnswerChoiceButton";
 import NextRoundButton from "../../NextRoundButton/NextRoundButton";
 import QuestionPrompt from "../../QuestionPrompt/QuestionPrompt";
@@ -51,7 +50,6 @@ export default function MultiChoiceContainer(): JSX.Element {
         noteOctave={gameState.correctNoteOctave}
         noteDuration={gameSettings.noteDuration}
         onClick_PlayButton={multiChoiceContext.onPlay}
-        width={StyleUtils.STANDARD_GAMEPLAY_ITEM_WIDTH}
         hasPlayed={gameState.hasPlayed}
       />
     );

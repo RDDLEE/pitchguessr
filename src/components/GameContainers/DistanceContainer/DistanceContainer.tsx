@@ -4,7 +4,6 @@ import NextRoundButton from "@/components/NextRoundButton/NextRoundButton";
 import ScoreTracker from "@/components/ScoreTracker/ScoreTracker";
 import SoundCard from "@/components/SoundCard/SoundCard";
 import { DistanceContext } from "@/contexts/DistanceContext";
-import StyleUtils from "@/utils/StyleUtils";
 
 import GameContainer from "../GameContainer/GameContainer";
 import DistanceSlider from "./DistanceSlider/DistanceSlider";
@@ -20,7 +19,6 @@ export default function DistanceContainer(): JSX.Element {
         noteOctave={noteOctave}
         noteDuration={distanceContext.gameSettings.noteDuration}
         onClick_PlayButton={distanceContext.onPlay}
-        width={StyleUtils.STANDARD_GAMEPLAY_ITEM_WIDTH}
         hasPlayed={distanceContext.gameState.hasPlayed}
       />
     );

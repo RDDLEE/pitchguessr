@@ -9,7 +9,6 @@ interface SoundCard_Props {
   noteOctave: NoteOctave | null;
   noteDuration: number;
   onClick_PlayButton?: () => void;
-  width: number;
   hasPlayed: boolean;
   tooltipText?: string;
   disabled?: boolean;
@@ -43,7 +42,7 @@ export default function SoundCard(props: SoundCard_Props): JSX.Element {
 
   return (
     <Card
-      w={props.width}
+      className="w-full flex-1"
       withBorder={true}
     >
       <Center>
