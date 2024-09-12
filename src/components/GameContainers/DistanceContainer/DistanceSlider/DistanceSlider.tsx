@@ -6,14 +6,11 @@ import { DistanceContext } from "@/contexts/DistanceContext";
 export default function DistanceSlider(): JSX.Element {
   const distanceContext = useContext(DistanceContext);
 
-  const minDist = 0;
-  const maxDist = 12;
-
   const [distance, setDistance] = useState<number>(0);
 
-  const onChange_AnswerSlider = (value: number): void => {
+  const onChange_AnswerSlider = useCallback((value: number): void => {
     setDistance(value);
-  };
+  }, []);
 
   const onClick_SubmitButton = useCallback((): void => {
     if (distanceContext.submitAnswer === undefined) {
@@ -21,6 +18,26 @@ export default function DistanceSlider(): JSX.Element {
     }
     distanceContext.submitAnswer(distance);
   }, [distance, distanceContext]);
+
+  const renderSlider = (): JSX.Element => {
+    const minOctave = distanceContext.gameSettings.generateNoteOctaveOptions.octaveOptions.min;
+    const maxOcatve = distanceContext.gameSettings.generateNoteOctaveOptions.octaveOptions.max;
+    const octaveDist = Math.abs(minOctave - maxOcatve);
+    const maxSteps = (octaveDist + 1) * 12;
+    return (
+      <Slider
+        defaultValue={0}
+        min={0}
+        max={maxSteps}
+        step={1}
+        onChange={onChange_AnswerSlider}
+        value={distance}
+        size="lg"
+        w="100%"
+        mb="md"
+      />
+    );
+  };
 
   return (
     <Flex
@@ -30,22 +47,15 @@ export default function DistanceSlider(): JSX.Element {
       wrap="wrap"
       w="100%"
     >
-      <Slider
-        defaultValue={0}
-        min={minDist}
-        max={maxDist}
-        step={1}
-        onChange={onChange_AnswerSlider}
-        value={distance}
-        size="lg"
-        w="100%"
-        mb="md"
-      />
+      {renderSlider()}
       <Button
         color="teal"
         variant="filled"
         onClick={onClick_SubmitButton}
-        disabled={distanceContext.gameState.isRoundOver === true || distanceContext.gameState.hasPlayed === false}
+        disabled={
+          distanceContext.gameState.isRoundOver === true
+          || !(distanceContext.gameState.hasPlayed && distanceContext.gameState.hasPlayedSecond)
+        }
       >
         Submit
       </Button>

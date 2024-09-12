@@ -9,12 +9,16 @@ import { USE_SCORE_TRACKER_RETURN_DEFAULT } from "@/utils/ScoreTrackerUtils";
 export interface DistanceGameState extends BaseGameState {
   firstNoteOctave: NoteOctave;
   secondNoteOctave: NoteOctave;
+  correctDistance: number;
+  hasPlayedSecond: boolean;
 }
 
 const DISTANCE_GAME_STATE_DEFAULT: DistanceGameState = {
   ...GameStateUtils.BASE_GAME_STATE_DEFAULT,
   firstNoteOctave: NOTE_OCTAVE_DEFAULT,
   secondNoteOctave: NOTE_OCTAVE_DEFAULT,
+  correctDistance: 0,
+  hasPlayedSecond: false,
 };
 
 export interface DistanceGameSettings extends BaseGameSettings {
@@ -35,6 +39,7 @@ export const DISTANCE_SETTINGS_DEFAULT: DistanceGameSettings = {
 };
 
 export interface DistanceGameContext extends BaseGameContext<DistanceGameState, DistanceGameSettings> {
+  onPlaySecond?: () => void;
   submitAnswer?: (distance: number) => void;
 }
 

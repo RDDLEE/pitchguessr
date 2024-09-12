@@ -28,6 +28,12 @@ export default function HomePage(): JSX.Element {
       link: PathUtils.DIRECTIONAL_PATH,
     },
     {
+      name: "Distance",
+      difficulty: GameDifficultyTypes.MEDIUM,
+      description: "How many half-steps are between two notes?",
+      link: PathUtils.DISTANCE_PATH,
+    },
+    {
       name: "Multi-Choice",
       difficulty: GameDifficultyTypes.MEDIUM,
       description: "Given a set of choices, guess what note was played.",

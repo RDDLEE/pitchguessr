@@ -1,7 +1,7 @@
 import { Text } from "@mantine/core";
 import React from "react";
 
-export interface QuestionPrompt_Props {
+interface QuestionPrompt_Props {
   text: string;
 }
 

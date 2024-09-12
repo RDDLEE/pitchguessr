@@ -11,11 +11,14 @@ const generateNewGameState = (settings: DistanceGameSettings): DistanceGameState
   const firstNoteOctave = firstResult.noteOctave;
   const secondResult = NoteUtils.generateNoteOctave(settings.generateNoteOctaveOptions);
   const secondNoteOctave = secondResult.noteOctave;
+  const stepDistance = NoteUtils.getStepDifferenceOfNoteValues(firstNoteOctave, secondNoteOctave);
   return {
     firstNoteOctave: firstNoteOctave,
     secondNoteOctave: secondNoteOctave,
     isRoundOver: false,
+    correctDistance: stepDistance,
     hasPlayed: false,
+    hasPlayedSecond: false,
   };
 };
 
@@ -43,6 +46,17 @@ export default function DistanceProvider({ children }: Readonly<{ children: Reac
     );
   }, [gameState]);
 
+  const onPlaySecond = useCallback((): void => {
+    setGameState(
+      produce(gameState, (draft): void => {
+        if (draft.hasPlayedSecond === true) {
+          return;
+        }
+        draft.hasPlayedSecond = true;
+      })
+    );
+  }, [gameState]);
+
   const submitAnswer = useCallback((distance: number): void => {
     setGameState(
       produce(gameState, (draft): void => {
@@ -52,8 +66,7 @@ export default function DistanceProvider({ children }: Readonly<{ children: Reac
         draft.isRoundOver = true;
       })
     );
-    const correctDiff = NoteUtils.getStepDifferenceOfNoteValues(gameState.firstNoteOctave, gameState.secondNoteOctave);
-    if (distance === correctDiff) {
+    if (distance === gameState.correctDistance) {
       scoreTracker.incrementNumCorrect();
     } else {
       scoreTracker.incrementNumIncorrect();
@@ -69,9 +82,10 @@ export default function DistanceProvider({ children }: Readonly<{ children: Reac
       scoreTracker: scoreTracker,
       onNewRound: onNewRound,
       onPlay: onPlay,
+      onPlaySecond: onPlaySecond,
       submitAnswer: submitAnswer,
     };
-  }, [gameSettings, gameState, onPlay, submitAnswer, onNewRound, scoreTracker]);
+  }, [gameState, gameSettings, scoreTracker, onNewRound, onPlay, onPlaySecond, submitAnswer]);
 
   return (
     <DistanceContext.Provider value={contextState}>
