@@ -21,7 +21,7 @@ export default function DirectionalContainer(): JSX.Element {
   const renderFirstSoundCard = (): JSX.Element => {
     return (
       <SoundCard
-        noteOctave={gameState.firstNoteOctave}
+        noteOctave={[gameState.firstNoteOctave]}
         noteDuration={gameSettings.noteDuration}
         onClick_PlayButton={directionalContext.onPlay}
         hasPlayed={gameState.hasPlayed}
@@ -33,7 +33,7 @@ export default function DirectionalContainer(): JSX.Element {
   const renderSecondSoundCard = (): JSX.Element => {
     return (
       <SoundCard
-        noteOctave={gameState.secondNoteOctave}
+        noteOctave={[gameState.secondNoteOctave]}
         noteDuration={gameSettings.noteDuration}
         onClick_PlayButton={directionalContext.onPlaySecond}
         hasPlayed={gameState.hasPlayedSecond}
@@ -53,9 +53,9 @@ export default function DirectionalContainer(): JSX.Element {
         isCorrect = true;
       }
       buttons.push((
-        <AnswerChoiceButton
+        <AnswerChoiceButton<string>
           key={answerChoice}
-          id={answerChoice.toString()}
+          payload={answerChoice.toString()}
           text={NoteUtils.convertPitchDirectionToText(answerChoice)}
           onClick_Button={directionalContext.submitAnswer}
           isCorrect={isCorrect}

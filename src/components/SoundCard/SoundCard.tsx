@@ -6,7 +6,7 @@ import useSoundPlayer from "../../hooks/useSoundPlayer";
 import type { NoteOctave } from "../../utils/NoteUtils";
 
 interface SoundCard_Props {
-  noteOctave: NoteOctave | null;
+  noteOctave: NoteOctave[];
   noteDuration: number;
   onClick_PlayButton?: () => void;
   hasPlayed: boolean;

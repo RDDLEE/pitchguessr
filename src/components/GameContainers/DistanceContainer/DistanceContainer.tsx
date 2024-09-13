@@ -21,7 +21,7 @@ export default function DistanceContainer(): JSX.Element {
     const noteOctave = gameState.firstNoteOctave;
     return (
       <SoundCard
-        noteOctave={noteOctave}
+        noteOctave={[noteOctave]}
         noteDuration={gameSettings.noteDuration}
         onClick_PlayButton={distanceContext.onPlay}
         hasPlayed={gameState.hasPlayed}
@@ -33,7 +33,7 @@ export default function DistanceContainer(): JSX.Element {
     const noteOctave = gameState.secondNoteOctave;
     return (
       <SoundCard
-        noteOctave={noteOctave}
+        noteOctave={[noteOctave]}
         noteDuration={gameSettings.noteDuration}
         onClick_PlayButton={distanceContext.onPlaySecond}
         hasPlayed={gameState.hasPlayedSecond}

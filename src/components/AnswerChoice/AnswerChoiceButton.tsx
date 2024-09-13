@@ -1,47 +1,32 @@
 import { Button } from "@mantine/core";
-import React from "react";
+import React, { useCallback } from "react";
 
-export interface AnswerChoiceButton_Props {
-  id: string;
+import StyleUtils from "@/utils/StyleUtils";
+
+interface AnswerChoiceButton_Props<P> {
   text: string;
-  onClick_Button?: (_answerChoice: string) => void;
+  payload: P;
+  onClick_Button?: (_payload: P) => void;
   isCorrect: boolean;
   hasPlayed: boolean;
   isRoundOver: boolean;
 }
 
-export default function AnswerChoiceButton(props: AnswerChoiceButton_Props): JSX.Element {
-  const onClick_Button = (): void => {
-    const disabled = props.isRoundOver === true || props.hasPlayed === false;
-    if (disabled) {
+export default function AnswerChoiceButton<P>(props: AnswerChoiceButton_Props<P>): JSX.Element {
+  const onClick_Button = useCallback((): void => {
+    const isDisabled = props.isRoundOver === true || props.hasPlayed === false;
+    if (isDisabled) {
       return;
     }
     if (props.onClick_Button) {
-      props.onClick_Button(props.id);
+      props.onClick_Button(props.payload);
     }
-  };
-
-  const calcColorScheme = (): string => {
-    if (props.isRoundOver === false) {
-      return "teal.7";
-    }
-    if (props.isCorrect === true) {
-      return "green.7";
-    }
-    return "red.7";
-  };
-
-  const calcVariant = (): string => {
-    if (props.isRoundOver === true && props.isCorrect === true) {
-      return "filled";
-    }
-    return "outline";
-  };
+  }, [props]);
 
   return (
     <Button
-      color={calcColorScheme()}
-      variant={calcVariant()}
+      color={StyleUtils.getAnswerChoiceColorScheme(props.isRoundOver, props.isCorrect, null)}
+      variant={StyleUtils.getAnswerChoiceVariant(props.isRoundOver, props.isCorrect, null)}
       onClick={onClick_Button}
       disabled={props.hasPlayed === false}
     >

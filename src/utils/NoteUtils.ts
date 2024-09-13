@@ -77,7 +77,7 @@ export default class NoteUtils {
 
   public static readonly PITCH_DIRECTIONS: PitchDirection[] = [-1, 0, 1];
 
-  private static readonly chooseNoteGroup = (options: GenerateNoteOptions): MusicalNote[] => {
+  public static readonly chooseNoteGroup = (options: GenerateNoteOptions): MusicalNote[] => {
     // TODO: Handle scales.
     let notes = NoteUtils.NATURAL_NOTES;
     if (options.noteType === NoteTypes.SHARPS) {
@@ -153,6 +153,10 @@ export default class NoteUtils {
       return "Equal";
     }
     return "Higher";
+  };
+
+  public static readonly convertNoteOctaveToString = (noteOctave: NoteOctave): string => {
+    return `${noteOctave.note}${noteOctave.octave}`;
   };
 
   public static readonly convertNoteOctaveToFrequency = (noteOctave: NoteOctave): number => {

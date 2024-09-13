@@ -21,7 +21,7 @@ export default function SliderContainer(): JSX.Element {
   const renderSoundCard = (): JSX.Element => {
     return (
       <SoundCard
-        noteOctave={gameState.correctNoteOctave}
+        noteOctave={[gameState.correctNoteOctave]}
         noteDuration={gameSettings.noteDuration}
         onClick_PlayButton={sliderContext.onPlay}
         hasPlayed={gameState.hasPlayed}

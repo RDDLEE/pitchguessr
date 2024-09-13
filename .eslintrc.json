@@ -108,7 +108,8 @@
             "allowExpressions": true
           }
         ],
-        "object-curly-newline": "off"
+        "object-curly-newline": "off",
+        "no-lonely-if": "off"
       }
     },
     // Configuration for testing

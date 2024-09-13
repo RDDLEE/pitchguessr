@@ -26,10 +26,10 @@ export default function MultiChoiceContainer(): JSX.Element {
         isCorrect = true;
       }
       buttons.push((
-        <AnswerChoiceButton
+        <AnswerChoiceButton<string>
           key={answerChoice}
-          id={answerChoice}
           text={answerChoice}
+          payload={answerChoice}
           onClick_Button={multiChoiceContext.submitAnswer}
           isCorrect={isCorrect}
           hasPlayed={gameState.hasPlayed}
@@ -47,7 +47,7 @@ export default function MultiChoiceContainer(): JSX.Element {
   const renderSoundCard = (): JSX.Element => {
     return (
       <SoundCard
-        noteOctave={gameState.correctNoteOctave}
+        noteOctave={[gameState.correctNoteOctave]}
         noteDuration={gameSettings.noteDuration}
         onClick_PlayButton={multiChoiceContext.onPlay}
         hasPlayed={gameState.hasPlayed}

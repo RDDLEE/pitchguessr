@@ -71,6 +71,9 @@ export default function NavShell({ children }: Readonly<{ children: React.ReactN
           <Anchor href={PathUtils.DIRECTIONAL_PATH} underline="never" c={LINK_COLOR} component={NextLink}>
             <Text fw={LINK_WEIGHT}>Directional</Text>
           </Anchor>
+          <Anchor href={PathUtils.CHORD_PATH} underline="never" c={LINK_COLOR} component={NextLink}>
+            <Text fw={LINK_WEIGHT}>Chord</Text>
+          </Anchor>
           <Anchor href={PathUtils.DISTANCE_PATH} underline="never" c={LINK_COLOR} component={NextLink}>
             <Text fw={LINK_WEIGHT}>Distance</Text>
           </Anchor>
