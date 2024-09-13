@@ -7,9 +7,13 @@ The web app can be access at https://pitchguessr.vercel.app/.
 ## Mini-games
 **PitchGuessr** is currently in development. The final product will contain the following mini-games.
  - [x] Pitch Direction.
+ - [x] Pitch Distance.
  - [x] Pitch Identification (by selection).
+ - [ ] Pitch Identification (with keyboard).
  - [x] Pitch Identification (by slider).
- - [ ] Chord Identification.
+ - [x] Chord Identification.
+ - [ ] Chord Identification (with keyboard).
+ - [ ] Note Sequence (with keyboard).
  - [ ] Scale Identification.
  - [ ] Scale Progression.
 
