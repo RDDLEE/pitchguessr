@@ -1,19 +1,25 @@
 "use client";
 
-import { Anchor, AppShell, Burger, Flex, Text } from "@mantine/core";
+import { Anchor, AppShell, Burger, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
-import PathUtils from "@/utils/PathUtils";
+import PathUtils, { EGameDifficultyTypes, type GameData } from "@/utils/PathUtils";
+import StyleUtils from "@/utils/StyleUtils";
+
+const LINK_COLOR = "green.7";
 
 export default function NavShell({ children }: Readonly<{ children: React.ReactNode; }>): JSX.Element | null {
   const pathName = usePathname();
 
-  const [opened, { toggle }] = useDisclosure();
+  const [opened, { close, toggle }] = useDisclosure();
 
   if (pathName === PathUtils.HOME_PATH) {
+    if (opened) {
+      close();
+    }
     return (
       <React.Fragment>
         {children}
@@ -21,8 +27,46 @@ export default function NavShell({ children }: Readonly<{ children: React.ReactN
     );
   }
 
-  const LINK_COLOR = "green.7";
-  const LINK_WEIGHT = 700;
+  const renderAnchor = (gameData: GameData): JSX.Element => {
+    return (
+      <div>
+        <Anchor href={gameData.link} underline="never" c={LINK_COLOR} component={NextLink}>
+          <Text>{gameData.name}</Text>
+        </Anchor>
+      </div>
+    );
+  };
+
+  const renderAnchors = (difficulty: EGameDifficultyTypes): JSX.Element[] => {
+    const anchorsJSX: JSX.Element[] = [];
+    PathUtils.games.forEach((value: GameData) => {
+      if (value.difficulty === difficulty) {
+        anchorsJSX.push(renderAnchor(value));
+      }
+    });
+    return anchorsJSX;
+  };
+
+  const renderAnchorsByDifficulty = (title: string, difficulty: EGameDifficultyTypes): JSX.Element => {
+    const baseColor = StyleUtils.getDifficultyColor(difficulty);
+    const finalColor = `${baseColor.substring(0, baseColor.length - 1)}9`;
+    return (
+      <React.Fragment>
+        <Text
+          size="md"
+          fw={500}
+          variant="gradient"
+          gradient={{ from: baseColor, to: finalColor, deg: 90 }}
+          ta="left"
+        >
+          {title}
+        </Text>
+        <div className="flex w-full flex-col flex-wrap items-center justify-center gap-2">
+          {renderAnchors(difficulty)}
+        </div>
+      </React.Fragment>
+    );
+  };
 
   return (
     <AppShell
@@ -38,15 +82,7 @@ export default function NavShell({ children }: Readonly<{ children: React.ReactN
       padding="md"
     >
       <AppShell.Header>
-        <Flex
-          gap="xs"
-          justify="flex-start"
-          align="center"
-          direction="row"
-          wrap="wrap"
-          h="100%"
-          pl="md"
-        >
+        <div className="flex h-full flex-row flex-wrap items-center justify-start gap-2 pl-2">
           <Burger
             opened={opened}
             onClick={toggle}
@@ -56,34 +92,14 @@ export default function NavShell({ children }: Readonly<{ children: React.ReactN
           <Anchor href={PathUtils.HOME_PATH} c={LINK_COLOR} component={NextLink}>
             <Text fw={1000}>PitchGuessr</Text>
           </Anchor>
-        </Flex>
+        </div>
       </AppShell.Header>
       <AppShell.Navbar p="md" zIndex={900}>
-        <Flex
-          justify="flex-start"
-          align="center"
-          direction="column"
-          wrap="wrap"
-          w="100%"
-          h="100%"
-          gap="md"
-        >
-          <Anchor href={PathUtils.DIRECTIONAL_PATH} underline="never" c={LINK_COLOR} component={NextLink}>
-            <Text fw={LINK_WEIGHT}>Directional</Text>
-          </Anchor>
-          <Anchor href={PathUtils.CHORD_PATH} underline="never" c={LINK_COLOR} component={NextLink}>
-            <Text fw={LINK_WEIGHT}>Chord</Text>
-          </Anchor>
-          <Anchor href={PathUtils.DISTANCE_PATH} underline="never" c={LINK_COLOR} component={NextLink}>
-            <Text fw={LINK_WEIGHT}>Distance</Text>
-          </Anchor>
-          <Anchor href={PathUtils.MULTI_CHOICE_PATH} underline="never" c={LINK_COLOR} component={NextLink}>
-            <Text fw={LINK_WEIGHT}>Multi-Choice</Text>
-          </Anchor>
-          <Anchor href={PathUtils.SLIDER_PATH} underline="never" c={LINK_COLOR} component={NextLink}>
-            <Text fw={LINK_WEIGHT}>Slider</Text>
-          </Anchor>
-        </Flex>
+        <div className="flex w-full flex-col flex-wrap items-center justify-center gap-4">
+          {renderAnchorsByDifficulty("Easy", EGameDifficultyTypes.EASY)}
+          {renderAnchorsByDifficulty("Medium", EGameDifficultyTypes.MEDIUM)}
+          {renderAnchorsByDifficulty("Hard", EGameDifficultyTypes.HARD)}
+        </div>
       </AppShell.Navbar>
       <AppShell.Main>
         {children}

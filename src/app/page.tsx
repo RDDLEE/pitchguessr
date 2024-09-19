@@ -1,71 +1,14 @@
-import { Button, Card, Flex, Text, Title } from "@mantine/core";
+import { Button, Card, Text, Title } from "@mantine/core";
 import NextLink from "next/link";
 import React from "react";
 
-import PathUtils from "@/utils/PathUtils";
+import type { GameData } from "@/utils/PathUtils";
+import PathUtils, { EGameDifficultyTypes } from "@/utils/PathUtils";
+import StyleUtils from "@/utils/StyleUtils";
 
 import classes from "./page.module.css";
 
-enum GameDifficultyTypes {
-  EASY = "Easy",
-  MEDIUM = "Medium",
-  HARD = "Hard",
-}
-
-interface GameData {
-  name: string;
-  difficulty: GameDifficultyTypes,
-  description: string;
-  link: string;
-}
-
 export default function HomePage(): JSX.Element {
-  const games: GameData[] = [
-    {
-      name: "Directional",
-      difficulty: GameDifficultyTypes.EASY,
-      description: "Is the second note lower, equal or higher to the first note?",
-      link: PathUtils.DIRECTIONAL_PATH,
-    },
-    {
-      name: "Chord",
-      difficulty: GameDifficultyTypes.MEDIUM,
-      description: "Guess the notes in the chord.",
-      link: PathUtils.CHORD_PATH,
-    },
-    {
-      name: "Distance",
-      difficulty: GameDifficultyTypes.MEDIUM,
-      description: "How many half-steps are between two notes?",
-      link: PathUtils.DISTANCE_PATH,
-    },
-    {
-      name: "Multi-Choice",
-      difficulty: GameDifficultyTypes.MEDIUM,
-      description: "Given a set of choices, guess what note was played.",
-      link: PathUtils.MULTI_CHOICE_PATH,
-    },
-    {
-      name: "Slider",
-      difficulty: GameDifficultyTypes.HARD,
-      description: "Use the slider to match the note.",
-      link: PathUtils.SLIDER_PATH,
-    },
-  ];
-
-  const getDifficultyColor = (difficulty: GameDifficultyTypes): string => {
-    if (difficulty === GameDifficultyTypes.EASY) {
-      return "green.7";
-    }
-    if (difficulty === GameDifficultyTypes.MEDIUM) {
-      return "orange.7";
-    }
-    if (difficulty === GameDifficultyTypes.HARD) {
-      return "red.7";
-    }
-    return "red.7";
-  };
-
   const renderGameCard = (gameData: GameData): JSX.Element => {
     return (
       <Card
@@ -77,21 +20,14 @@ export default function HomePage(): JSX.Element {
         <Title order={3} ta="center">
           {gameData.name}
         </Title>
-        <Text c={getDifficultyColor(gameData.difficulty)} ta="center" size="sm">
+        <Text c={StyleUtils.getDifficultyColor(gameData.difficulty)} ta="center" size="sm">
           {gameData.difficulty}
         </Text>
-        <Flex
-          justify="center"
-          align="center"
-          direction="column"
-          wrap="wrap"
-          w="100%"
-          h="100%"
-        >
+        <div className="flex size-full flex-col flex-wrap items-center justify-center gap-0">
           <Text size="sm">
             {gameData.description}
           </Text>
-        </Flex>
+        </div>
         <NextLink href={gameData.link} passHref={true} legacyBehavior={true}>
           <Button component="a" variant="filled" size="md" color="green.7">
             Play
@@ -101,43 +37,51 @@ export default function HomePage(): JSX.Element {
     );
   };
 
-  const renderGameCards = (): JSX.Element[] => {
+  const renderGameCardsByDifficulty = (difficulty: EGameDifficultyTypes): JSX.Element[] => {
     const gamesJSX: JSX.Element[] = [];
-    games.forEach((value: GameData) => {
-      gamesJSX.push(renderGameCard(value));
+    PathUtils.games.forEach((value: GameData) => {
+      if (value.difficulty === difficulty) {
+        gamesJSX.push(renderGameCard(value));
+      }
     });
     return gamesJSX;
   };
 
-  return (
-    <React.Fragment>
-      <main>
-        <Flex
-          justify="flex-start"
-          align="center"
-          direction="column"
-          wrap="wrap"
-          w="100%"
+  const renderGameSection = (title: string, difficulty: EGameDifficultyTypes): JSX.Element => {
+    const baseColor = StyleUtils.getDifficultyColor(difficulty);
+    const finalColor = `${baseColor.substring(0, baseColor.length - 1)}9`;
+    return (
+      <React.Fragment>
+        <Text
+          className="my-4"
+          size="xl"
+          fw={700}
+          variant="gradient"
+          gradient={{ from: baseColor, to: finalColor, deg: 90 }}
+          ta="center"
         >
-          <Title order={1} mt="xl" c="green.7">
-            PitchGuessr
-          </Title>
-          <Text size="md" mb="xl">
-            Train your pitch perception.
-          </Text>
-          <Flex
-            justify="center"
-            align="center"
-            direction="row"
-            wrap="wrap"
-            gap="md"
-            ml="md"
-            mr="md"
-          >
-            {renderGameCards()}
-          </Flex>
-        </Flex>
-      </main>
-    </React.Fragment>
+          {title}
+        </Text>
+        <div className="mx-4 flex flex-row flex-wrap items-center justify-center gap-4">
+          {renderGameCardsByDifficulty(difficulty)}
+        </div>
+      </React.Fragment>
+    );
+  };
+
+  return (
+    <main className="pb-12">
+      <div className="flex w-full flex-col flex-wrap items-center justify-center gap-0">
+        <Title order={1} mt="xl" c="green.7" fw={900}>
+          PitchGuessr
+        </Title>
+        <Text size="md" mb="md">
+          Train your pitch perception.
+        </Text>
+      </div>
+      {renderGameSection("Easy", EGameDifficultyTypes.EASY)}
+      {renderGameSection("Medium", EGameDifficultyTypes.MEDIUM)}
+      {renderGameSection("Hard", EGameDifficultyTypes.HARD)}
+    </main>
   );
 }
