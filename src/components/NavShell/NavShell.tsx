@@ -4,7 +4,7 @@ import { Anchor, AppShell, Burger, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useCallback } from "react";
 
 import PathUtils, { EGameDifficultyTypes, type GameData } from "@/utils/PathUtils";
 import StyleUtils from "@/utils/StyleUtils";
@@ -15,6 +15,10 @@ export default function NavShell({ children }: Readonly<{ children: React.ReactN
   const pathName = usePathname();
 
   const [opened, { close, toggle }] = useDisclosure();
+
+  const onClick_Anchor = useCallback((): void => {
+    close();
+  }, [close]);
 
   if (pathName === PathUtils.HOME_PATH) {
     if (opened) {
@@ -29,8 +33,8 @@ export default function NavShell({ children }: Readonly<{ children: React.ReactN
 
   const renderAnchor = (gameData: GameData): JSX.Element => {
     return (
-      <div>
-        <Anchor href={gameData.link} underline="never" c={LINK_COLOR} component={NextLink}>
+      <div key={gameData.link}>
+        <Anchor href={gameData.link} underline="never" c={LINK_COLOR} component={NextLink} onClick={onClick_Anchor}>
           <Text>{gameData.name}</Text>
         </Anchor>
       </div>

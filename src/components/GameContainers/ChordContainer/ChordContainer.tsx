@@ -14,35 +14,35 @@ import GameContainer from "../GameContainer/GameContainer";
 import ChordSettingsModal from "./SettingsModal/ChordSettingsModal";
 
 export default function ChordContainer(): JSX.Element {
-  const chordContext = useContext(ChordContext);
+  const gameContext = useContext(ChordContext);
 
-  const gameState = chordContext.gameState;
-  const gameSettings = chordContext.gameSettings;
+  const gameState = gameContext.gameState;
+  const gameSettings = gameContext.gameSettings;
 
   const renderFirstSoundCard = useCallback((): JSX.Element => {
     return (
       <SoundCard
         noteOctave={gameState.correctNotes}
         noteDuration={gameSettings.noteDuration}
-        onClick_PlayButton={chordContext.onPlay}
+        onClick_PlayButton={gameContext.onPlay}
         hasPlayed={gameState.hasPlayed}
       />
     );
-  }, [chordContext.onPlay, gameSettings.noteDuration, gameState.hasPlayed, gameState.correctNotes]);
+  }, [gameContext.onPlay, gameSettings.noteDuration, gameState.hasPlayed, gameState.correctNotes]);
 
   const onClick_AnswerChoice = useCallback((payload: MusicalNote): void => {
     if (gameState.selectedNotes.includes(payload)) {
       // If already selected, remove.
-      if (chordContext.removeSelectedNote) {
-        chordContext.removeSelectedNote(payload);
+      if (gameContext.removeSelectedNote) {
+        gameContext.removeSelectedNote(payload);
       }
     } else {
       // If not selected, add.
-      if (chordContext.addSelectedNote) {
-        chordContext.addSelectedNote(payload);
+      if (gameContext.addSelectedNote) {
+        gameContext.addSelectedNote(payload);
       }
     }
-  }, [chordContext, gameState.selectedNotes]);
+  }, [gameContext, gameState.selectedNotes]);
 
   const renderAnswerChoices = (): JSX.Element => {
     const buttons: JSX.Element[] = [];
@@ -80,17 +80,17 @@ export default function ChordContainer(): JSX.Element {
   };
 
   const onClick_NextRoundButton = useCallback((): void => {
-    if (chordContext.onNewRound === undefined) {
+    if (gameContext.onNewRound === undefined) {
       return;
     }
-    chordContext.onNewRound(chordContext.gameSettings, false);
-  }, [chordContext]);
+    gameContext.onNewRound(gameContext.gameSettings, false);
+  }, [gameContext]);
 
   const onClick_SubmitButton = useCallback((): void => {
-    if (chordContext.submitAnswer) {
-      chordContext.submitAnswer();
+    if (gameContext.submitAnswer) {
+      gameContext.submitAnswer();
     }
-  }, [chordContext]);
+  }, [gameContext]);
 
   const renderSubmitButton = useCallback((): JSX.Element => {
     return (
@@ -99,7 +99,7 @@ export default function ChordContainer(): JSX.Element {
         variant="filled"
         onClick={onClick_SubmitButton}
         disabled={
-          chordContext.gameState.isRoundOver === true
+          gameState.isRoundOver === true
           || gameState.hasPlayed === false
           || gameState.selectedNotes.length === 0
         }
@@ -107,7 +107,7 @@ export default function ChordContainer(): JSX.Element {
         Submit
       </Button>
     );
-  }, [chordContext.gameState.isRoundOver, gameState.hasPlayed, gameState.selectedNotes.length, onClick_SubmitButton]);
+  }, [gameState.isRoundOver, gameState.hasPlayed, gameState.selectedNotes.length, onClick_SubmitButton]);
 
   const renderNextRoundButton = useCallback((): JSX.Element | null => {
     if (gameState.isRoundOver === false) {
@@ -121,7 +121,7 @@ export default function ChordContainer(): JSX.Element {
   return (
     <GameContainer>
       <ChordSettingsModal />
-      <ScoreTracker scoreStats={chordContext.scoreTracker.scoreStats} />
+      <ScoreTracker scoreStats={gameContext.scoreTracker.scoreStats} />
       {renderFirstSoundCard()}
       <QuestionPrompt
         text="Which notes were played in the chord?"

@@ -120,6 +120,29 @@ export default class NoteUtils {
     return noteOctaveValue;
   };
 
+  private static readonly convertValueToNote = (remainder: number): MusicalNote => {
+    if (remainder < 0 || remainder > 12) {
+      throw Error("Remainder out of bounds.");
+    }
+    const items = Object.entries(NoteUtils.NOTE_VALUES);
+    for (const [note, val] of items) {
+      if (val === remainder) {
+        return note as MusicalNote;
+      }
+    }
+    throw Error("Failed to convert value to note.");
+  };
+
+  private static readonly convertValueToNoteOctave = (value: number): NoteOctave => {
+    const octave = Math.floor(value / 12);
+    const remainder = value % 12;
+    const note = NoteUtils.convertValueToNote(remainder);
+    return {
+      note: note,
+      octave: octave as MusicalOctave,
+    };
+  };
+
   public static readonly getStepDifferenceOfNoteValues = (firstNoteOctave: NoteOctave, secondNoteOctave: NoteOctave): number => {
     const firstVal = NoteUtils.calculateNoteOctaveValue(firstNoteOctave);
     const secondVal = NoteUtils.calculateNoteOctaveValue(secondNoteOctave);
@@ -167,5 +190,33 @@ export default class NoteUtils {
   public static readonly convertFrequencyToNoteOctave = (freq: number): Tone.Unit.Note => {
     const note = Tone.Frequency(freq).toNote();
     return note;
+  };
+
+  public static readonly getOctaveBeginningNote = (): MusicalNote => {
+    return "C";
+  };
+
+  private static readonly getNoteOctavesInRange = (start: NoteOctave, end: NoteOctave): NoteOctave[] => {
+    const startVal = NoteUtils.calculateNoteOctaveValue(start);
+    const endVal = NoteUtils.calculateNoteOctaveValue(end);
+    const noteOctaves: NoteOctave[] = [];
+    for (let i = startVal; i < endVal + 1; i++) {
+      const noteOctave = NoteUtils.convertValueToNoteOctave(i);
+      noteOctaves.push(noteOctave);
+    }
+    return noteOctaves;
+  };
+
+  // Start and end are inclusive. 4 and 5 produces all notes in Octave 4 and 5.
+  public static readonly getNoteOctavesInOctaveRange = (start: MusicalOctave, end: MusicalOctave): NoteOctave[] => {
+    const startNoteOctave: NoteOctave = {
+      note: NoteUtils.getOctaveBeginningNote(),
+      octave: start
+    };
+    const endNoteOctave: NoteOctave = {
+      note: "B",
+      octave: Math.min(8, end) as MusicalOctave
+    };
+    return NoteUtils.getNoteOctavesInRange(startNoteOctave, endNoteOctave);
   };
 }

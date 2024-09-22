@@ -14,6 +14,8 @@ export interface GameData {
 export default class PathUtils {
   public static readonly HOME_PATH = "/";
 
+  public static readonly NOTE_KEYBOARD_PATH = "/note-keyboard";
+
   public static readonly DIRECTIONAL_PATH = "/directional";
 
   public static readonly CHORD_PATH = "/chord";
@@ -25,6 +27,12 @@ export default class PathUtils {
   public static readonly SLIDER_PATH = "/slider";
 
   public static readonly games: GameData[] = [
+    {
+      name: "Note (Piano)",
+      difficulty: EGameDifficultyTypes.EASY,
+      description: "Recommended for beginners. Match the played note with the piano/keyboard.",
+      link: PathUtils.NOTE_KEYBOARD_PATH,
+    },
     {
       name: "Directional",
       difficulty: EGameDifficultyTypes.EASY,
