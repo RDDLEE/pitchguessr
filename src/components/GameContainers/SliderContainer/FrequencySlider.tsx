@@ -1,24 +1,26 @@
 import { Button, Flex, Slider } from "@mantine/core";
 import React, { useCallback, useContext, useState } from "react";
 
-import { SliderContext } from "@/contexts/SliderContext";
+import useSoundPlayer from "@/hooks/useSoundPlayer";
+import type { NoteOctave } from "@/utils/NoteUtils";
+import NoteUtils from "@/utils/NoteUtils";
 
-import useSoundPlayer from "../../../../hooks/useSoundPlayer";
-import type { NoteOctave } from "../../../../utils/NoteUtils";
-import NoteUtils from "../../../../utils/NoteUtils";
+import { SliderContext } from "./SliderContext";
+
+const GAME_CONTEXT = SliderContext;
 
 export default function FrequencySlider(): JSX.Element {
-  const sliderContext = useContext(SliderContext);
+  const gameContext = useContext(GAME_CONTEXT);
 
   const soundPlayer = useSoundPlayer();
 
   const minNoteOctave: NoteOctave = {
     note: "C",
-    octave: sliderContext.gameSettings.generateNoteOctaveOptions.octaveOptions.min,
+    octave: gameContext.gameSettings.generateNoteOctaveOptions.octaveOptions.min,
   };
   const maxNoteOctave: NoteOctave = {
     note: "B",
-    octave: sliderContext.gameSettings.generateNoteOctaveOptions.octaveOptions.max,
+    octave: gameContext.gameSettings.generateNoteOctaveOptions.octaveOptions.max,
   };
   const minFreq = NoteUtils.convertNoteOctaveToFrequency(minNoteOctave);
   const maxFreq = NoteUtils.convertNoteOctaveToFrequency(maxNoteOctave);
@@ -37,10 +39,10 @@ export default function FrequencySlider(): JSX.Element {
   }, [soundPlayer]);
 
   const onClick_SubmitButton = useCallback((): void => {
-    if (sliderContext.submitAnswer) {
-      sliderContext.submitAnswer(sliderAnswerHz);
+    if (gameContext.submitAnswer) {
+      gameContext.submitAnswer(sliderAnswerHz);
     }
-  }, [sliderAnswerHz, sliderContext]);
+  }, [sliderAnswerHz, gameContext]);
 
   // FIXME: Slider/Container max width.
   return (
@@ -67,7 +69,7 @@ export default function FrequencySlider(): JSX.Element {
         color="teal"
         variant="filled"
         onClick={onClick_SubmitButton}
-        disabled={sliderContext.gameState.isRoundOver === true || sliderContext.gameState.hasPlayed === false}
+        disabled={gameContext.gameState.isRoundOver === true || gameContext.gameState.hasPlayed === false}
       >
         Submit
       </Button>

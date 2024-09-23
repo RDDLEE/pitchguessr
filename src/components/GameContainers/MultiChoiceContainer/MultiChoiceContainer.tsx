@@ -1,21 +1,22 @@
 import { Group } from "@mantine/core";
 import React, { useCallback, useContext } from "react";
 
-import { MultiChoiceContext } from "@/contexts/MultiChoiceContext";
-
 import AnswerChoiceButton from "../../AnswerChoice/AnswerChoiceButton";
 import NextRoundButton from "../../NextRoundButton/NextRoundButton";
 import QuestionPrompt from "../../QuestionPrompt/QuestionPrompt";
 import ScoreTracker from "../../ScoreTracker/ScoreTracker";
 import SoundCard from "../../SoundCard/SoundCard";
 import GameContainer from "../GameContainer/GameContainer";
-import MultiChoiceSettingsModal from "./SettingsModal/MultiChoiceSettingsModal";
+import { MultiChoiceContext } from "./MultiChoiceContext";
+import MultiChoiceSettingsModal from "./MultiChoiceSettingsModal";
+
+const GAME_CONTEXT = MultiChoiceContext;
 
 export default function MultiChoiceContainer(): JSX.Element {
-  const multiChoiceContext = useContext(MultiChoiceContext);
+  const gameContext = useContext(GAME_CONTEXT);
 
-  const gameState = multiChoiceContext.gameState;
-  const gameSettings = multiChoiceContext.gameSettings;
+  const gameState = gameContext.gameState;
+  const gameSettings = gameContext.gameSettings;
 
   const renderAnswerChoiceButtons = (): JSX.Element => {
     const buttons: JSX.Element[] = [];
@@ -30,7 +31,7 @@ export default function MultiChoiceContainer(): JSX.Element {
           key={answerChoice}
           text={answerChoice}
           payload={answerChoice}
-          onClick_Button={multiChoiceContext.submitAnswer}
+          onClick_Button={gameContext.submitAnswer}
           isCorrect={isCorrect}
           hasPlayed={gameState.hasPlayed}
           isRoundOver={gameState.isRoundOver}
@@ -49,18 +50,18 @@ export default function MultiChoiceContainer(): JSX.Element {
       <SoundCard
         noteOctave={[gameState.correctNoteOctave]}
         noteDuration={gameSettings.noteDuration}
-        onClick_PlayButton={multiChoiceContext.onPlay}
+        onClick_PlayButton={gameContext.onPlay}
         hasPlayed={gameState.hasPlayed}
       />
     );
   };
 
   const onClick_NextRoundButton = useCallback((): void => {
-    if (multiChoiceContext.onNewRound === undefined) {
+    if (gameContext.onNewRound === undefined) {
       return;
     }
-    multiChoiceContext.onNewRound(gameSettings, false);
-  }, [gameSettings, multiChoiceContext]);
+    gameContext.onNewRound(gameSettings, false);
+  }, [gameSettings, gameContext]);
 
   const renderNextRoundButton = useCallback((): JSX.Element | null => {
     if (gameState.isRoundOver === false) {
@@ -74,11 +75,9 @@ export default function MultiChoiceContainer(): JSX.Element {
   return (
     <GameContainer>
       <MultiChoiceSettingsModal />
-      <ScoreTracker scoreStats={multiChoiceContext.scoreTracker.scoreStats} />
+      <ScoreTracker scoreStats={gameContext.scoreTracker.scoreStats} />
       {renderSoundCard()}
-      <QuestionPrompt
-        text="What note was played?"
-      />
+      <QuestionPrompt text="What note was played?" />
       {renderAnswerChoiceButtons()}
       {renderNextRoundButton()}
     </GameContainer>

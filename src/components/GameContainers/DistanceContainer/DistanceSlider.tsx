@@ -1,10 +1,12 @@
 import { Button, Flex, Slider } from "@mantine/core";
 import React, { useCallback, useContext, useState } from "react";
 
-import { DistanceContext } from "@/contexts/DistanceContext";
+import { DistanceContext } from "./DistanceContext";
+
+const GAME_CONTEXT = DistanceContext;
 
 export default function DistanceSlider(): JSX.Element {
-  const distanceContext = useContext(DistanceContext);
+  const distanceContext = useContext(GAME_CONTEXT);
 
   const [distance, setDistance] = useState<number>(0);
 

@@ -6,15 +6,17 @@ import NextRoundButton from "@/components/NextRoundButton/NextRoundButton";
 import QuestionPrompt from "@/components/QuestionPrompt/QuestionPrompt";
 import ScoreTracker from "@/components/ScoreTracker/ScoreTracker";
 import SoundCard from "@/components/SoundCard/SoundCard";
-import { ChordContext } from "@/contexts/ChordContext";
 import type { MusicalNote, NoteOctave } from "@/utils/NoteUtils";
 import NoteUtils from "@/utils/NoteUtils";
 
 import GameContainer from "../GameContainer/GameContainer";
-import ChordSettingsModal from "./SettingsModal/ChordSettingsModal";
+import { ChordContext } from "./ChordContext";
+import ChordSettingsModal from "./ChordSettingsModal";
+
+const GAME_CONTEXT = ChordContext;
 
 export default function ChordContainer(): JSX.Element {
-  const gameContext = useContext(ChordContext);
+  const gameContext = useContext(GAME_CONTEXT);
 
   const gameState = gameContext.gameState;
   const gameSettings = gameContext.gameSettings;

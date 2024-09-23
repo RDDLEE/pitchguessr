@@ -6,20 +6,29 @@ import type { NoteOctave } from "@/utils/NoteUtils";
 import { NOTE_OCTAVE_DEFAULT, NoteTypes } from "@/utils/NoteUtils";
 import { USE_SCORE_TRACKER_RETURN_DEFAULT } from "@/utils/ScoreTrackerUtils";
 
+type TGameState = NoteKeyboardGameState;
+type TGameSettings = NoteKeyboardGameSettings;
+type TGameContext = NoteKeyboardGameContext;
+
 export interface NoteKeyboardGameState extends BaseGameState {
   correctNote: NoteOctave;
   selectedNote: NoteOctave | null;
 }
 
-const NOTE_KEYBOARD_GAME_STATE_DEFAULT: NoteKeyboardGameState = {
+export interface NoteKeyboardGameSettings extends BaseGameSettings { }
+
+export interface NoteKeyboardGameContext extends BaseGameContext<TGameState, TGameSettings> {
+  submitAnswer?: () => void;
+  selectNoteOctave?: (noteOctave: NoteOctave) => void;
+}
+
+const NOTE_KEYBOARD_GAME_STATE_DEFAULT: TGameState = {
   ...GameStateUtils.BASE_GAME_STATE_DEFAULT,
   correctNote: NOTE_OCTAVE_DEFAULT,
   selectedNote: null,
 };
 
-export interface NoteKeyboardGameSettings extends BaseGameSettings { }
-
-export const NOTE_KEYBOARD_GAME_SETTINGS_DEFAULT: NoteKeyboardGameSettings = {
+export const NOTE_KEYBOARD_GAME_SETTINGS_DEFAULT: TGameSettings = {
   noteDuration: GameStateUtils.NOTE_DURATION_SETTING_DEFAULT,
   generateNoteOctaveOptions: {
     octaveOptions: {
@@ -32,12 +41,7 @@ export const NOTE_KEYBOARD_GAME_SETTINGS_DEFAULT: NoteKeyboardGameSettings = {
   },
 };
 
-export interface NoteKeyboardGameContext extends BaseGameContext<NoteKeyboardGameState, NoteKeyboardGameSettings> {
-  submitAnswer?: () => void;
-  selectNoteOctave?: (noteOctave: NoteOctave) => void;
-}
-
-export const NoteKeyboardContext = createContext<NoteKeyboardGameContext>({
+export const NoteKeyboardContext = createContext<TGameContext>({
   gameState: NOTE_KEYBOARD_GAME_STATE_DEFAULT,
   gameSettings: NOTE_KEYBOARD_GAME_SETTINGS_DEFAULT,
   scoreTracker: USE_SCORE_TRACKER_RETURN_DEFAULT,

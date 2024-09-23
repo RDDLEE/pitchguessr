@@ -1,12 +1,18 @@
 import { produce } from "immer";
 import { useCallback, useMemo, useState } from "react";
 
-import type { DistanceGameContext, DistanceGameSettings, DistanceGameState } from "@/contexts/DistanceContext";
-import { DISTANCE_SETTINGS_DEFAULT, DistanceContext } from "@/contexts/DistanceContext";
 import useScoreTracker from "@/hooks/useScoreTracker";
 import NoteUtils from "@/utils/NoteUtils";
 
-const generateNewGameState = (settings: DistanceGameSettings): DistanceGameState => {
+import type { DistanceGameContext, DistanceGameSettings, DistanceGameState } from "./DistanceContext";
+import { DISTANCE_SETTINGS_DEFAULT, DistanceContext } from "./DistanceContext";
+
+type TGameSettings = DistanceGameSettings;
+type TGameState = DistanceGameState;
+type TGameContext = DistanceGameContext;
+const GAME_CONTEXT = DistanceContext;
+
+const generateNewGameState = (settings: TGameSettings): TGameState => {
   const firstResult = NoteUtils.generateNoteOctave(settings.generateNoteOctaveOptions);
   const firstNoteOctave = firstResult.noteOctave;
   const secondResult = NoteUtils.generateNoteOctave(settings.generateNoteOctaveOptions);
@@ -23,13 +29,13 @@ const generateNewGameState = (settings: DistanceGameSettings): DistanceGameState
 };
 
 export default function DistanceProvider({ children }: Readonly<{ children: React.ReactNode; }>) {
-  const [gameSettings, setGameSettings] = useState<DistanceGameSettings>(DISTANCE_SETTINGS_DEFAULT);
+  const [gameSettings, setGameSettings] = useState<TGameSettings>(DISTANCE_SETTINGS_DEFAULT);
 
-  const [gameState, setGameState] = useState<DistanceGameState>(generateNewGameState(gameSettings));
+  const [gameState, setGameState] = useState<TGameState>(generateNewGameState(gameSettings));
 
   const scoreTracker = useScoreTracker();
 
-  const onNewRound = useCallback((settings: DistanceGameSettings, shouldResetScore: boolean): void => {
+  const onNewRound = useCallback((settings: TGameSettings, shouldResetScore: boolean): void => {
     scoreTracker.resetScoreState(shouldResetScore);
     const newState = generateNewGameState(settings);
     setGameState(newState);
@@ -73,7 +79,7 @@ export default function DistanceProvider({ children }: Readonly<{ children: Reac
     }
   }, [gameState, scoreTracker]);
 
-  const contextState = useMemo<DistanceGameContext>(() => {
+  const contextState = useMemo<TGameContext>(() => {
     return {
       gameState: gameState,
       setGameState: setGameState,
@@ -88,8 +94,8 @@ export default function DistanceProvider({ children }: Readonly<{ children: Reac
   }, [gameState, gameSettings, scoreTracker, onNewRound, onPlay, onPlaySecond, submitAnswer]);
 
   return (
-    <DistanceContext.Provider value={contextState}>
+    <GAME_CONTEXT.Provider value={contextState}>
       {children}
-    </DistanceContext.Provider>
+    </GAME_CONTEXT.Provider>
   );
 }

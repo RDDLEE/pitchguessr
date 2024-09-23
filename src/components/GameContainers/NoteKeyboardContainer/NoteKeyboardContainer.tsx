@@ -2,7 +2,6 @@ import { Button } from "@mantine/core";
 import React, { useCallback, useContext } from "react";
 
 import Piano from "@/components/Piano/Piano";
-import { NoteKeyboardContext } from "@/contexts/NoteKeyboardContext";
 import type { NoteOctave } from "@/utils/NoteUtils";
 
 import NextRoundButton from "../../NextRoundButton/NextRoundButton";
@@ -10,10 +9,13 @@ import QuestionPrompt from "../../QuestionPrompt/QuestionPrompt";
 import ScoreTracker from "../../ScoreTracker/ScoreTracker";
 import SoundCard from "../../SoundCard/SoundCard";
 import GameContainer from "../GameContainer/GameContainer";
-import NoteKeyboardSettingsModal from "./SettingsModal/NoteKeyboardSettingsModal";
+import { NoteKeyboardContext } from "./NoteKeyboardContext";
+import NoteKeyboardSettingsModal from "./NoteKeyboardSettingsModal";
+
+const GAME_CONTEXT = NoteKeyboardContext;
 
 export default function NoteKeyboardContainer(): JSX.Element {
-  const gameContext = useContext(NoteKeyboardContext);
+  const gameContext = useContext(GAME_CONTEXT);
 
   const gameState = gameContext.gameState;
   const gameSettings = gameContext.gameSettings;

@@ -2,44 +2,49 @@ import { useDisclosure } from "@mantine/hooks";
 import React, { useCallback, useContext } from "react";
 
 import SettingsModal from "@/components/SettingsModal/SettingsModal";
-import type { DirectionalGameSettings } from "@/contexts/DirectionalContext";
-import { DIRECTIONAL_GAME_SETTINGS_DEFAULT, DirectionalContext } from "@/contexts/DirectionalContext";
 import useSettingsModal from "@/hooks/useSettingsModal";
 import type { BaseGameSettings } from "@/utils/GameStateUtils";
 
-export default function DirectionalSettingsModal(): JSX.Element {
-  const directionalContext = useContext(DirectionalContext);
+import type { DistanceGameSettings } from "./DistanceContext";
+import { DISTANCE_SETTINGS_DEFAULT, DistanceContext } from "./DistanceContext";
+
+type TGameSettings = DistanceGameSettings;
+const GAME_CONTEXT = DistanceContext;
+
+export default function DistanceSettingsModal(): JSX.Element {
+  const gameContext = useContext(GAME_CONTEXT);
 
   const [isModalOpened, modalHandlers] = useDisclosure();
 
-  const applyExtendedSettings = useCallback((newBaseSettings: BaseGameSettings): DirectionalGameSettings => {
+  const applyExtendedSettings = useCallback((newBaseSettings: BaseGameSettings): TGameSettings => {
     const newGameSettings = {
       ...newBaseSettings,
     };
-    if (directionalContext.setGameSettings) {
-      directionalContext.setGameSettings(newGameSettings);
+    if (gameContext.setGameSettings) {
+      gameContext.setGameSettings(newGameSettings);
     }
     return newGameSettings;
-  }, [directionalContext]);
+  }, [gameContext]);
 
-  const settingsModal = useSettingsModal<DirectionalGameSettings>({
-    settings: directionalContext.gameSettings,
-    defaultSettings: DIRECTIONAL_GAME_SETTINGS_DEFAULT,
+  const settingsModal = useSettingsModal<DistanceGameSettings>({
+    settings: gameContext.gameSettings,
+    defaultSettings: DISTANCE_SETTINGS_DEFAULT,
     applyExtendedSettings: applyExtendedSettings,
-    onNewRound: directionalContext.onNewRound,
+    onNewRound: gameContext.onNewRound,
     closeModal: modalHandlers.close,
   });
 
-  const renderModalBody = (): JSX.Element => {
+  const renderModalBody = useCallback((): JSX.Element => {
     return (
       <React.Fragment>
         {settingsModal.renderAppVolumeSlider()}
         {settingsModal.renderNoteDurationSlider()}
-        {settingsModal.renderOctaveRangeSlider()}
+        {/* TODO: Implement Distance octaves. */}
+        {/* {settingsModal.renderOctaveRangeSlider()} */}
         {settingsModal.renderNoteTypeRadio()}
       </React.Fragment>
     );
-  };
+  }, [settingsModal]);
 
   return (
     <SettingsModal

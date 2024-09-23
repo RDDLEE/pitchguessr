@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useRef } from "react";
 import * as Tone from "tone/build/esm/index";
 
-import { AppSettingsContext } from "@/contexts/AppSettingsContext";
+import { AppSettingsContext } from "@/components/AppSettingsProvider/AppSettingsContext";
 
 import AppSettingUtils from "../utils/AppSettingUtils";
 import type { NoteOctave } from "../utils/NoteUtils";

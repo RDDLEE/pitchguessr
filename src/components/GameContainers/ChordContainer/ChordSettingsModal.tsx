@@ -2,45 +2,48 @@ import { useDisclosure } from "@mantine/hooks";
 import React, { useCallback, useContext } from "react";
 
 import SettingsModal from "@/components/SettingsModal/SettingsModal";
-import type { DistanceGameSettings } from "@/contexts/DistanceContext";
-import { DISTANCE_SETTINGS_DEFAULT, DistanceContext } from "@/contexts/DistanceContext";
 import useSettingsModal from "@/hooks/useSettingsModal";
 import type { BaseGameSettings } from "@/utils/GameStateUtils";
 
-export default function DistanceSettingsModal(): JSX.Element {
-  const distanceContext = useContext(DistanceContext);
+import type { ChordGameSettings } from "./ChordContext";
+import { CHORD_GAME_SETTINGS_DEFAULT, ChordContext } from "./ChordContext";
+
+type TGameSettings = ChordGameSettings;
+const GAME_CONTEXT = ChordContext;
+
+export default function ChordSettingsModal(): JSX.Element {
+  const gameContext = useContext(GAME_CONTEXT);
 
   const [isModalOpened, modalHandlers] = useDisclosure();
 
-  const applyExtendedSettings = useCallback((newBaseSettings: BaseGameSettings): DistanceGameSettings => {
+  const applyExtendedSettings = useCallback((newBaseSettings: BaseGameSettings): TGameSettings => {
     const newGameSettings = {
       ...newBaseSettings,
     };
-    if (distanceContext.setGameSettings) {
-      distanceContext.setGameSettings(newGameSettings);
+    if (gameContext.setGameSettings) {
+      gameContext.setGameSettings(newGameSettings);
     }
     return newGameSettings;
-  }, [distanceContext]);
+  }, [gameContext]);
 
-  const settingsModal = useSettingsModal<DistanceGameSettings>({
-    settings: distanceContext.gameSettings,
-    defaultSettings: DISTANCE_SETTINGS_DEFAULT,
+  const settingsModal = useSettingsModal<TGameSettings>({
+    settings: gameContext.gameSettings,
+    defaultSettings: CHORD_GAME_SETTINGS_DEFAULT,
     applyExtendedSettings: applyExtendedSettings,
-    onNewRound: distanceContext.onNewRound,
+    onNewRound: gameContext.onNewRound,
     closeModal: modalHandlers.close,
   });
 
-  const renderModalBody = useCallback((): JSX.Element => {
+  const renderModalBody = (): JSX.Element => {
     return (
       <React.Fragment>
         {settingsModal.renderAppVolumeSlider()}
         {settingsModal.renderNoteDurationSlider()}
-        {/* TODO: Implement Distance octaves. */}
-        {/* {settingsModal.renderOctaveRangeSlider()} */}
+        {settingsModal.renderOctaveRangeSlider()}
         {settingsModal.renderNoteTypeRadio()}
       </React.Fragment>
     );
-  }, [settingsModal]);
+  };
 
   return (
     <SettingsModal

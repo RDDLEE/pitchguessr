@@ -2,10 +2,11 @@
 
 import React, { useCallback, useMemo, useState } from "react";
 
-import { AppSettingsContext } from "@/contexts/AppSettingsContext";
 import type { AppSettings } from "@/utils/AppSettingUtils";
 import AppSettingUtils from "@/utils/AppSettingUtils";
 import MathUtils from "@/utils/MathUtils";
+
+import { AppSettingsContext } from "./AppSettingsContext";
 
 export default function AppSettingsProvider({ children }: Readonly<{ children: React.ReactNode; }>) {
   // TODO: Init and save global settings from localStorage.

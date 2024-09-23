@@ -1,9 +1,10 @@
 import { Button } from "@mantine/core";
 import React, { useCallback, useContext } from "react";
 
-import { ChordContext } from "@/contexts/ChordContext";
 import type { MusicalNote } from "@/utils/NoteUtils";
 import StyleUtils from "@/utils/StyleUtils";
+
+import { ChordContext } from "../GameContainers/ChordContainer/ChordContext";
 
 interface AnswerChoiceToggleable_Props<P> {
   text: string;

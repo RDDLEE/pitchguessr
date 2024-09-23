@@ -3,14 +3,18 @@ import { useDisclosure } from "@mantine/hooks";
 import React, { useCallback, useContext, useState } from "react";
 
 import SettingsModal from "@/components/SettingsModal/SettingsModal";
-import type { MultiChoiceGameSettings } from "@/contexts/MultiChoiceContext";
-import { MULTI_CHOICE_GAME_SETTINGS_DEFAULT, MultiChoiceContext } from "@/contexts/MultiChoiceContext";
 import useSettingsModal from "@/hooks/useSettingsModal";
 import type { BaseGameSettings } from "@/utils/GameStateUtils";
 
+import type { MultiChoiceGameSettings } from "./MultiChoiceContext";
+import { MULTI_CHOICE_GAME_SETTINGS_DEFAULT, MultiChoiceContext } from "./MultiChoiceContext";
+
+type TGameSettings = MultiChoiceGameSettings;
+const GAME_CONTEXT = MultiChoiceContext;
+
 export default function MultiChoiceSettingsModal(): JSX.Element {
-  const multiChoiceContext = useContext(MultiChoiceContext);
-  const gameSettings = multiChoiceContext.gameSettings;
+  const gameContext = useContext(GAME_CONTEXT);
+  const gameSettings = gameContext.gameSettings;
 
   const [numAnswerChoices, setNumAnswerChoices] = useState<number>(gameSettings.numAnswerChoices);
 
@@ -19,27 +23,27 @@ export default function MultiChoiceSettingsModal(): JSX.Element {
   const NUM_ANSWER_CHOICES_MIN = 2;
   const NUM_ANSWER_CHOICES_MAX = 12;
 
-  const applyExtendedSettings = useCallback((newBaseSettings: BaseGameSettings): MultiChoiceGameSettings => {
+  const applyExtendedSettings = useCallback((newBaseSettings: BaseGameSettings): TGameSettings => {
     const newGameSettings = {
       ...newBaseSettings,
       numAnswerChoices: numAnswerChoices,
     };
-    if (multiChoiceContext.setGameSettings) {
-      multiChoiceContext.setGameSettings(newGameSettings);
+    if (gameContext.setGameSettings) {
+      gameContext.setGameSettings(newGameSettings);
     }
     return newGameSettings;
-  }, [multiChoiceContext, numAnswerChoices]);
+  }, [gameContext, numAnswerChoices]);
 
   const resetExtendedSettings = useCallback((): void => {
     setNumAnswerChoices(MULTI_CHOICE_GAME_SETTINGS_DEFAULT.numAnswerChoices);
   }, []);
 
-  const settingsModal = useSettingsModal<MultiChoiceGameSettings>({
+  const settingsModal = useSettingsModal<TGameSettings>({
     settings: gameSettings,
     defaultSettings: MULTI_CHOICE_GAME_SETTINGS_DEFAULT,
     applyExtendedSettings: applyExtendedSettings,
     resetExtendedSettings: resetExtendedSettings,
-    onNewRound: multiChoiceContext.onNewRound,
+    onNewRound: gameContext.onNewRound,
     closeModal: modalHandlers.close,
   });
 

@@ -9,7 +9,7 @@ The web app can be access at https://pitchguessr.vercel.app/.
  - [x] Pitch Direction.
  - [x] Pitch Distance.
  - [x] Pitch Identification (by selection).
- - [ ] Pitch Identification (with keyboard).
+ - [x] Pitch Identification (with keyboard).
  - [x] Pitch Identification (by slider).
  - [x] Chord Identification.
  - [ ] Chord Identification (with keyboard).

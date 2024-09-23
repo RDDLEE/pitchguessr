@@ -1,12 +1,18 @@
 import { produce } from "immer";
 import { useCallback, useMemo, useState } from "react";
 
-import type { MultiChoiceGameContext, MultiChoiceGameSettings, MultiChoiceGameState } from "@/contexts/MultiChoiceContext";
-import { MULTI_CHOICE_GAME_SETTINGS_DEFAULT, MultiChoiceContext } from "@/contexts/MultiChoiceContext";
 import useScoreTracker from "@/hooks/useScoreTracker";
 import MathUtils from "@/utils/MathUtils";
 import type { MusicalNote } from "@/utils/NoteUtils";
 import NoteUtils from "@/utils/NoteUtils";
+
+import type { MultiChoiceGameContext, MultiChoiceGameSettings, MultiChoiceGameState } from "./MultiChoiceContext";
+import { MULTI_CHOICE_GAME_SETTINGS_DEFAULT, MultiChoiceContext } from "./MultiChoiceContext";
+
+type TGameSettings = MultiChoiceGameSettings;
+type TGameState = MultiChoiceGameState;
+type TGameContext = MultiChoiceGameContext;
+const GAME_CONTEXT = MultiChoiceContext;
 
 const generateAnswerChoices = (numAnswerChoices: number, correctNote: MusicalNote, noteGroup: MusicalNote[]): MusicalNote[] => {
   const filteredNotes = noteGroup.filter(
@@ -25,7 +31,7 @@ const generateAnswerChoices = (numAnswerChoices: number, correctNote: MusicalNot
   return items;
 };
 
-const generateNewGameState = (settings: MultiChoiceGameSettings): MultiChoiceGameState => {
+const generateNewGameState = (settings: TGameSettings): TGameState => {
   const generateResult = NoteUtils.generateNoteOctave(settings.generateNoteOctaveOptions);
   const noteOctave = generateResult.noteOctave;
   const noteGroup = generateResult.noteGroup;
@@ -40,13 +46,13 @@ const generateNewGameState = (settings: MultiChoiceGameSettings): MultiChoiceGam
 };
 
 export default function MultiChoiceProvider({ children }: Readonly<{ children: React.ReactNode; }>) {
-  const [gameSettings, setGameSettings] = useState<MultiChoiceGameSettings>(MULTI_CHOICE_GAME_SETTINGS_DEFAULT);
+  const [gameSettings, setGameSettings] = useState<TGameSettings>(MULTI_CHOICE_GAME_SETTINGS_DEFAULT);
 
-  const [gameState, setGameState] = useState<MultiChoiceGameState>(generateNewGameState(gameSettings));
+  const [gameState, setGameState] = useState<TGameState>(generateNewGameState(gameSettings));
 
   const scoreTracker = useScoreTracker();
 
-  const onNewRound = useCallback((settings: MultiChoiceGameSettings, shouldResetScore: boolean): void => {
+  const onNewRound = useCallback((settings: TGameSettings, shouldResetScore: boolean): void => {
     scoreTracker.resetScoreState(shouldResetScore);
     const newState = generateNewGameState(settings);
     setGameState(newState);
@@ -79,7 +85,7 @@ export default function MultiChoiceProvider({ children }: Readonly<{ children: R
     }
   }, [gameState, scoreTracker]);
 
-  const contextState = useMemo<MultiChoiceGameContext>(() => {
+  const contextState = useMemo<TGameContext>(() => {
     return {
       gameState: gameState,
       setGameState: setGameState,
@@ -93,8 +99,8 @@ export default function MultiChoiceProvider({ children }: Readonly<{ children: R
   }, [gameSettings, gameState, onNewRound, onPlay, scoreTracker, submitAnswer]);
 
   return (
-    <MultiChoiceContext.Provider value={contextState}>
+    <GAME_CONTEXT.Provider value={contextState}>
       {children}
-    </MultiChoiceContext.Provider>
+    </GAME_CONTEXT.Provider>
   );
 }

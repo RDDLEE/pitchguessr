@@ -1,12 +1,18 @@
 import { produce } from "immer";
 import { useCallback, useMemo, useState } from "react";
 
-import type { SliderGameContext, SliderGameSettings, SliderGameState } from "@/contexts/SliderContext";
-import { SLIDER_GAME_SETTINGS_DEFAULT, SliderContext } from "@/contexts/SliderContext";
 import useScoreTracker from "@/hooks/useScoreTracker";
 import NoteUtils from "@/utils/NoteUtils";
 
-const generateNewGameState = (settings: SliderGameSettings): SliderGameState => {
+import type { SliderGameContext, SliderGameSettings, SliderGameState } from "./SliderContext";
+import { SLIDER_GAME_SETTINGS_DEFAULT, SliderContext } from "./SliderContext";
+
+type TGameSettings = SliderGameSettings;
+type TGameState = SliderGameState;
+type TGameContext = SliderGameContext;
+const GAME_CONTEXT = SliderContext;
+
+const generateNewGameState = (settings: TGameSettings): TGameState => {
   const result = NoteUtils.generateNoteOctave(settings.generateNoteOctaveOptions);
   const noteOctave = result.noteOctave;
   return {
@@ -17,13 +23,13 @@ const generateNewGameState = (settings: SliderGameSettings): SliderGameState => 
 };
 
 export default function SliderProvider({ children }: Readonly<{ children: React.ReactNode; }>) {
-  const [gameSettings, setGameSettings] = useState<SliderGameSettings>(SLIDER_GAME_SETTINGS_DEFAULT);
+  const [gameSettings, setGameSettings] = useState<TGameSettings>(SLIDER_GAME_SETTINGS_DEFAULT);
 
-  const [gameState, setGameState] = useState<SliderGameState>(generateNewGameState(gameSettings));
+  const [gameState, setGameState] = useState<TGameState>(generateNewGameState(gameSettings));
 
   const scoreTracker = useScoreTracker();
 
-  const onNewRound = useCallback((settings: SliderGameSettings, shouldResetScore: boolean): void => {
+  const onNewRound = useCallback((settings: TGameSettings, shouldResetScore: boolean): void => {
     scoreTracker.resetScoreState(shouldResetScore);
     const newState = generateNewGameState(settings);
     setGameState(newState);
@@ -61,7 +67,7 @@ export default function SliderProvider({ children }: Readonly<{ children: React.
     }
   }, [gameState, scoreTracker]);
 
-  const contextState = useMemo<SliderGameContext>(() => {
+  const contextState = useMemo<TGameContext>(() => {
     return {
       gameState: gameState,
       setGameState: setGameState,
@@ -75,8 +81,8 @@ export default function SliderProvider({ children }: Readonly<{ children: React.
   }, [gameSettings, gameState, onNewRound, onPlay, scoreTracker, submitAnswer]);
 
   return (
-    <SliderContext.Provider value={contextState}>
+    <GAME_CONTEXT.Provider value={contextState}>
       {children}
-    </SliderContext.Provider>
+    </GAME_CONTEXT.Provider>
   );
 }

@@ -5,36 +5,38 @@ import NextRoundButton from "@/components/NextRoundButton/NextRoundButton";
 import QuestionPrompt from "@/components/QuestionPrompt/QuestionPrompt";
 import ScoreTracker from "@/components/ScoreTracker/ScoreTracker";
 import SoundCard from "@/components/SoundCard/SoundCard";
-import { SliderContext } from "@/contexts/SliderContext";
 import NoteUtils from "@/utils/NoteUtils";
 
 import GameContainer from "../GameContainer/GameContainer";
-import FrequencySlider from "./FrequencySlider/FrequencySlider";
-import SliderSettingsModal from "./SettingsModal/SliderSettingsModal";
+import FrequencySlider from "./FrequencySlider";
+import { SliderContext } from "./SliderContext";
+import SliderSettingsModal from "./SliderSettingsModal";
+
+const GAME_CONTEXT = SliderContext;
 
 export default function SliderContainer(): JSX.Element {
-  const sliderContext = useContext(SliderContext);
+  const gameContext = useContext(GAME_CONTEXT);
 
-  const gameState = sliderContext.gameState;
-  const gameSettings = sliderContext.gameSettings;
+  const gameState = gameContext.gameState;
+  const gameSettings = gameContext.gameSettings;
 
   const renderSoundCard = (): JSX.Element => {
     return (
       <SoundCard
         noteOctave={[gameState.correctNoteOctave]}
         noteDuration={gameSettings.noteDuration}
-        onClick_PlayButton={sliderContext.onPlay}
+        onClick_PlayButton={gameContext.onPlay}
         hasPlayed={gameState.hasPlayed}
       />
     );
   };
 
   const onClick_NextRoundButton = useCallback((): void => {
-    if (sliderContext.onNewRound === undefined) {
+    if (gameContext.onNewRound === undefined) {
       return;
     }
-    sliderContext.onNewRound(gameSettings, false);
-  }, [gameSettings, sliderContext]);
+    gameContext.onNewRound(gameSettings, false);
+  }, [gameSettings, gameContext]);
 
   const renderNextRoundButton = useCallback((): JSX.Element | null => {
     if (gameState.isRoundOver === false) {
@@ -60,7 +62,7 @@ export default function SliderContainer(): JSX.Element {
   return (
     <GameContainer>
       <SliderSettingsModal />
-      <ScoreTracker scoreStats={sliderContext.scoreTracker.scoreStats} />
+      <ScoreTracker scoreStats={gameContext.scoreTracker.scoreStats} />
       {renderSoundCard()}
       <QuestionPrompt
         text="Use the slider to match the note."

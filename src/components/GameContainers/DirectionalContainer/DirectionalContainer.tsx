@@ -6,24 +6,26 @@ import NextRoundButton from "@/components/NextRoundButton/NextRoundButton";
 import QuestionPrompt from "@/components/QuestionPrompt/QuestionPrompt";
 import ScoreTracker from "@/components/ScoreTracker/ScoreTracker";
 import SoundCard from "@/components/SoundCard/SoundCard";
-import { DirectionalContext } from "@/contexts/DirectionalContext";
 import NoteUtils from "@/utils/NoteUtils";
 
 import GameContainer from "../GameContainer/GameContainer";
-import DirectionalSettingsModal from "./SettingsModal/DirectionalSettingsModal";
+import { DirectionalContext } from "./DirectionalContext";
+import DirectionalSettingsModal from "./DirectionalSettingsModal";
+
+const GAME_CONTEXT = DirectionalContext;
 
 export default function DirectionalContainer(): JSX.Element {
-  const directionalContext = useContext(DirectionalContext);
+  const gameContext = useContext(GAME_CONTEXT);
 
-  const gameState = directionalContext.gameState;
-  const gameSettings = directionalContext.gameSettings;
+  const gameState = gameContext.gameState;
+  const gameSettings = gameContext.gameSettings;
 
   const renderFirstSoundCard = (): JSX.Element => {
     return (
       <SoundCard
         noteOctave={[gameState.firstNoteOctave]}
         noteDuration={gameSettings.noteDuration}
-        onClick_PlayButton={directionalContext.onPlay}
+        onClick_PlayButton={gameContext.onPlay}
         hasPlayed={gameState.hasPlayed}
         tooltipText="Play Me First!"
       />
@@ -35,7 +37,7 @@ export default function DirectionalContainer(): JSX.Element {
       <SoundCard
         noteOctave={[gameState.secondNoteOctave]}
         noteDuration={gameSettings.noteDuration}
-        onClick_PlayButton={directionalContext.onPlaySecond}
+        onClick_PlayButton={gameContext.onPlaySecond}
         hasPlayed={gameState.hasPlayedSecond}
         tooltipText="Play Me Second!"
         disabled={!gameState.hasPlayed}
@@ -57,7 +59,7 @@ export default function DirectionalContainer(): JSX.Element {
           key={answerChoice}
           payload={answerChoice.toString()}
           text={NoteUtils.convertPitchDirectionToText(answerChoice)}
-          onClick_Button={directionalContext.submitAnswer}
+          onClick_Button={gameContext.submitAnswer}
           isCorrect={isCorrect}
           hasPlayed={gameState.hasPlayed && gameState.hasPlayedSecond}
           isRoundOver={gameState.isRoundOver}
@@ -72,10 +74,10 @@ export default function DirectionalContainer(): JSX.Element {
   };
 
   const onClick_NextRoundButton = (): void => {
-    if (directionalContext.onNewRound === undefined) {
+    if (gameContext.onNewRound === undefined) {
       return;
     }
-    directionalContext.onNewRound(gameSettings, false);
+    gameContext.onNewRound(gameSettings, false);
   };
 
   const renderNextRoundButton = (): JSX.Element | null => {
@@ -90,7 +92,7 @@ export default function DirectionalContainer(): JSX.Element {
   return (
     <GameContainer>
       <DirectionalSettingsModal />
-      <ScoreTracker scoreStats={directionalContext.scoreTracker.scoreStats} />
+      <ScoreTracker scoreStats={gameContext.scoreTracker.scoreStats} />
       <Group className="w-full" gap="xs">
         {renderFirstSoundCard()}
         {renderSecondSoundCard()}

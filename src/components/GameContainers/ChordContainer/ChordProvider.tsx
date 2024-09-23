@@ -1,12 +1,19 @@
 import { produce } from "immer";
 import { useCallback, useMemo, useState } from "react";
 
-import { CHORD_GAME_SETTINGS_DEFAULT, ChordContext, type ChordGameContext, type ChordGameSettings, type ChordGameState } from "@/contexts/ChordContext";
 import useScoreTracker from "@/hooks/useScoreTracker";
 import type { MusicalNote } from "@/utils/NoteUtils";
 import NoteUtils from "@/utils/NoteUtils";
 
-const generateNewGameState = (settings: ChordGameSettings): ChordGameState => {
+import type { ChordGameContext, ChordGameSettings, ChordGameState } from "./ChordContext";
+import { CHORD_GAME_SETTINGS_DEFAULT, ChordContext } from "./ChordContext";
+
+type TGameSettings = ChordGameSettings;
+type TGameState = ChordGameState;
+type TGameContext = ChordGameContext;
+const GAME_CONTEXT = ChordContext;
+
+const generateNewGameState = (settings: TGameSettings): TGameState => {
   const firstResult = NoteUtils.generateNoteOctave(settings.generateNoteOctaveOptions);
   const secondResult = NoteUtils.generateNoteOctave(settings.generateNoteOctaveOptions);
   const notes = [firstResult.noteOctave, secondResult.noteOctave];
@@ -19,13 +26,13 @@ const generateNewGameState = (settings: ChordGameSettings): ChordGameState => {
 };
 
 export default function DistanceProvider({ children }: Readonly<{ children: React.ReactNode; }>) {
-  const [gameSettings, setGameSettings] = useState<ChordGameSettings>(CHORD_GAME_SETTINGS_DEFAULT);
+  const [gameSettings, setGameSettings] = useState<TGameSettings>(CHORD_GAME_SETTINGS_DEFAULT);
 
-  const [gameState, setGameState] = useState<ChordGameState>(generateNewGameState(gameSettings));
+  const [gameState, setGameState] = useState<TGameState>(generateNewGameState(gameSettings));
 
   const scoreTracker = useScoreTracker();
 
-  const onNewRound = useCallback((settings: ChordGameSettings, shouldResetScore: boolean): void => {
+  const onNewRound = useCallback((settings: TGameSettings, shouldResetScore: boolean): void => {
     scoreTracker.resetScoreState(shouldResetScore);
     const newState = generateNewGameState(settings);
     setGameState(newState);
@@ -96,7 +103,7 @@ export default function DistanceProvider({ children }: Readonly<{ children: Reac
     );
   }, [gameState]);
 
-  const contextState = useMemo<ChordGameContext>(() => {
+  const contextState = useMemo<TGameContext>(() => {
     return {
       gameState: gameState,
       setGameState: setGameState,
@@ -112,8 +119,8 @@ export default function DistanceProvider({ children }: Readonly<{ children: Reac
   }, [gameState, gameSettings, scoreTracker, onNewRound, onPlay, submitAnswer, addSelectedNote, removeSelectedNote]);
 
   return (
-    <ChordContext.Provider value={contextState}>
+    <GAME_CONTEXT.Provider value={contextState}>
       {children}
-    </ChordContext.Provider>
+    </GAME_CONTEXT.Provider>
   );
 }

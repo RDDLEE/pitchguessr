@@ -3,7 +3,7 @@ import { Button, Divider, Radio, RangeSlider, Slider, Text } from "@mantine/core
 import { produce } from "immer";
 import React, { useCallback, useContext, useState } from "react";
 
-import { AppSettingsContext } from "@/contexts/AppSettingsContext";
+import { AppSettingsContext } from "@/components/AppSettingsProvider/AppSettingsContext";
 import AppSettingUtils from "@/utils/AppSettingUtils";
 import type { BaseGameSettings } from "@/utils/GameStateUtils";
 import GameStateUtils from "@/utils/GameStateUtils";

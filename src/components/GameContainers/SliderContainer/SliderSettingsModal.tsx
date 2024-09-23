@@ -2,16 +2,17 @@ import { useDisclosure } from "@mantine/hooks";
 import React, { useCallback, useContext } from "react";
 
 import SettingsModal from "@/components/SettingsModal/SettingsModal";
-import { DISTANCE_SETTINGS_DEFAULT } from "@/contexts/DistanceContext";
-import type { NoteKeyboardGameSettings } from "@/contexts/NoteKeyboardContext";
-import { NoteKeyboardContext } from "@/contexts/NoteKeyboardContext";
 import useSettingsModal from "@/hooks/useSettingsModal";
 import type { BaseGameSettings } from "@/utils/GameStateUtils";
 
-type TGameSettings = NoteKeyboardGameSettings;
+import type { SliderGameSettings } from "./SliderContext";
+import { SLIDER_GAME_SETTINGS_DEFAULT, SliderContext } from "./SliderContext";
 
-export default function NoteKeyboardSettingsModal(): JSX.Element {
-  const gameContext = useContext(NoteKeyboardContext);
+type TGameSettings = SliderGameSettings;
+const GAME_CONTEXT = SliderContext;
+
+export default function SliderSettingsModal(): JSX.Element {
+  const gameContext = useContext(GAME_CONTEXT);
 
   const [isModalOpened, modalHandlers] = useDisclosure();
 
@@ -27,23 +28,22 @@ export default function NoteKeyboardSettingsModal(): JSX.Element {
 
   const settingsModal = useSettingsModal<TGameSettings>({
     settings: gameContext.gameSettings,
-    defaultSettings: DISTANCE_SETTINGS_DEFAULT,
+    defaultSettings: SLIDER_GAME_SETTINGS_DEFAULT,
     applyExtendedSettings: applyExtendedSettings,
     onNewRound: gameContext.onNewRound,
     closeModal: modalHandlers.close,
   });
 
-  const renderModalBody = useCallback((): JSX.Element => {
+  const renderModalBody = (): JSX.Element => {
     return (
       <React.Fragment>
         {settingsModal.renderAppVolumeSlider()}
         {settingsModal.renderNoteDurationSlider()}
-        {/* TODO: Implement Distance octaves. */}
         {settingsModal.renderOctaveRangeSlider()}
         {settingsModal.renderNoteTypeRadio()}
       </React.Fragment>
     );
-  }, [settingsModal]);
+  };
 
   return (
     <SettingsModal

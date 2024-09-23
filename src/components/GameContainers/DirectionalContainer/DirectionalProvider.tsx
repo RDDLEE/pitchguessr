@@ -1,12 +1,18 @@
 import { produce } from "immer";
 import { useCallback, useMemo, useState } from "react";
 
-import type { DirectionalGameContext, DirectionalGameSettings, DirectionalGameState } from "@/contexts/DirectionalContext";
-import { DIRECTIONAL_GAME_SETTINGS_DEFAULT, DirectionalContext } from "@/contexts/DirectionalContext";
 import useScoreTracker from "@/hooks/useScoreTracker";
 import NoteUtils from "@/utils/NoteUtils";
 
-const generateNewGameState = (settings: DirectionalGameSettings): DirectionalGameState => {
+import type { DirectionalGameContext, DirectionalGameSettings, DirectionalGameState } from "./DirectionalContext";
+import { DIRECTIONAL_GAME_SETTINGS_DEFAULT, DirectionalContext } from "./DirectionalContext";
+
+type TGameSettings = DirectionalGameSettings;
+type TGameState = DirectionalGameState;
+type TGameContext = DirectionalGameContext;
+const GAME_CONTEXT = DirectionalContext;
+
+const generateNewGameState = (settings: TGameSettings): DirectionalGameState => {
   const newFirstNoteOctave = NoteUtils.generateNoteOctave(settings.generateNoteOctaveOptions).noteOctave;
   const newSecondNoteOctave = NoteUtils.generateNoteOctave(settings.generateNoteOctaveOptions).noteOctave;
   const correctPitchDirection = NoteUtils.compareNoteOctaveValues(newFirstNoteOctave, newSecondNoteOctave);
@@ -21,13 +27,13 @@ const generateNewGameState = (settings: DirectionalGameSettings): DirectionalGam
 };
 
 export default function DirectionalProvider({ children }: Readonly<{ children: React.ReactNode; }>) {
-  const [gameSettings, setGameSettings] = useState<DirectionalGameSettings>(DIRECTIONAL_GAME_SETTINGS_DEFAULT);
+  const [gameSettings, setGameSettings] = useState<TGameSettings>(DIRECTIONAL_GAME_SETTINGS_DEFAULT);
 
-  const [gameState, setGameState] = useState<DirectionalGameState>(generateNewGameState(gameSettings));
+  const [gameState, setGameState] = useState<TGameState>(generateNewGameState(gameSettings));
 
   const scoreTracker = useScoreTracker();
 
-  const onNewRound = useCallback((settings: DirectionalGameSettings, shouldResetScore: boolean): void => {
+  const onNewRound = useCallback((settings: TGameSettings, shouldResetScore: boolean): void => {
     scoreTracker.resetScoreState(shouldResetScore);
     const newState = generateNewGameState(settings);
     setGameState(newState);
@@ -68,7 +74,7 @@ export default function DirectionalProvider({ children }: Readonly<{ children: R
     }
   }, [gameState, scoreTracker]);
 
-  const contextState = useMemo<DirectionalGameContext>(() => {
+  const contextState = useMemo<TGameContext>(() => {
     return {
       gameState: gameState,
       setGameState: setGameState,
@@ -83,8 +89,8 @@ export default function DirectionalProvider({ children }: Readonly<{ children: R
   }, [gameSettings, gameState, onNewRound, onPlayFirst, onPlaySecond, scoreTracker, submitAnswer]);
 
   return (
-    <DirectionalContext.Provider value={contextState}>
+    <GAME_CONTEXT.Provider value={contextState}>
       {children}
-    </DirectionalContext.Provider>
+    </GAME_CONTEXT.Provider>
   );
 }

@@ -5,17 +5,19 @@ import NextRoundButton from "@/components/NextRoundButton/NextRoundButton";
 import QuestionPrompt from "@/components/QuestionPrompt/QuestionPrompt";
 import ScoreTracker from "@/components/ScoreTracker/ScoreTracker";
 import SoundCard from "@/components/SoundCard/SoundCard";
-import { DistanceContext } from "@/contexts/DistanceContext";
 
 import GameContainer from "../GameContainer/GameContainer";
-import DistanceSlider from "./DistanceSlider/DistanceSlider";
-import DistanceSettingsModal from "./SettingsModal/DistanceSettingsModal";
+import { DistanceContext } from "./DistanceContext";
+import DistanceSettingsModal from "./DistanceSettingsModal";
+import DistanceSlider from "./DistanceSlider";
+
+const GAME_CONTEXT = DistanceContext;
 
 export default function DistanceContainer(): JSX.Element {
-  const distanceContext = useContext(DistanceContext);
+  const gameContext = useContext(GAME_CONTEXT);
 
-  const gameState = distanceContext.gameState;
-  const gameSettings = distanceContext.gameSettings;
+  const gameState = gameContext.gameState;
+  const gameSettings = gameContext.gameSettings;
 
   const renderFirstSoundCard = useCallback((): JSX.Element => {
     const noteOctave = gameState.firstNoteOctave;
@@ -23,11 +25,11 @@ export default function DistanceContainer(): JSX.Element {
       <SoundCard
         noteOctave={[noteOctave]}
         noteDuration={gameSettings.noteDuration}
-        onClick_PlayButton={distanceContext.onPlay}
+        onClick_PlayButton={gameContext.onPlay}
         hasPlayed={gameState.hasPlayed}
       />
     );
-  }, [distanceContext.onPlay, gameSettings.noteDuration, gameState.firstNoteOctave, gameState.hasPlayed]);
+  }, [gameContext.onPlay, gameSettings.noteDuration, gameState.firstNoteOctave, gameState.hasPlayed]);
 
   const renderSecondSoundCard = useCallback((): JSX.Element => {
     const noteOctave = gameState.secondNoteOctave;
@@ -35,18 +37,18 @@ export default function DistanceContainer(): JSX.Element {
       <SoundCard
         noteOctave={[noteOctave]}
         noteDuration={gameSettings.noteDuration}
-        onClick_PlayButton={distanceContext.onPlaySecond}
+        onClick_PlayButton={gameContext.onPlaySecond}
         hasPlayed={gameState.hasPlayedSecond}
       />
     );
-  }, [distanceContext.onPlaySecond, gameSettings.noteDuration, gameState.hasPlayedSecond, gameState.secondNoteOctave]);
+  }, [gameContext.onPlaySecond, gameSettings.noteDuration, gameState.hasPlayedSecond, gameState.secondNoteOctave]);
 
   const onClick_NextRoundButton = useCallback((): void => {
-    if (distanceContext.onNewRound === undefined) {
+    if (gameContext.onNewRound === undefined) {
       return;
     }
-    distanceContext.onNewRound(distanceContext.gameSettings, false);
-  }, [distanceContext]);
+    gameContext.onNewRound(gameContext.gameSettings, false);
+  }, [gameContext]);
 
   const renderCorrectAnswerText = useCallback((): JSX.Element | null => {
     if (!gameState.isRoundOver) {
@@ -71,14 +73,12 @@ export default function DistanceContainer(): JSX.Element {
   return (
     <GameContainer>
       <DistanceSettingsModal />
-      <ScoreTracker scoreStats={distanceContext.scoreTracker.scoreStats} />
+      <ScoreTracker scoreStats={gameContext.scoreTracker.scoreStats} />
       <Group className="w-full" gap="xs">
         {renderFirstSoundCard()}
         {renderSecondSoundCard()}
       </Group>
-      <QuestionPrompt
-        text="How many half-steps are between the two notes?"
-      />
+      <QuestionPrompt text="How many half-steps are between the two notes?" />
       <DistanceSlider />
       {renderCorrectAnswerText()}
       {renderNextRoundButton()}

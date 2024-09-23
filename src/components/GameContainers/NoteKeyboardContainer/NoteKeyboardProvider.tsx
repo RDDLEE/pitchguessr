@@ -1,13 +1,19 @@
 import { produce } from "immer";
 import { useCallback, useMemo, useState } from "react";
 
-import type { NoteKeyboardGameContext, NoteKeyboardGameSettings, NoteKeyboardGameState } from "@/contexts/NoteKeyboardContext";
-import { NOTE_KEYBOARD_GAME_SETTINGS_DEFAULT, NoteKeyboardContext } from "@/contexts/NoteKeyboardContext";
 import useScoreTracker from "@/hooks/useScoreTracker";
 import type { NoteOctave } from "@/utils/NoteUtils";
 import NoteUtils from "@/utils/NoteUtils";
 
-const generateNewGameState = (settings: NoteKeyboardGameSettings): NoteKeyboardGameState => {
+import type { NoteKeyboardGameContext, NoteKeyboardGameSettings, NoteKeyboardGameState } from "./NoteKeyboardContext";
+import { NOTE_KEYBOARD_GAME_SETTINGS_DEFAULT, NoteKeyboardContext } from "./NoteKeyboardContext";
+
+type TGameSettings = NoteKeyboardGameSettings;
+type TGameState = NoteKeyboardGameState;
+type TGameContext = NoteKeyboardGameContext;
+const GAME_CONTEXT = NoteKeyboardContext;
+
+const generateNewGameState = (settings: TGameSettings): TGameState => {
   const generateResult = NoteUtils.generateNoteOctave(settings.generateNoteOctaveOptions);
   const noteOctave = generateResult.noteOctave;
   return {
@@ -19,13 +25,13 @@ const generateNewGameState = (settings: NoteKeyboardGameSettings): NoteKeyboardG
 };
 
 export default function NoteKeyboardProvider({ children }: Readonly<{ children: React.ReactNode; }>) {
-  const [gameSettings, setGameSettings] = useState<NoteKeyboardGameSettings>(NOTE_KEYBOARD_GAME_SETTINGS_DEFAULT);
+  const [gameSettings, setGameSettings] = useState<TGameSettings>(NOTE_KEYBOARD_GAME_SETTINGS_DEFAULT);
 
-  const [gameState, setGameState] = useState<NoteKeyboardGameState>(generateNewGameState(gameSettings));
+  const [gameState, setGameState] = useState<TGameState>(generateNewGameState(gameSettings));
 
   const scoreTracker = useScoreTracker();
 
-  const onNewRound = useCallback((settings: NoteKeyboardGameSettings, shouldResetScore: boolean): void => {
+  const onNewRound = useCallback((settings: TGameSettings, shouldResetScore: boolean): void => {
     scoreTracker.resetScoreState(shouldResetScore);
     const newState = generateNewGameState(settings);
     setGameState(newState);
@@ -69,7 +75,7 @@ export default function NoteKeyboardProvider({ children }: Readonly<{ children: 
     }
   }, [gameState, scoreTracker]);
 
-  const contextState = useMemo<NoteKeyboardGameContext>(() => {
+  const contextState = useMemo<TGameContext>(() => {
     return {
       gameState: gameState,
       setGameState: setGameState,
@@ -84,8 +90,8 @@ export default function NoteKeyboardProvider({ children }: Readonly<{ children: 
   }, [gameSettings, gameState, onNewRound, onPlay, scoreTracker, selectNoteOctave, submitAnswer]);
 
   return (
-    <NoteKeyboardContext.Provider value={contextState}>
+    <GAME_CONTEXT.Provider value={contextState}>
       {children}
-    </NoteKeyboardContext.Provider>
+    </GAME_CONTEXT.Provider>
   );
 }
